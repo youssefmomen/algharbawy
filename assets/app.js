@@ -1,76 +1,108 @@
-// منطق عرض الصفحات: يقرأ البيانات من data.js ويرسم الصفحة المناسبة
+// منطق العرض: يقرأ كل المحتوى من data.js ويرسم الصفحة مع الحركات
 (function () {
   var data = window.SITE_DATA;
   if (!data) return;
+  document.documentElement.classList.add("js");
 
-  function esc(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  }
-  function param(name) {
-    return new URLSearchParams(location.search).get(name);
-  }
-  function findSection(id) {
-    for (var i = 0; i < data.sections.length; i++) if (data.sections[i].id === id) return data.sections[i];
-    return null;
-  }
-  function findLesson(sec, id) {
-    for (var i = 0; i < sec.lessons.length; i++) if (sec.lessons[i].id === id) return sec.lessons[i];
-    return null;
+  function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function param(n){return new URLSearchParams(location.search).get(n);}
+  function find(arr,id){for(var i=0;i<arr.length;i++)if(arr[i].id===id)return arr[i];return null;}
+  var AR="٠١٢٣٤٥٦٧٨٩";
+  function ar(n){return String(n).replace(/\d/g,function(d){return AR[d];});}
+  function pad(n){return ar(n<10?"0"+n:n);}
+  var page=document.body.getAttribute("data-page");
+  var total=0;data.sections.forEach(function(s){total+=s.lessons.length;});
+
+  // ---------- الهيكل المشترك ----------
+  var navHTML='<div class="progress" id="progress"></div><div class="glow" id="glow"></div><div class="grain"></div>'+
+  '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
+  '<div class="links" id="links"><a href="index.html">الرئيسية</a><a href="index.html#sections">الأقسام</a>'+
+  data.sections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
+  '</div><button class="burger" id="burger" aria-label="القائمة">☰</button></div></nav>';
+  document.body.insertAdjacentHTML("afterbegin",navHTML);
+  var year=ar(new Date().getFullYear());
+  var foot=document.getElementById("footer");
+  if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
+   data.sections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
+   '</span><span>© '+year+' '+esc(data.siteTitle)+'</span></div></div>';
+
+  // ---------- الصفحات ----------
+  if(page==="home"){
+    document.title=data.siteTitle+" | "+data.siteTagline;
+    var words=data.siteTitle.split(" ");
+    document.getElementById("hero-title").innerHTML=words.map(function(w,i){return '<span class="rv'+(i?' gold':'')+'" style="--d:'+(.15+i*.18)+'s">'+esc(w)+'</span>';}).join("");
+    document.getElementById("hero-tag").textContent=data.siteTagline;
+    var items=data.sections.map(function(s){return '<span>'+esc(s.title)+'</span><span class="d">◆</span>';}).join("")+
+      "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ").map(function(c){return '<span>'+c+'</span><span class="d">◆</span>';}).join("");
+    document.getElementById("marq").innerHTML='<div class="track">'+items+items+'</div>';
+    document.getElementById("tiles").innerHTML=data.sections.map(function(s,i){
+      return '<a class="tile rv" style="--d:'+((i%2)*.12)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
+      '<span class="num">'+pad(i+1)+'</span><div class="ic">'+esc(s.icon)+'</div><h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
+      '<div class="meta"><span>'+ar(s.lessons.length)+' '+(s.lessons.length>2&&s.lessons.length<11?'دروس':'درس')+'</span><span class="go">←</span></div></a>';
+    }).join("");
+    var stats=[[data.sections.length,"أقسام"],[total,"درسًا"],[28,"حرفًا"]];
+    document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.12+'s"><b class="gold" data-n="'+x[0]+'">'+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
-  // العنوان العام في كل الصفحات
-  var brandLinks = document.querySelectorAll(".brand");
-  brandLinks.forEach(function (a) { a.textContent = data.siteTitle; a.href = "index.html"; });
-  var year = new Date().getFullYear();
-  document.querySelectorAll("footer .foot").forEach(function (f) {
-    f.textContent = data.siteTitle + "، " + year;
-  });
-
-  var page = document.body.getAttribute("data-page");
-
-  if (page === "home") {
-    document.title = data.siteTitle;
-    document.getElementById("hero-title").textContent = data.siteTitle;
-    document.getElementById("hero-tag").textContent = data.siteTagline;
-    var cards = document.getElementById("cards");
-    cards.innerHTML = data.sections.map(function (s) {
-      return '<a class="card" href="section.html?id=' + encodeURIComponent(s.id) + '">' +
-        '<div class="icon">' + esc(s.icon) + '</div>' +
-        '<h2>' + esc(s.title) + '</h2>' +
-        '<p>' + esc(s.description) + '</p>' +
-        '<span class="count">' + s.lessons.length + ' درس</span>' +
-        '</a>';
+  if(page==="section"){
+    var sec=find(data.sections,param("id"))||data.sections[0];
+    var idx=data.sections.indexOf(sec);
+    document.title=sec.title+" | "+data.siteTitle;
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسية</a><span class="sep">◆</span><span>'+esc(sec.title)+'</span>';
+    document.getElementById("page-title").innerHTML='<span class="gold">'+esc(sec.title)+'</span><span class="ic">'+esc(sec.icon)+'</span>';
+    document.getElementById("page-desc").textContent=sec.description;
+    document.getElementById("lessons").innerHTML=sec.lessons.map(function(l,i){
+      return '<li class="rv" style="--d:'+i*.08+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");
   }
 
-  if (page === "section") {
-    var sec = findSection(param("id")) || data.sections[0];
-    document.title = sec.title + " | " + data.siteTitle;
-    document.getElementById("crumb-section").textContent = sec.title;
-    document.getElementById("page-title").textContent = sec.icon + " " + sec.title;
-    document.getElementById("page-desc").textContent = sec.description;
-    var list = document.getElementById("lessons");
-    list.innerHTML = sec.lessons.map(function (l) {
-      return '<li><a href="lesson.html?section=' + encodeURIComponent(sec.id) + '&lesson=' + encodeURIComponent(l.id) + '">' +
-        '<div class="t">' + esc(l.title) + '</div>' +
-        '<div class="s">' + esc(l.summary) + '</div>' +
-        '</a></li>';
+  if(page==="lesson"){
+    var sec2=find(data.sections,param("section"))||data.sections[0];
+    var les=find(sec2.lessons,param("lesson"))||sec2.lessons[0];
+    var li=sec2.lessons.indexOf(les);
+    document.title=les.title+" | "+data.siteTitle;
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسية</a><span class="sep">◆</span><a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
+    document.getElementById("page-title").innerHTML='<span class="gold">'+esc(les.title)+'</span>';
+    document.getElementById("page-desc").textContent=les.summary||"";
+    document.getElementById("lesson-body").innerHTML=les.body.map(function(p,i){
+      var cls=/^\s*(تدريب|تمرين)/.test(p)?' tadreeb':'';
+      return '<p class="rv'+cls+'">'+esc(p)+'</p>';
     }).join("");
+    function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
+    var prev=sec2.lessons[li-1],next=sec2.lessons[li+1];
+    var last=!next?'<a class="nx" href="section.html?id='+encodeURIComponent(sec2.id)+'"><small>أحسنت، أنهيت القسم</small><b>العودة إلى '+esc(sec2.title)+'</b></a>':lk(next,"الدرس التالي ←","nx");
+    document.getElementById("pager").innerHTML=lk(prev,"→ الدرس السابق","pv")+last;
   }
 
-  if (page === "lesson") {
-    var sec2 = findSection(param("section")) || data.sections[0];
-    var les = findLesson(sec2, param("lesson")) || sec2.lessons[0];
-    document.title = les.title + " | " + data.siteTitle;
-    var crumbSec = document.getElementById("crumb-section");
-    crumbSec.textContent = sec2.title;
-    crumbSec.href = "section.html?id=" + encodeURIComponent(sec2.id);
-    document.getElementById("crumb-lesson").textContent = les.title;
-    document.getElementById("page-title").textContent = les.title;
-    document.getElementById("lesson-body").innerHTML =
-      les.body.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
-    var back = document.getElementById("back-link");
-    back.href = "section.html?id=" + encodeURIComponent(sec2.id);
-    back.textContent = "→ رجوع إلى قسم " + sec2.title;
+  // ---------- التفاعل ----------
+  var nav=document.getElementById("nav"),bar=document.getElementById("progress");
+  function onScroll(){
+    var y=window.scrollY,h=document.documentElement.scrollHeight-innerHeight;
+    nav.classList.toggle("solid",y>30);
+    bar.style.transform="scaleX("+(h>0?Math.min(1,y/h):0)+")";
   }
+  addEventListener("scroll",onScroll,{passive:true});onScroll();
+  var burger=document.getElementById("burger"),links=document.getElementById("links");
+  burger.addEventListener("click",function(){links.classList.toggle("open");});
+  links.addEventListener("click",function(e){if(e.target.tagName==="A")links.classList.remove("open");});
+
+  var glow=document.getElementById("glow");
+  addEventListener("pointermove",function(e){if(e.pointerType==="mouse"){glow.style.left=e.clientX+"px";glow.style.top=e.clientY+"px";}},{passive:true});
+  document.addEventListener("pointermove",function(e){
+    var t=e.target.closest&&e.target.closest(".tile");
+    if(t){var r=t.getBoundingClientRect();t.style.setProperty("--mx",(e.clientX-r.left)+"px");t.style.setProperty("--my",(e.clientY-r.top)+"px");}
+  },{passive:true});
+
+  function countUp(el){
+    var n=+el.getAttribute("data-n"),t0=null;
+    function step(t){t0=t0||t;var p=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-p,3);el.textContent=ar(Math.round(n*e));if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+  }
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);
+      var c=en.target.querySelector("[data-n]");if(c)countUp(c);}
+  });},{threshold:.12,rootMargin:"0px 0px -40px 0px"});
+  document.querySelectorAll(".rv").forEach(function(el){io.observe(el);});
+  setTimeout(function(){document.querySelectorAll(".hero .rv").forEach(function(e){e.classList.add("in");});},60);
 })();
