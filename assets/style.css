@@ -1,0 +1,99 @@
+/* التنسيق العام للموقع - خط واضح وألوان مريحة لكل الأعمار */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #1b7f5c;
+  --green-dark: #14654a;
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --text: #1f2a33;
+  --muted: #5b6b76;
+  --border: #e3e9e6;
+}
+
+html { direction: rtl; }
+
+body {
+  font-family: "Segoe UI", Tahoma, "Noto Kufi Arabic", "Traditional Arabic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 19px;
+  line-height: 1.9;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+/* الشريط العلوي */
+header.site-header {
+  background: var(--green);
+  color: #fff;
+  padding: 14px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+header.site-header a { color: #fff; text-decoration: none; font-weight: bold; font-size: 1.25rem; }
+
+/* البطل (الصفحة الرئيسية) */
+.hero { text-align: center; padding: 56px 20px 40px; }
+.hero h1 { font-size: 2.2rem; color: var(--green-dark); margin-bottom: 10px; }
+.hero p { color: var(--muted); font-size: 1.15rem; }
+
+/* بطاقات الأقسام */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; padding: 24px 0 56px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 26px 22px;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform .15s, box-shadow .15s;
+  display: block;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,.08); border-color: var(--green); }
+.card .icon { font-size: 2rem; }
+.card h2 { margin: 8px 0 6px; color: var(--green-dark); font-size: 1.35rem; }
+.card p { color: var(--muted); font-size: 1rem; }
+.card .count { display: inline-block; margin-top: 12px; font-size: .9rem; color: var(--green); font-weight: bold; }
+
+/* قوائم الدروس */
+.lesson-list { list-style: none; padding: 20px 0 60px; }
+.lesson-list li { margin-bottom: 14px; }
+.lesson-list a {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  text-decoration: none;
+  color: var(--text);
+}
+.lesson-list a:hover { border-color: var(--green); }
+.lesson-list .t { font-weight: bold; color: var(--green-dark); font-size: 1.15rem; }
+.lesson-list .s { color: var(--muted); font-size: .98rem; }
+
+/* صفحة الدرس */
+.lesson-body {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 30px;
+  margin: 24px 0 60px;
+}
+.lesson-body p { margin-bottom: 18px; }
+.lesson-body p:last-child { margin-bottom: 0; }
+
+/* مسار التنقل */
+.crumbs { padding: 18px 0 4px; font-size: .95rem; color: var(--muted); }
+.crumbs a { color: var(--green); text-decoration: none; }
+.page-title { color: var(--green-dark); font-size: 1.7rem; padding: 6px 0 4px; }
+.page-desc { color: var(--muted); }
+
+/* زر رجوع */
+.back { display: inline-block; margin-top: 24px; color: var(--green); text-decoration: none; font-weight: bold; }
+
+footer { text-align: center; color: var(--muted); font-size: .9rem; padding: 24px 0 40px; }
+
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .hero h1 { font-size: 1.6rem; }
+}
