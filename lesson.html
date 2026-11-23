@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الدرس</title>
-  <link rel="stylesheet" href="assets/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<title>الدرس | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="lesson">
-  <header class="site-header">
-    <div class="container"><a class="brand" href="index.html">مؤسسة الغرباوي</a></div>
-  </header>
-
-  <main class="container">
-    <nav class="crumbs">
-      <a href="index.html">الرئيسية</a> ‹ <a id="crumb-section" href="#"></a> ‹ <span id="crumb-lesson"></span>
-    </nav>
-    <h1 class="page-title" id="page-title"></h1>
-    <div class="lesson-body" id="lesson-body"></div>
-    <a class="back" id="back-link" href="#"></a>
-  </main>
-
-  <footer><div class="container"><span class="foot"></span></div></footer>
-
-  <script src="data.js"></script>
-  <script src="assets/app.js"></script>
+<header class="page-hero"><div class="wrap">
+  <nav class="crumbs" id="crumbs"></nav>
+  <h1 id="page-title"></h1>
+  <p class="desc" id="page-desc"></p>
+</div></header>
+<main class="wrap" style="position:relative">
+<article class="article" id="lesson-body"></article><div class="pager" id="pager"></div>
+</main>
+<footer id="footer"></footer>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
 </body>
 </html>
