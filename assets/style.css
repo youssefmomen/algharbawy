@@ -191,3 +191,19 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2
 .seg-pass{display:flex;align-items:center;gap:14px;color:var(--gold);margin:34px 0 8px}
 .seg-pass:before,.seg-pass:after{content:"";flex:1;height:1px;background:linear-gradient(to left,transparent,rgba(201,162,75,.35),transparent)}
 .seg-pass i{font-style:normal;font-size:.7rem}
+
+/* ---------- وضع الأطفال: مسار التأسيس ---------- */
+body.kids{--bg:#131126;--bg2:#1a1738;--card:#201c44;--line:rgba(255,213,79,.22);--gold:#ffd54f;--gold2:#fff3c4;--gold3:#c9a227;--text:#fdf6ea;--mute:#b9b0d6}
+body.kids{background-image:radial-gradient(1000px 500px at 85% -10%,rgba(79,195,247,.14),transparent 60%),radial-gradient(900px 500px at 0% 40%,rgba(255,138,101,.10),transparent 60%),radial-gradient(700px 400px at 50% 100%,rgba(105,240,174,.08),transparent 60%)}
+body.kids .lessons li a{border-radius:24px}
+body.kids .q{border-radius:22px}
+body.kids .verse-card{border-radius:24px}
+body.kids .opt{border-radius:16px;font-size:1.12rem;padding:14px 18px}
+body.kids .opt .ol{border-radius:10px}
+body.kids .article p{font-size:1.18rem}
+body.kids .ex-head{color:#4fc3f7}
+body.kids .chip{border-color:#4fc3f7;color:#4fc3f7}
+body.kids .quiz-note{color:#80deea}
+body.kids .seg-pass{color:#69f0ae}
+body.kids .quiz-done{border-radius:22px}
+body.kids .pager a{border-radius:20px}
