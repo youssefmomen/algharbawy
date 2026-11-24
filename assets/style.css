@@ -500,3 +500,6 @@ body.nour-skin main,body.nour-skin .wrap{position:relative;z-index:1}
 .adm-note{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--mute);margin:26px 0}
 .adm-note a{color:var(--gold2)}
 .chip-admin{display:block;color:var(--gold2);text-decoration:none;padding:6px 0;font-weight:700}
+
+/* سؤال واحد في الشاشة */
+.q.q-hidden{display:none}
