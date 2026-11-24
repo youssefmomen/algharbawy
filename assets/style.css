@@ -257,3 +257,15 @@ body{animation:pg .35s ease-out}
 .term-head h3{font-family:var(--display);font-weight:500;font-size:clamp(1.5rem,3vw,2rem);color:var(--gold);display:flex;align-items:center;gap:18px;padding:44px 8px 18px;line-height:1.4}
 .term-head h3::after{content:"";flex:1;height:1px;background:var(--line)}
 .term-head:first-child h3{padding-top:18px}
+
+/* صور الدروس */
+.les-img{margin:0 0 28px}
+.les-img img{width:100%;display:block;border-radius:var(--r);border:1px solid var(--line)}
+
+/* ثيم المناهج المدرسية */
+body.school{--bg:#0e1d27;--bg2:#16303f;--card:#122836;--line:rgba(125,200,220,.2);--line2:rgba(125,200,220,.42);--gold:#ffc53d;--gold2:#ffd97a;--gold3:#e5ac2c;--ink:#221a00;--text:#ecf5f8;--mute:#9db9c6}
+body.school .article p{font-family:var(--sans);font-size:clamp(1.1rem,2vw,1.3rem);line-height:2.05}
+body.school .verse-text{font-family:var(--serif);font-size:1.5rem}
+body.school .ex-head{color:#4fd2c8}
+body.school .quiz-note{color:#8fd4cd}
+.next-les{margin-top:18px}
