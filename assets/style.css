@@ -207,3 +207,4 @@ body.kids .quiz-note{color:#80deea}
 body.kids .seg-pass{color:#69f0ae}
 body.kids .quiz-done{border-radius:22px}
 body.kids .pager a{border-radius:20px}
+.soon-row{display:flex;align-items:center;gap:18px;padding:26px 0;border-bottom:1px solid var(--line);opacity:.55}
