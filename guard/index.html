@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>حارس الغرباوي | فحص أمان المواقع</title>
+<style>
+:root{--bg:#0a0907;--card:#16130f;--gold:#d4af5f;--txt:#f3ecdc;--mut:#a89f8a;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.wrap{max-width:780px;margin:auto;padding:18px}
+h1{color:var(--gold);margin:8px 0 0;font-size:1.8rem}p.lead{color:var(--mut);margin-top:4px}
+input[type=url],button{font:inherit;border-radius:12px;padding:13px;width:100%;margin-top:8px}
+input[type=url]{background:var(--card);color:var(--txt);border:1px solid #3a3326}
+button{background:var(--gold);color:#000;border:0;font-weight:bold;cursor:pointer;font-size:1.1rem}
+button:disabled{opacity:.5}
+#progress{height:8px;background:#2a2418;border-radius:8px;margin:14px 0;overflow:hidden;display:none}#bar{height:100%;width:0;background:var(--gold);transition:width .3s}
+#score{text-align:center;font-size:3rem;font-weight:bold;margin:6px 0 0}#sum{text-align:center;color:var(--mut);margin-bottom:8px}
+.box{background:var(--card);border-radius:14px;margin:10px 0;border-right:5px solid var(--mut);overflow:hidden}
+.box.ok{border-color:var(--ok)}.box.warn{border-color:var(--warn)}.box.bad{border-color:var(--bad)}
+.box summary{padding:12px 14px;cursor:pointer;font-weight:bold;list-style:none}
+.tag{font-size:.8rem;padding:1px 9px;border-radius:8px;margin-left:8px;color:#000}
+.ok .tag{background:var(--ok)}.warn .tag{background:var(--warn)}.bad .tag{background:var(--bad)}
+.det{padding:0 14px 12px;font-size:.95rem}.det b{color:var(--gold)}.det p{margin:6px 0}
+.cat{color:var(--gold);margin:22px 0 4px;font-size:1.05rem}
+.own{display:flex;gap:10px;align-items:flex-start;margin:12px 0}.own input{margin-top:8px;width:20px;height:20px}
+.note{font-size:.85rem;color:var(--mut);margin-top:24px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>🥷 حارس الغرباوي</h1>
+<p class="lead">أداة دفاعية لفحص موقعك أو موقع صاحبك بموافقته. الفحص بيقرا بس: بيفتح الصفحات العامة زي أي زائر، ومبيسجلش دخول ولا بيغيّر ولا بيكتب أي حاجة. اضغط على أي نتيجة تفتح الشرح كامل.</p>
+<input id="url" type="url" dir="ltr" placeholder="https://example.github.io/mysite/" value="https://youssefmomen.github.io/algharbawy/">
+<label class="own"><input type="checkbox" id="own"> أنا صاحب الموقع ده أو معايا إذن صريح من صاحبه بفحصه.</label>
+<p class="lead" style="font-size:.85rem">تنبيه: فحص مواقع الناس من غير إذنهم ممنوع وممكن يعرضك للمساءلة القانونية. الأداة بتقرا الصفحات والملفات العامة فقط.</p>
+<button id="go">ابدأ الفحص</button>
+<div id="progress"><div id="bar"></div></div>
+<div id="score"></div><div id="sum"></div>
+<div id="out"></div>
+<p class="note">ملحوظة: GitHub Pages بيتحكم في ترويسات الأمان (CSP وX-Frame-Options)، فمش هتتغير من عندك. الفحص بيغطي اللي تقدر تتحكم فيه: الكود والملفات المكشوفة . النتيجة مش بديل عن مراجعة أمنية كاملة.</p>
+</div>
+<script>
+const out=document.getElementById("out"),score=document.getElementById("score"),sum=document.getElementById("sum"),bar=document.getElementById("bar"),prog=document.getElementById("progress");
+let pts,total,counts,cat;
+const W={bad:3,warn:2};
+function section(t){const h=document.createElement("div");h.className="cat";h.textContent=t;out.appendChild(h)}
+// f: {level,title,where,why,fix,attack}
+function add(f){
+  total+=3;pts+=f.level==="ok"?3:f.level==="warn"?1.5:0;counts[f.level]++;
+  const l={ok:"سليم",warn:"تحسين",bad:"خطر"}[f.level];
+  const d=document.createElement("details");d.className="box "+f.level;
+  const s=document.createElement("summary");const tg=document.createElement("span");tg.className="tag";tg.textContent=l;s.append(tg,f.title);d.appendChild(s);
+  const det=document.createElement("div");det.className="det";
+  [["فين الضعف",f.where],["ليه ده مهم",f.why],["إزاي تصلحه",f.fix],["إيه اللي كان ممكن يحصل",f.attack]].forEach(([k,v])=>{if(v){const p=document.createElement("p");const b=document.createElement("b");b.textContent=k+": ";p.append(b,v);det.appendChild(p)}});
+  if(det.children.length)d.appendChild(det);
+  if(f.level!=="ok")d.open=f.level==="bad";
+  out.appendChild(d);
+}
+async function get(u){try{const r=await fetch(u,{cache:"no-store",credentials:"omit"});const t=r.ok?await r.text():"";return{ok:r.ok,status:r.status,text:t}}catch(e){return{ok:false,status:0,text:""}}}
+const step=(n,t)=>{bar.style.width=Math.round(n/t*100)+"%"};
+async function run(T){
+  const BASE=T.base,abs=u=>new URL(u,BASE).href;
+  out.innerHTML="";pts=0;total=0;counts={ok:0,warn:0,bad:0};score.textContent="";sum.textContent="";prog.style.display="block";step(0,10);
+  const home=await get(BASE);
+  if(!home.ok){add({level:"warn",title:"مقدرتش أقرا الموقع من المتصفح",where:"الموقع ده مش بيسمح لصفحات تانية بقراءته (CORS) أو مش شغال.",why:"المتصفح بيمنع الأداة من قراءة المواقع دي، فمقدرش أفحصها بدقة.",fix:"افحص المواقع المستضافة على GitHub Pages، أو اتأكد إن الموقع شغال."});return}
+  const html=home.text,doc=new DOMParser().parseFromString(html,"text/html");
+  const scripts=[...doc.querySelectorAll("script[src]")];
+  const codes={"الصفحة الرئيسية":html};
+  for(const s of scripts){const u=abs(s.getAttribute("src"));if(u.startsWith(BASE)){const r=await get(u);if(r.ok)codes[s.getAttribute("src").split("?")[0]]=r.text}}
+  const all=Object.values(codes).join("\n");
+  step(2,10);
+
+  section("🔐 الاتصال والأسرار");
+  add(BASE.startsWith("https://")?{level:"ok",title:"الموقع شغال بـHTTPS (اتصال مشفّر)"}:{level:"bad",title:"الموقع مش بيستخدم HTTPS",where:"عنوان الموقع نفسه.",why:"من غير تشفير أي حد على نفس الشبكة يقرا اللي بيتبعت.",fix:"فعّل HTTPS من إعدادات الاستضافة.",attack:"التجسس على كلمات السر وتعديل الصفحة أثناء وصولها للزائر."});
+  const pats=[[/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}/,"توكن GitHub"],[/AKIA[0-9A-Z]{16}/,"مفتاح AWS"],[/sk_live_[0-9A-Za-z]{10,}|sk-[A-Za-z0-9]{32,}/,"مفتاح سري لخدمة دفع أو ذكاء اصطناعي"],[/-----BEGIN [A-Z ]*PRIVATE KEY-----/,"مفتاح خاص"],[/"private_key_id"/,"ملف حساب خدمة Google"]];
+  const found=pats.filter(p=>p[0].test(all)).map(p=>p[1]);
+  add(found.length?{level:"bad",title:"أسرار ظاهرة في كود الموقع: "+found.join("، "),where:"داخل ملفات JavaScript اللي أي زائر بيحمّلها.",why:"أي حد بيفتح الكود بيشوف المفتاح.",fix:"امسحه من الكود فورًا، وغيّر المفتاح من الخدمة اللي طلعته منها (القديم يعتبر مسرّب).",attack:"استخدام حسابك أو خدمتك باسمك، أو الدخول على مستودعك وتعديل الموقع."}:{level:"ok",title:"مفيش مفاتيح سرية ظاهرة في الكود"});
+  const emails=[...new Set((all.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}/gi)||[]).filter(e=>!/@\d/.test(e)&&!/\.(png|jpg|svg|js|css|webp)$/i.test(e)&&!/@(example|fontawesome)/i.test(e)))];
+  add(emails.length?{level:"warn",title:"إيميلات ظاهرة في الكود ("+emails.length+")",where:"داخل ملفات JavaScript.",why:"الإيميل الظاهر بيتجمع تلقائيًا بواسطة برامج السبام.",fix:"شيله من الكود، أو خزّنه كبصمة مشفّرة (hash)، وخلّي التحقق من الأدمن في قاعدة البيانات.",attack:"سبام وتصيّد موجّه لإيميل الأدمن، ومحاولات سرقة حسابه، لأن المهاجم عرف مين صاحب الصلاحية."}:{level:"ok",title:"مفيش إيميلات ظاهرة في الكود"});
+  const fbKey=/AIza[0-9A-Za-z_-]{35}/.test(all);
+  add(fbKey?{level:"warn",title:"مفتاح Firebase ظاهر في الكود (ده طبيعي بس يتأمّن)",where:"ملف إعدادات Firebase.",why:"مفتاح الويب في Firebase مش سر، لكن أمانه بيعتمد على قيود المفتاح وقواعد قاعدة البيانات.",fix:"من Google Cloud، قيّد المفتاح بحيث يشتغل من نطاق موقعك فقط، وخلي قواعد Firestore صارمة.",attack:"لو القواعد ضعيفة، حد يستخدم المفتاح ويقرا أو يكتب في بياناتك، أو يستهلك الحصة المجانية."}:{level:"ok",title:"مفيش مفتاح Firebase ظاهر"});
+  step(3,10);
+
+  step(5,10);
+
+  section("📂 ملفات مكشوفة");
+  const hard=[".git/config",".env","package.json","backup.zip","db.sql"];
+  const exposed=[];
+  for(const f of hard){const r=await get(abs(f));if(r.ok&&r.text&&!/<title>[^<]*(404|not found)/i.test(r.text)&&!/<html/i.test(r.text.slice(0,200)))exposed.push(f)}
+  add(exposed.length?{level:"bad",title:"ملفات حساسة مكشوفة: "+exposed.join("، "),where:"ملفات متاحة بالرابط المباشر على الموقع.",why:"الملفات دي مش المفروض تكون على استضافة عامة.",fix:"احذفها من المستودع (واعتبر أي سر فيها مسرّب وغيّره).",attack:"قراءة الإعدادات وكلمات السر، أو تحميل نسخة كاملة من كود الموقع وقاعدة بياناته."}:{level:"ok",title:"مفيش ملفات حساسة مكشوفة (.git, .env, نسخ احتياطية)"});
+  const maps=Object.keys(codes).filter(k=>k.endsWith(".js"));let mapHit=[];
+  for(const k of maps){const r=await get(abs(k+".map"));if(r.ok&&r.text.startsWith("{"))mapHit.push(k+".map")}
+  add(mapHit.length?{level:"warn",title:"ملفات source map مكشوفة",where:mapHit.join("، "),why:"بتكشف الكود الأصلي قبل الضغط بتعليقاته.",fix:"متنشرهاش على الموقع الحقيقي.",attack:"فهم منطق الموقع بسهولة وإيجاد ثغرات أسرع."}:{level:"ok",title:"مفيش source maps مكشوفة"});
+  const sec=await get(abs(".well-known/security.txt"));
+  add(sec.ok&&/Contact:/i.test(sec.text)?{level:"ok",title:"فيه ملف security.txt لاستقبال بلاغات الثغرات"}:{level:"warn",title:"مفيش ملف security.txt",where:"/.well-known/security.txt",why:"بيحدد لمين يبلّغ أي باحث شاف ثغرة.",fix:"أنشئ الملف وحط فيه سطر Contact: mailto:بريدك.",attack:"مفيش هجوم مباشر، لكن ثغرة ممكن تتعرف وتتسرب من غير ما تعرف لأن مفيش قناة إبلاغ."});
+  step(7,10);
+
+  section("🧱 قوة الكود (الهجمات على الزوار)");
+  const ext=scripts.filter(s=>/^https?:/.test(s.getAttribute("src"))&&!s.getAttribute("src").startsWith(BASE));
+  const trusted=/gstatic\.com\/firebasejs|googleapis\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net/;
+  const risky=ext.filter(s=>!s.integrity&&!/gstatic\.com\/firebasejs/.test(s.getAttribute("src")));
+  add(risky.length?{level:"warn",title:"سكربتات خارجية من غير بصمة تحقق (SRI): "+risky.length,where:risky.map(s=>new URL(s.src).host).join("، "),why:"لو المصدر اتخترق الكود الخبيث بيتحمّل في موقعك.",fix:"أضف خاصية integrity وcrossorigin لكل سكربت خارجي.",attack:"سرقة جلسات وبيانات الزوار عبر سكربت مخترق من طرف تالت."}:{level:"ok",title:"السكربتات الخارجية من مصادر معروفة"});
+  const mixed=/(src|href|action)=["']http:\/\//i.test(all);
+  add(mixed?{level:"bad",title:"فيه روابط HTTP غير مشفّرة",where:"روابط http:// داخل الصفحة.",why:"تحميل محتوى غير مشفّر داخل صفحة مشفّرة.",fix:"غيّر كل http:// إلى https://.",attack:"تبديل الملف أثناء الطريق بكود خبيث."}:{level:"ok",title:"كل الروابط مشفّرة"});
+  const xss=/\.innerHTML\s*=|document\.write\(|eval\(|new Function\(/.test(all);
+  add(xss?{level:"warn",title:"الكود بيستخدم innerHTML أو eval",where:"ملفات JavaScript.",why:"لو النص جاي من مستخدم (اسم، تعليق، نتيجة) ومتنضفش، ينفذ كود.",fix:"استخدم textContent للنص القادم من المستخدمين، ونظّف أي HTML قبل عرضه.",attack:"حقن سكربت (XSS): سرقة جلسة الأدمن أو تحويل الزوار لموقع مزيّف."}:{level:"ok",title:"مفيش استخدام خطر لـeval/document.write"});
+  const csp=!!doc.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  add(csp?{level:"ok",title:"فيه سياسة أمان محتوى (CSP)"}:{level:"warn",title:"مفيش سياسة أمان محتوى (CSP)",where:"وسوم head في الصفحة.",why:"CSP بتحدد مصادر الكود المسموحة وبتوقف معظم هجمات الحقن.",fix:"أضف meta من نوع Content-Security-Policy يسمح بموقعك وgstatic وgoogleapis فقط.",attack:"لو حصلت ثغرة حقن، الكود الخبيث بيشتغل بحرية ويكلم أي سيرفر."});
+  const ref=!!doc.querySelector('meta[name="referrer"]');
+  add(ref?{level:"ok",title:"سياسة الـreferrer محددة"}:{level:"warn",title:"سياسة الـreferrer مش محددة",where:"head الصفحة.",why:"الروابط الخارجية ممكن تكشف عنوان الصفحة اللي جيت منها.",fix:'أضف <meta name="referrer" content="strict-origin-when-cross-origin">.',attack:"تسريب روابط داخلية للمواقع الخارجية."});
+  const bl=[...doc.querySelectorAll('a[target="_blank"]')].filter(a=>!/noopener/.test(a.rel));
+  add(bl.length?{level:"warn",title:"روابط تتفتح في تبويب جديد من غير noopener ("+bl.length+")",where:"روابط target=_blank.",why:"الصفحة المفتوحة تقدر تتحكم في صفحتك الأصلية.",fix:'أضف rel="noopener noreferrer".',attack:"تحويل صفحتك لصفحة تسجيل دخول مزيّفة (Tabnabbing)."}:{level:"ok",title:"الروابط الخارجية آمنة"});
+  const forms=[...doc.querySelectorAll("form")].filter(f=>/^http:/.test(f.getAttribute("action")||""));
+  add(forms.length?{level:"bad",title:"نموذج بيرسل بيانات عبر HTTP",where:"form action.",why:"البيانات بتتبعت من غير تشفير.",fix:"استخدم https.",attack:"التقاط كلمات السر أثناء الإرسال."}:{level:"ok",title:"مفيش نماذج بترسل بيانات غير مشفّرة"});
+  step(9,10);
+
+  section("⚡ الأداء والتحمّل");
+  const big=Object.entries(codes).map(([k,v])=>[k,new Blob([v]).size]).filter(x=>x[1]>400000);
+  add(big.length?{level:"warn",title:"ملفات كود تقيلة: "+big.map(x=>x[0]+" ("+Math.round(x[1]/1024)+"KB)").join("، "),where:"ملفات JavaScript.",why:"بتبطّأ الموقع وبتخلي إغراقه بالطلبات أسهل.",fix:"قسّم الملف وحمّل الأجزاء عند الحاجة.",attack:"إغراق الموقع بطلبات تقيلة لتعطيله."}:{level:"ok",title:"حجم ملفات الكود معقول"});
+  const rb=await get(abs("robots.txt"));
+  add(rb.ok&&/Disallow:\s*\/(admin|dashboard)/i.test(rb.text)?{level:"warn",title:"robots.txt بيعلن مسار الأدمن",where:"robots.txt",why:"بيدل أي حد على أماكن حساسة.",fix:"احمِ الصفحة بتسجيل دخول حقيقي بدل إخفائها.",attack:"توجيه المهاجم مباشرة لصفحة الإدارة."}:{level:"ok",title:"robots.txt مش بيكشف مسارات إدارية"});
+  step(10,10);
+  const pct=Math.round(pts/total*100);
+  score.textContent=pct+"% أمان";score.style.color=pct>=80?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)";
+  sum.textContent="🔴 خطر: "+counts.bad+"  |  🟡 تحسين: "+counts.warn+"  |  🟢 سليم: "+counts.ok;
+  prog.style.display="none";
+}
+
+function parse(){
+  let u;try{u=new URL(document.getElementById("url").value.trim())}catch(e){return null}
+  if(u.protocol!=="https:")return null;
+  const host=u.hostname;
+  if(host==="localhost"||/^(\d+\.){3}\d+$/.test(host)||host.endsWith(".local")||!host.includes("."))return null;
+  let p=u.pathname;if(!p.endsWith("/")&&!/\.[a-z0-9]+$/i.test(p))p+="/";
+  return{base:u.origin+p};
+}
+const b=document.getElementById("go");
+b.onclick=async()=>{
+  if(!document.getElementById("own").checked){alert("لازم تأكد إنك صاحب الموقع أو معاك إذن بفحصه.");return}
+  const T=parse();if(!T){alert("اكتب رابط صحيح يبدأ بـhttps://");return}
+  b.disabled=true;b.textContent="جارٍ الفحص...";try{await run(T)}catch(e){out.textContent="حصل خطأ أثناء الفحص: "+e.message}b.disabled=false;b.textContent="افحص تاني"};
+</script>
+</body></html>
