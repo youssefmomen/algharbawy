@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#aee6ff">
+<title>الكرتون | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&family=Reem+Kufi:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=34">
+</head>
+<body class="cartoon-skin" data-page="cartoon">
+<header class="ct-hero"><div class="wrap">
+  <nav class="crumbs"><a href="index.html">الرئيسية</a><i>◆</i><span>الكرتون</span></nav>
+  <div class="ct-sun"></div>
+  <h1 class="ct-title">قِصَصُ التَّابِعِينَ</h1>
+  <p class="ct-sub">كرتون هادف للأطفال — دون إيقاع</p>
+</div></header>
+<main class="wrap">
+<div class="ct-grid" id="ct-grid"></div>
+<p class="ct-note">حلقات جديدة تُضاف قريبًا بإذن الله</p>
+</main>
+<footer id="footer"></footer>
+<script>
+var CT_EPS=[
+ {v:'awmVpZ31VX4',t:'محمد بن أبي ذئب',d:''},
+ {v:'MA-5ZsRTbQo',t:'جعفر بن محمد',d:'11:27'},
+ {v:'ZBvjDdvfjjE',t:'عطاء البصري',d:'8:01'},
+ {v:'VDrjeKz4Kac',t:'قتادة بن دعامة السدوسي',d:'12:07'},
+ {v:'iP578X_ih0w',t:'أبو الزبير بن محمد بن مسلم',d:'8:56'},
+ {v:'DYluL1TBB74',t:'عبد الله بن المبارك',d:'11:49'},
+ {v:'KCHGSb-P-fY',t:'محمد بن سيرين',d:'19:52'},
+ {v:'sPWJJruWM7g',t:'عبد الملك بن عمر بن عبد العزيز',d:'17:00'},
+ {v:'5aZAkTKTwq8',t:'حسن البصري',d:'18:21'},
+ {v:'QQl6Asz00O4',t:'عامر بن شرحبيل',d:'13:03'},
+ {v:'P8kQGTuH4Ng',t:'طاووس بن كيسان',d:'15:27'},
+ {v:'6Fxx0-xJhSI',t:'عمر بن عبد العزيز — نشأته',d:'28:49'},
+ {v:'SRuXSkTCf7k',t:'عمر بن عبد العزيز — مواقف من حياته',d:'15:12'},
+ {v:'zZV3IjrIlJ0',t:'إياس بن معاوية المزني',d:'13:42'},
+ {v:'tcqVbWIwaCo',t:'صلة بن أشيم',d:'12:39'},
+ {v:'2AugtcePcaY',t:'شريح القاضي',d:'13:55'},
+ {v:'Lzn8FQdXZek',t:'سليمان بن طرخان',d:'9:41'},
+ {v:'bjtYEnahYpI',t:'أبو مسلم الخولاني',d:'12:23'}
+];
+var grid=document.getElementById('ct-grid');
+CT_EPS.forEach(function(e){
+  var c=document.createElement('button');c.type='button';c.className='ct-card';
+  c.innerHTML='<span class="ct-thumb"><img src="https://i.ytimg.com/vi/'+e.v+'/hqdefault.jpg" alt="'+e.t+'" loading="lazy"><span class="ct-play"><svg viewBox="0 0 24 24" width="34" height="34" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span><span class="ct-dur">'+e.d+'</span></span><span class="ct-name">'+e.t+'</span>';
+  c.addEventListener('click',function(){
+    if(c.classList.contains('playing'))return;
+    c.classList.add('playing');
+    c.querySelector('.ct-thumb').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+e.v+'?autoplay=1&rel=0" title="'+e.t+'" allow="accelerometer;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+  });
+  grid.appendChild(c);
+});
+</script>
+<script src="data.js?v=44"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js?v=1"></script>
+<script src="assets/store.js?v=2"></script>
+<script src="assets/app.js?v=31"></script>
+</body>
+</html>
