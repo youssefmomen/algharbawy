@@ -68,6 +68,7 @@
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
     if(sec.id==="tasis")document.body.classList.add("kids");
+    if(sec.id==="manahij")document.body.classList.add("school");
     var crs=param("course")&&sec.courses?find(sec.courses,param("course")):null;
     var courseParam=crs?'&course='+encodeURIComponent(crs.id):'';
     document.title=(crs?crs.title:sec.title)+" | "+data.siteTitle;
@@ -119,6 +120,7 @@
   if(page==="lesson"){
     var sec2=find(allSections,param("section"))||data.sections[0];
     if(sec2.id==="tasis")document.body.classList.add("kids");
+    if(sec2.id==="manahij")document.body.classList.add("school");
     var crs2=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
     var pool=crs2?crs2.lessons:sec2.lessons;
     var courseParam2=crs2?'&course='+encodeURIComponent(crs2.id):'';
@@ -143,6 +145,7 @@
     if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
     if(les['شاهد'])preV+='<div class="verse-card rv"><div class="verse-meta">الشاهد</div><div class="verse-text">'+esc(String(les['شاهد']).split('***').join('\n'))+'</div></div>';
+    if(les.images&&les.images.length)preV+=les.images.map(function(im){return '<figure class="les-img rv"><img src="'+esc(im.src)+'" alt="'+esc(im.alt||'')+'" loading="lazy"></figure>';}).join('');
     lb.innerHTML=preV+segs.map(function(sg,si){
       var h='<div class="seg" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
       if(sg.verse)h+='<div class="verse-card rv"><div class="verse-meta">البيت '+ar(sg.verse.number)+' ◆ '+esc(sg.verse.section)+'</div><div class="verse-text">'+esc(sg.verse.text)+'</div></div>';
@@ -161,7 +164,7 @@
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
-    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أَحْسَنْتَ، أَتْمَمْتَ هَذَا الدَّرْسَ</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div></div>':'');
+    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أَحْسَنْتَ، أَتْمَمْتَ هَذَا الدَّرْسَ</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div>'+(pool[li+1]?'<a class="btn fill next-les" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(pool[li+1].id)+'">الدَّرْسُ التَّالِي <span class="ar">←</span></a>':'')+'</div>':'');
     if((totalQ>0||tapMode)&&pg&&!already)pg.classList.add("locked");
     if(totalQ===0&&!tapMode&&!already)progMark(les.id);
     if(tapMode)lb.addEventListener("click",function(e){
@@ -195,7 +198,16 @@
         }
       }else{
         b.classList.add("bad");b.disabled=true;
-        exp.className="exp show try";exp.textContent="إِجَابَةٌ غَيْرُ صَحِيحَةٍ، حَاوِلْ مَرَّةً أُخْرَى.";
+        exp.className="exp show try";exp.textContent="إِجَابَةٌ غَيْرُ صَحِيحَةٍ. رَاجِعِ الشَّرْحَ بِالْأَعْلَى ثُمَّ حَاوِلْ مِنْ جَدِيدٍ.";
+        setTimeout(function(){
+          lb.querySelectorAll('.q[data-s="'+si+'"]').forEach(function(q2){
+            q2.querySelectorAll(".opt").forEach(function(x){x.disabled=false;x.classList.remove("ok","bad");});
+            var ex2=q2.querySelector(".exp");ex2.className="exp";ex2.textContent="";
+          });
+          doneCount[si]=0;
+          var segEl=lb.querySelector('.seg[data-s="'+si+'"]');
+          if(segEl)segEl.scrollIntoView({behavior:"smooth",block:"start"});
+        },1400);
       }
     });
     function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
