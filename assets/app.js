@@ -60,6 +60,11 @@
   function progDone(id){var p=progGet();return !!(p.completed&&p.completed[id]);}
   function progMark(id){var p=progGet();p.completed=p.completed||{};p.completed[id]=Date.now();try{localStorage.setItem("gharbawy-progress-v1",JSON.stringify(p));}catch(e){}}
   function lockRow(num,title){return '<div class="lock-row"><span class="n">'+num+'</span><div><div class="t"><span class="lock-ic" aria-hidden="true"></span>'+esc(title)+'</div><div class="s">أَنْهِ الدَّرْسَ السَّابِقَ أَوَّلًا</div></div></div>';}
+  function courseRow(sec,c,i){
+    if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قَرِيبًا</span>'+esc(c.title)+'</div></div></div></li>';
+    return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
+    '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دَوْرَةٌ</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div>'+(c.price?'<div class="price-row"><del>'+esc(c.price)+'</del><span class="badge">مَجَّانِيَّةً لِفَتْرَةٍ مَحْدُودَةٍ</span></div>':'')+'</div><span class="go">←</span></a></li>';
+  }
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
     if(sec.id==="tasis")document.body.classList.add("kids");
@@ -94,11 +99,13 @@
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+(dn?'<span class="done-ic" aria-hidden="true"></span>':'')+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
     else{var rows='';
-    if(sec.courses){rows+=sec.courses.map(function(c,i){
-      if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قَرِيبًا</span>'+esc(c.title)+'</div></div></div></li>';
-      return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
-      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دَوْرَةٌ</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div>'+(c.price?'<div class="price-row"><del>'+esc(c.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>':'')+'</div><span class="go">←</span></a></li>';
+    if(sec.terms){rows+=sec.terms.map(function(t,ti){
+      var tcs=(sec.courses||[]).filter(function(c){return c.term===t.id;});
+      var h='<li class="rv term-head" style="--d:'+ti*.06+'s"><h3>'+esc(t.title)+'</h3></li>';
+      if(!tcs.length)return h+'<li class="rv" style="--d:'+(ti*.06+.03)+'s"><div class="soon-card">قَرِيبًا</div></li>';
+      return h+tcs.map(function(c,i){return courseRow(sec,c,i);}).join("");
     }).join("");}
+    else if(sec.courses){rows+=sec.courses.map(function(c,i){return courseRow(sec,c,i);}).join("");}
     rows+=sec.lessons.map(function(l,i){
       var open=i===0||progDone(sec.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s">'+lockRow(pad(i+1+(sec.courses?sec.courses.length:0)),l.title)+'</li>';
