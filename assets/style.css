@@ -163,7 +163,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2
 /* دروس وحي المنام: البيت والأمثلة والأسئلة */
 .verse-card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,var(--card),#0e0c09);padding:34px 32px;margin-bottom:34px;text-align:center}
 .verse-meta{color:var(--gold);font-size:.95rem;margin-bottom:14px}
-.verse-text{font-family:var(--serif);font-size:1.9rem;line-height:2.1;color:var(--gold2)}
+.verse-text{white-space:pre-line;font-family:var(--serif);font-size:1.9rem;line-height:2.1;color:var(--gold2)}
 .ex-head{font-family:var(--display);font-size:1.5rem;color:var(--gold);margin:44px 0 16px;padding-inline-start:16px;border-inline-start:3px solid var(--gold)}
 .article p.ex{color:var(--mute)}
 .quiz{margin-top:10px}
@@ -187,3 +187,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2
 .pager.locked{opacity:.35;pointer-events:none;filter:saturate(.5)}
 .quiz-done[hidden]{display:none}
 .chip{display:inline-block;font-size:.72rem;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:2px 12px;margin-inline-end:10px;vertical-align:middle}
+.seg-pass[hidden]{display:none}
+.seg-pass{display:flex;align-items:center;gap:14px;color:var(--gold);margin:34px 0 8px}
+.seg-pass:before,.seg-pass:after{content:"";flex:1;height:1px;background:linear-gradient(to left,transparent,rgba(201,162,75,.35),transparent)}
+.seg-pass i{font-style:normal;font-size:.7rem}
