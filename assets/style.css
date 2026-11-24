@@ -468,3 +468,20 @@ body.kids .ex-head{color:#0e8aa8}
 body.kids .chip{border-color:#0e8aa8;color:#0e8aa8}
 body.kids .quiz-note{color:#0b7d8c}
 body.kids .seg-pass{color:#0a9b6c}
+
+/* ===== سكين الصحراء لنور البيان (معتمد) ===== */
+body.nour-skin{background:linear-gradient(#ffe2a1,#ffefc4 45%,#f7dd9f)!important;background-attachment:fixed!important;color:#5b4318}
+body.nour-skin .nm-pill{background:#fff;border:3px solid #e8a13c;color:#5b4318}
+body.nour-skin .nm-pill svg{color:#d98a2b}
+body.nour-skin .nm-bar{background:#fff;border:3px solid #e8a13c}
+body.nour-skin .nm-bar i{background:linear-gradient(90deg,#4f9b54,#ffd166)}
+body.nour-skin .nm-lbl{color:#5b4318;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+body.nour-skin .nour-map svg path{stroke:#d98a2b;stroke-width:9;stroke-dasharray:0.5 14;stroke-linecap:round}
+body.nour-skin .nm-node.open{box-shadow:0 8px 0 #b0304f}
+body.nour-skin .nm-node.done{box-shadow:0 8px 0 #049a74}
+body.nour-skin .nm-node.locked{background:#cfc4ae;box-shadow:0 8px 0 #a89a80}
+body.nour-skin .fx-badge{border-color:#d98a2b}
+.dz-sun{position:fixed;top:70px;left:6%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd76e,#ffb63d);box-shadow:0 0 60px 18px rgba(255,190,80,.55);z-index:0;pointer-events:none}
+.dz-dunes{position:fixed;bottom:0;left:0;width:100vw;height:180px;z-index:0;pointer-events:none}
+.dz-palm{position:fixed;z-index:0;pointer-events:none}
+body.nour-skin main,body.nour-skin .wrap{position:relative;z-index:1}
