@@ -6471,13 +6471,14 @@ window.SITE_DATA = {
                 }
               ]
             }
-          ]
+          ],
+          "price": "٣٩٩ ج"
         }
       ]
     },
     {
       "id": "manahij",
-      "title": "مسار المناهج الدراسية المصرية",
+      "title": "المناهج الدراسية المصرية",
       "description": "الصف الأول الابتدائي إلى الثالث الثانوي",
       "lessons": []
     },
@@ -10726,25 +10727,29 @@ window.SITE_DATA = {
                 }
               ]
             }
-          ]
+          ],
+          "price": "٤٩٩ ج"
         },
         {
           "id": "ajrumiyya",
           "title": "دورة شرح الآجرومية",
           "description": "قريبًا",
-          "lessons": []
+          "lessons": [],
+          "price": "٤٩٩ ج"
         },
         {
           "id": "ibn-aqil",
           "title": "دورة شرح ابن عقيل على ألفية ابن مالك",
           "description": "قريبًا",
-          "lessons": []
+          "lessons": [],
+          "price": "٤٩٩ ج"
         },
         {
           "id": "al-ashmuni",
           "title": "دورة شرح الأشموني على ألفية ابن مالك",
           "description": "قريبًا",
-          "lessons": []
+          "lessons": [],
+          "price": "٤٩٩ ج"
         }
       ]
     },
