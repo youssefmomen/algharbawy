@@ -37,12 +37,16 @@ button:disabled{opacity:.5}
 <div id="progress"><div id="bar"></div></div>
 <div id="score"></div><div id="sum"></div>
 <div id="out"></div>
-<p class="note">ملحوظة: GitHub Pages بيتحكم في ترويسات الأمان (CSP وX-Frame-Options)، فمش هتتغير من عندك. الفحص بيغطي اللي تقدر تتحكم فيه: الكود والملفات المكشوفة . النتيجة مش بديل عن مراجعة أمنية كاملة.</p>
+<p class="note">ملحوظة: المتصفح مش بيسمح بقراءة ترويسات الأمان (CSP وHSTS) ولا كوكيز المواقع التانية ولا شهادة TLS، فالأداة بتفحص الكود والملفات والمكتبات ومسارات الإدارة وسجلات البريد. باقي الحاجات بتتفحص بتقرير منفصل. النتيجة مش بديل عن مراجعة أمنية كاملة.</p>
 </div>
 <script>
 const out=document.getElementById("out"),score=document.getElementById("score"),sum=document.getElementById("sum"),bar=document.getElementById("bar"),prog=document.getElementById("progress");
 let pts,total,counts,cat;
 const STEPS={
+ lib:["حدد المكتبة والإصدار المذكور.","حدّثها لآخر إصدار من npm أو الـCDN.","اختبر الموقع بعد التحديث."],
+ admin:["احذف المسار لو مش محتاجه.","لو لازم يفضل، اقفله بحماية إضافية (IP أو تسجيل دخول إضافي).","فعّل التحقق بخطوتين لكل حسابات الإدارة."],
+ spf:["ادخل على لوحة الدومين (DNS).","أضف سجل TXT: v=spf1 include:مزود_البريد ~all","احفظ وانتظر ساعة."],
+ dmarc:["ادخل على لوحة الدومين (DNS).","أضف سجل TXT باسم _dmarc وقيمته v=DMARC1; p=quarantine; rua=mailto:بريدك","راقب التقارير أسبوعين ثم شدّد السياسة."],
  secrets:["افتح الخدمة اللي طلعت منها المفتاح (GitHub أو AWS أو غيرها).","ألغِ المفتاح القديم فورًا وأنشئ واحد جديد.","احذف المفتاح من الكود، وخزّنه كمتغير سري على السيرفر لا في الملفات.","ارفع التعديل وافحص تاني."],
  email:["حدد الملف المذكور في (فين الضعف).","استبدل الإيميل بنموذج تواصل أو بصورة، أو بصيغة مقسّمة بالكود.","لو الإيميل لصلاحية أدمن، خزّن التحقق في قاعدة البيانات مش في الكود.","ارفع التعديل وافحص تاني."],
  fbkey:["افتح console.cloud.google.com واختر المشروع.","من APIs & Services ثم Credentials افتح مفتاح الويب.","اختر Websites في Application restrictions وأضف نطاق موقعك فقط.","احفظ، وتأكد إن قواعد Firestore لا تسمح بقراءة عامة."],
@@ -136,6 +140,57 @@ async function run(T){
   add(big.length?{key:"weight",level:"warn",title:"ملفات كود تقيلة: "+big.map(x=>x[0]+" ("+Math.round(x[1]/1024)+"KB)").join("، "),where:"ملفات JavaScript.",why:"بتبطّأ الموقع وبتخلي إغراقه بالطلبات أسهل.",fix:"قسّم الملف وحمّل الأجزاء عند الحاجة.",attack:"إغراق الموقع بطلبات تقيلة لتعطيله."}:{level:"ok",title:"حجم ملفات الكود معقول"});
   const rb=await get(abs("robots.txt"));
   add(rb.ok&&/Disallow:\s*\/(admin|dashboard)/i.test(rb.text)?{level:"warn",title:"robots.txt بيعلن مسار الأدمن",where:"robots.txt",why:"بيدل أي حد على أماكن حساسة.",fix:"احمِ الصفحة بتسجيل دخول حقيقي بدل إخفائها.",attack:"توجيه المهاجم مباشرة لصفحة الإدارة."}:{level:"ok",title:"robots.txt مش بيكشف مسارات إدارية"});
+
+  section("🔎 التقنيات والإصدارات");
+  const techs=[];
+  const gen=doc.querySelector('meta[name="generator"]');if(gen)techs.push(gen.content);
+  if(/wp-content|wp-includes/.test(html))techs.push("WordPress");
+  if(/lovable/i.test(html)||/__l5e/.test(html))techs.push("Lovable");
+  if(/firebasejs\/|firebaseapp\.com/.test(all+html))techs.push("Firebase");
+  if(/__NEXT_DATA__|_next\//.test(html))techs.push("Next.js");
+  const vuln=[];const hay=all+"\n"+scripts.map(s=>s.getAttribute("src")).join("\n");
+  const ver=(re)=>{const m=hay.match(re);return m?m[1]:null};
+  const cmp=(a,b)=>{a=a.split(".").map(Number);b=b.split(".").map(Number);for(let i=0;i<3;i++){if((a[i]||0)!==(b[i]||0))return(a[i]||0)-(b[i]||0)}return 0};
+  const libs=[
+   ["jQuery",/jquery[-.\/ v]*?v?(\d+\.\d+\.\d+)/i,"3.5.0","ثغرات XSS معروفة (CVE-2020-11022 وCVE-2020-11023)"],
+   ["Bootstrap",/bootstrap[-.\/@ v]*?v?(\d+\.\d+\.\d+)/i,"4.3.1","ثغرة XSS في بعض المكونات (CVE-2019-8331)"],
+   ["lodash",/lodash[-.\/@ v]*?v?(\d+\.\d+\.\d+)/i,"4.17.21","ثغرات Prototype Pollution وحقن أوامر (CVE-2020-8203 وCVE-2021-23337)"],
+   ["moment",/moment[-.\/@ v]*?v?(\d+\.\d+\.\d+)/i,"2.29.4","ثغرة إغراق المعالج ReDoS (CVE-2022-31129)"],
+   ["AngularJS",/angular(?:js)?[-.\/@ v]*?v?(1\.\d+\.\d+)/i,"99.0.0","AngularJS 1.x انتهى دعمه ولا يتلقى تصحيحات أمنية"]
+  ];
+  libs.forEach(([n,re,fixed,why])=>{const v=ver(re);if(v){techs.push(n+" "+v);if(cmp(v,fixed)<0)vuln.push({n,v,fixed,why})}});
+  add({level:"ok",title:"التقنيات اللي لقيتها: "+(techs.length?techs.join("، "):"مفيش تقنيات معروفة ظاهرة")});
+  add(vuln.length?{key:"lib",level:"bad",title:"مكتبات قديمة فيها ثغرات معروفة: "+vuln.map(x=>x.n+" "+x.v).join("، "),where:vuln.map(x=>x.n+" "+x.v+" (آمن من "+x.fixed+" وما فوق): "+x.why).join(" | "),why:"المهاجمين بيدوّروا آليًا على الإصدارات القديمة المعروفة.",attack:"استغلال الثغرة الموثقة للمكتبة ضد زوار الموقع، من غير ما يحتاج يعرف أي حاجة خاصة بموقعك.",fix:"حدّث المكتبة لآخر إصدار."}:{level:"ok",title:"مفيش مكتبات قديمة معروفة ضمن اللي اتفحص (jQuery, Bootstrap, lodash, moment, AngularJS)"});
+
+  section("🚪 مسارات الإدارة والتصحيح (طلب واحد لكل مسار)");
+  const adminPaths=["admin","admin/","wp-admin/","wp-login.php","phpmyadmin/","server-status","debug","console","_debugbar","phpinfo.php","xmlrpc.php","readme.html"];
+  const homeLen=html.length,hits=[];
+  for(const p of adminPaths){const r=await get(abs(p));if(r.ok&&r.text&&Math.abs(r.text.length-homeLen)>50&&!/<title>[^<]*(404|not found)/i.test(r.text))hits.push(p)}
+  add(hits.length?{key:"admin",level:"warn",title:"مسارات إدارة/تصحيح بترد: "+hits.join("، "),where:"المسارات دي بترجع صفحة حقيقية: "+hits.join("، "),why:"صفحات الإدارة المكشوفة بتدي المهاجم هدف مباشر لتخمين الباسورد.",attack:"محاولات تخمين كلمات السر أو استغلال ثغرات لوحة الإدارة.",fix:"قيّد الوصول (IP أو حماية إضافية) أو غيّر المسار، وفعّل تسجيل دخول قوي مع تحقق بخطوتين."}:{level:"ok",title:"مفيش مسارات إدارة أو تصحيح معروفة مكشوفة"});
+  if(/WordPress/.test(techs.join())){
+    const u=await get(abs("wp-json/wp/v2/users"));let list=[];try{list=JSON.parse(u.text)}catch(e){}
+    add(Array.isArray(list)&&list.length?{level:"warn",title:"ووردبريس بيكشف أسماء المستخدمين ("+list.length+")",where:"/wp-json/wp/v2/users",why:"أسماء الدخول جزء من اللي محتاجه المهاجم لتخمين الباسورد.",attack:"تخمين كلمات السر على أسماء حقيقية.",fix:"عطّل REST users للزوار بإضافة أمان، وفعّل حد محاولات الدخول."}:{level:"ok",title:"ووردبريس مش بيكشف قائمة المستخدمين"});
+  }
+
+  section("🌐 النطاق والبريد (DNS)");
+  const host=new URL(BASE).hostname,shared=/(github\.io|lovable\.app|lovableproject\.com|vercel\.app|netlify\.app|pages\.dev|web\.app|firebaseapp\.com|onrender\.com)$/.test(host);
+  if(shared)add({level:"ok",title:"النطاق مملوك للمنصة ("+host.split(".").slice(-2).join(".")+")، فإعدادات SPF/DMARC تخصها مش تخصك",fix:"لو اشتريت نطاق خاص بيك ووصلته بالموقع، افحصه هو."});
+  else{
+    const txt=async n=>{try{const r=await fetch("https://cloudflare-dns.com/dns-query?name="+encodeURIComponent(n)+"&type=TXT",{headers:{accept:"application/dns-json"},credentials:"omit"});const j=await r.json();return(j.Answer||[]).map(a=>a.data).join(" ")}catch(e){return null}};
+    const root=host.split(".").slice(-2).join(".");
+    const spf=await txt(root),dm=await txt("_dmarc."+root);
+    add(spf===null?{level:"warn",title:"مقدرتش أقرا سجل SPF"}:/v=spf1/.test(spf)?{level:"ok",title:"فيه سجل SPF للبريد"}:{key:"spf",level:"warn",title:"مفيش سجل SPF",where:"سجلات TXT للنطاق "+root,why:"SPF بيحدد مين يحق له يبعت إيميل باسم نطاقك.",attack:"انتحال إيميلات باسم نطاقك لخداع عملائك.",fix:"أضف سجل TXT من نوع v=spf1 مع مزود الإيميل بتاعك."});
+    add(dm===null?{level:"warn",title:"مقدرتش أقرا سجل DMARC"}:/v=DMARC1/.test(dm)?{level:"ok",title:"فيه سجل DMARC"}:{key:"dmarc",level:"warn",title:"مفيش سجل DMARC",where:"_dmarc."+root,why:"DMARC بيقول للمستلم إيه يعمل في الإيميل المزوّر.",attack:"إيميلات تصيّد باسم نطاقك توصل لصندوق الوارد بسهولة.",fix:"أضف سجل TXT باسم _dmarc بقيمة v=DMARC1; p=quarantine; rua=mailto:بريدك."});
+  }
+
+  section("🧩 خصائص منصات محددة");
+  if(/Lovable/.test(techs.join())){
+    const sb=/https:\/\/([a-z0-9]+)\.supabase\.co/.exec(all);
+    add(sb?{level:"warn",title:"الموقع بيستخدم Supabase ("+sb[1]+")",where:"رابط المشروع ظاهر في الكود (ده طبيعي).",why:"أمان البيانات كلها بيعتمد على سياسات RLS في Supabase.",attack:"لو RLS مقفولة أو ناقصة أي زائر يقدر يقرا أو يعدّل الجداول بالمفتاح العام.",fix:"افتح Supabase ثم Authentication ثم Policies وتأكد إن RLS مفعلة على كل جدول وإن السياسات بتحدد صاحب الصف."}:{level:"ok",title:"مفيش Supabase ظاهر في الكود"});
+  }
+  if(/Firebase/.test(techs.join())){
+    add({level:"warn",title:"Firebase: راجع قواعد قاعدة البيانات يدويًا",where:"لوحة Firebase ثم Firestore ثم Rules.",why:"المتصفح مش بيقدر يفحص قواعد الكتابة من غير تسجيل دخول، وأنا مش بكتب أي حاجة في موقعك.",attack:"قواعد مفتوحة تخلي أي حد يقرا أو يمسح البيانات.",fix:"تأكد إن القواعد ماتحتويش allow read, write: if true، وإن كل مجموعة مقيدة بصاحب البيانات."});
+  }
   step(10,10);
   const pct=Math.round(pts/total*100);
   score.textContent=pct+"% أمان";score.style.color=pct>=80?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)";

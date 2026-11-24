@@ -4,7 +4,9 @@
   var el = function (id) { return document.getElementById(id); };
 
   function next() {
-    return new URLSearchParams(location.search).get("next") || "index.html";
+    // يقبل فقط اسم صفحة داخلية من الموقع (مثل index.html) ويرفض أي رابط خارجي أو javascript:
+    var n = new URLSearchParams(location.search).get("next") || "";
+    return /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&%.-]*)?$/.test(n) ? n : "index.html";
   }
   function errMsg(code) {
     var map = {
