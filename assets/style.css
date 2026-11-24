@@ -437,3 +437,9 @@ body.kids .q-t{display:flex;align-items:center;justify-content:center;gap:4px;fl
 .fx-combo.on{transform:translateX(-50%) scale(1)}
 .fx-combo svg{width:20px;height:20px}
 @media(max-width:700px){.nm-node{width:68px;height:68px;font-size:1.25rem}.nm-lbl{width:104px;font-size:.72rem}.nm-guide{width:50px;height:50px}}
+
+/* ---------- إصلاح أولوية تنسيقات الخريطة ---------- */
+.lessons .nour-map a.nm-node{position:absolute;display:flex;padding:0;border:0}
+.lessons .nour-map a.nm-node:hover{background:inherit}
+.lessons .nour-map a.nm-node.open:hover,.lessons .nour-map a.nm-node.done:hover{transform:translate(-50%,-4px)}
+.nour-map{max-width:980px;margin-inline:auto}
