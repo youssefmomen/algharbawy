@@ -403,7 +403,7 @@
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
-          return '<div class="q rv" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+(kidSkin?speakBtn(q.audio||q.question):"")+'</div>'+
+          return '<div class="q rv'+(qi>0?' q-hidden':'')+'" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+(kidSkin?speakBtn(q.audio||q.question):"")+'</div>'+
           (q.questionImage?'<figure class="q-img rv"><img src="'+esc(q.questionImage)+'" alt="" loading="lazy"></figure>':'')+
           '<div class="opts'+(q.optionImages?' has-imgs':'')+'">'+
           q.options.map(function(o,oi){var im=q.optionImages&&q.optionImages[oi];return '<button type="button" class="opt'+(im?' has-img':'')+'" data-o="'+oi+'" data-say="'+esc(o)+'">'+(im?'<span class="oi"><img src="'+esc(im)+'" alt="'+esc(o)+'" loading="lazy"></span>':'<span class="ol">'+["أ","ب","ج","د"][oi]+'</span>')+'<span class="ot">'+esc(reduceT(o))+'</span></button>';}).join("")+
@@ -440,6 +440,8 @@
         b.classList.add("ok");
         qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
         exp.className="exp show";exp.textContent=reduceT(q.explanation);
+        var nxQ=qEl.parentElement.querySelector('.q[data-s="'+si+'"][data-q="'+(qi+1)+'"]');
+        if(nxQ){setTimeout(function(){nxQ.classList.remove('q-hidden');nxQ.scrollIntoView({behavior:"smooth",block:"center"});},700);}
         doneCount[si]++;
         if(gameMode){sndGood();bumpStars(starCfg.perCorrectAnswer||1);toast('أَحْسَنْتَ!');flyStar(b);mascotJump();if(kidSkin){confetti(18);speak('أَحْسَنْتَ!');}}
         if(nourOv){streak++;if(streak>=3)showCombo(streak);xpAddUI(wrongFlags[si]?5:10);ghudBar();}
