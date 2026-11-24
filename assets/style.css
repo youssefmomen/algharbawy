@@ -64,7 +64,7 @@ a{color:inherit;text-decoration:none}
 .tile:first-child h3{margin-top:0}
 .tile:first-child p{margin-top:6px}
 .tile:first-child .meta{margin:0 0 0 auto;padding:0;border:0;flex:none}
-.tile .num{position:absolute;inset-inline-end:26px;top:14px;font-family:var(--serif);font-size:5.6rem;line-height:1;color:transparent;-webkit-text-stroke:1px var(--line2);opacity:.55}
+.tile .num{position:absolute;inset-inline-end:26px;top:14px;font-family:var(--serif);font-size:5.6rem;line-height:1;color:var(--gold);opacity:.16}
 .tile:first-child .num{position:static;font-size:4rem;opacity:.7;flex:none;align-self:flex-start}
 .tile .mark{margin-bottom:auto}
 .tile h3{font-family:var(--display);font-size:2.2rem;margin-top:44px;line-height:1.3}
