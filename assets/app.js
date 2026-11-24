@@ -10,6 +10,7 @@
   var AR="٠١٢٣٤٥٦٧٨٩";
   function ar(n){return String(n).replace(/\d/g,function(d){return AR[d];});}
   function pad(n){return ar(n<10?"0"+n:n);}
+  var allSections=data.sections.concat(data.tracks||[]);
   var page=document.body.getAttribute("data-page");
   var total=0;data.sections.forEach(function(s){total+=s.lessons.length;});
 
@@ -29,7 +30,7 @@
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
-   data.sections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
+   allSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
    '</span><span>© '+year+' '+esc(data.siteTitle)+'</span></div></div>';
 
   // ---------- الصفحات ----------
@@ -41,27 +42,33 @@
     document.getElementById("tiles").innerHTML=data.sections.map(function(s,i){
       return '<a class="tile rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
       '<span class="num">'+pad(i+1)+'</span>'+markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
-      '<div class="meta"><span>'+ar(s.lessons.length)+' '+(s.lessons.length>2&&s.lessons.length<11?'دروس':'درس')+'</span><span class="go">←</span></div></a>';
+      '<div class="meta"><span>'+(s.lessons.length?ar(s.lessons.length)+' '+(s.lessons.length>2&&s.lessons.length<11?'دروس':'درس'):'قريبًا')+'</span><span class="go">←</span></div></a>';
     }).join("");
+    var tk=document.getElementById("tracks");
+    if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
+      return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
+      markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
+      '<div class="meta"><span>قريبًا</span><span class="go">←</span></div></a>';
+    }).join("");}
     var stats=[[data.sections.length,"أقسام"],[total,"درسًا"],[28,"حرفًا"]];
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
   if(page==="section"){
-    var sec=find(data.sections,param("id"))||data.sections[0];
+    var sec=find(allSections,param("id"))||data.sections[0];
     document.title=sec.title+" | "+data.siteTitle;
     document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span><span>'+esc(sec.title)+'</span>';
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(sec.title)+'</span>';
     document.getElementById("page-desc").textContent=sec.description;
-    document.getElementById("lessons").innerHTML=sec.lessons.map(function(l,i){
+    document.getElementById("lessons").innerHTML=sec.lessons.length?sec.lessons.map(function(l,i){
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
-    }).join("");
+    }).join(""):'<li class="rv"><div class="soon-card">قريبًا</div></li>';
   }
 
   if(page==="lesson"){
-    var sec2=find(data.sections,param("section"))||data.sections[0];
+    var sec2=find(allSections,param("section"))||data.sections[0];
     var les=find(sec2.lessons,param("lesson"))||sec2.lessons[0];
     var li=sec2.lessons.indexOf(les);
     document.title=les.title+" | "+data.siteTitle;
