@@ -215,3 +215,9 @@ li.locked{list-style:none}
 .seg-next-wrap{display:flex;justify-content:center;margin:30px 0 4px}
 .seg-next{border:0;cursor:pointer;font-family:inherit}
 body.kids .seg-next{font-size:1.25rem;padding:16px 48px}
+
+/* completed-lesson marker */
+.done-ic{display:inline-block;width:.62em;height:.62em;margin-left:.5em;background:linear-gradient(135deg,#e9c46a,#c89b3c);transform:rotate(45deg) translateY(-.05em);border-radius:2px;vertical-align:middle;box-shadow:0 0 8px rgba(233,196,106,.45)}
+li.done .n{color:#e9c46a;border-color:rgba(233,196,106,.55)}
+body.kids .done-ic{background:linear-gradient(135deg,#7be495,#3fbf6f);box-shadow:0 0 8px rgba(123,228,149,.45)}
+body.kids li.done .n{color:#7be495;border-color:rgba(123,228,149,.55)}
