@@ -49,6 +49,8 @@
       Store.isAdmin(user).then(function(isAdm){
         var old2=document.getElementById("chip-menu");if(old2)old2.remove();
         var html='<div class="chip-menu open" id="chip-menu"><div class="who">'+esc(user.email||"")+'</div>'+
+          '<a class="chip-admin" href="student.html">الاختبارات والألعاب</a>'+
+          '<a class="chip-admin" href="teacher.html">لوحة المعلم</a>'+
           (isAdm?'<a class="chip-admin" href="admin.html">لوحة التحكم</a>':'')+
           '<button type="button" id="btn-out">تسجيل الخروج</button></div>';
         document.body.insertAdjacentHTML("beforeend",html);
