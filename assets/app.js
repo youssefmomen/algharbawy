@@ -52,7 +52,7 @@
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta"><span>قَرِيبًا</span><span class="go">←</span></div></a>';
     }).join("");}
-    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أَقْسَامٌ",""],[200,"طَالِبٌ","+"],[total,"دَرْسٌ تَفَاعُلِيٌّ","+"]];
+    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أَقْسَامٌ",""],[30,"طَالِبٌ","+"],[total,"دَرْسٌ تَفَاعُلِيٌّ","+"]];
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+x[2]+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
@@ -83,7 +83,7 @@
       var metaH='<div class="course-meta"><span>'+ar(cN)+' '+(cN>2&&cN<11?'دُرُوس':'دَرْس')+'</span><span class="prog-line"><i style="width:'+Math.round(cD/cN*100)+'%"></i></span><span>'+ar(cD)+' / '+ar(cN)+'</span></div>';
       document.getElementById("page-desc").insertAdjacentHTML('afterend',metaH);
       var secLessonsEl=document.getElementById("lessons");
-      if(secLessonsEl)secLessonsEl.insertAdjacentHTML('beforebegin','<div class="inst-card rv"><img src="assets/founder.jpg" alt=""><div><b>يوسف مؤمن الغرباوي</b><span>خَرِيجُ كُلِّيَّةِ دَارِ الْعُلُومِ جَامِعَةِ الْقَاهِرَةِ</span></div></div>');
+      if(secLessonsEl)secLessonsEl.insertAdjacentHTML('beforebegin','<div class="inst-card rv"><img src="assets/founder.jpg" alt=""><div><b>يوسف مؤمن الغرباوي</b><span>خِرِّيجُ كُلِّيَّةِ دَارِ الْعُلُومِ جَامِعَةِ الْقَاهِرَةِ</span></div></div>');
     }
     if(sec.children){document.getElementById("lessons").innerHTML=sec.children.map(function(cid,i){
       var c=find(data.sections,cid);if(!c)return '';
@@ -142,6 +142,7 @@
     var unlocked=segs.map(function(_,i){return i===0||already;});
     if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
+    if(les['شاهد'])preV+='<div class="verse-card rv"><div class="verse-meta">الشاهد</div><div class="verse-text">'+esc(String(les['شاهد']).split('***').join('\n'))+'</div></div>';
     lb.innerHTML=preV+segs.map(function(sg,si){
       var h='<div class="seg" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
       if(sg.verse)h+='<div class="verse-card rv"><div class="verse-meta">البيت '+ar(sg.verse.number)+' ◆ '+esc(sg.verse.section)+'</div><div class="verse-text">'+esc(sg.verse.text)+'</div></div>';
