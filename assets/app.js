@@ -247,7 +247,10 @@
   }
 
   if(page==="lesson"){
+    var lbw=document.getElementById("lesson-body");if(lbw)lbw.innerHTML='<div class="load-pulse" aria-hidden="true">◆</div>';
     var sec2=find(allSections,param("section"))||data.sections[0];
+    var crs2pre=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
+    loadLessons(crs2pre||sec2,function(){
     if(sec2.id==="tasis")document.body.classList.add("kids");
     if(sec2.id==="manahij")document.body.classList.add("school");
     var crs2=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
@@ -506,7 +509,8 @@
     var backTo=crs2?'section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id):'section.html?id='+encodeURIComponent(sec2.id);
     var last=!next?'<a class="nx" href="'+backTo+'"><small>أَحْسَنْتَ، أَنْهَيْتَ الْقِسْمَ</small><b>الْعَوْدَةُ إِلَى '+esc(crs2?crs2.title:sec2.title)+'</b></a>':lk(next,"الدَّرْسُ التَّالِي ←","nx");
     document.getElementById("pager").innerHTML=lk(prev,"→ الدَّرْسُ السَّابِقُ","pv")+last;
-  }
+    });
+}
 
   // ---------- التفاعل ----------
   var nav=document.getElementById("nav"),bar=document.getElementById("progress");
