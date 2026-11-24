@@ -100,36 +100,58 @@
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(les.title)+'</span>';
     document.getElementById("page-desc").textContent=les.summary||"";
     var lb=document.getElementById("lesson-body");
-    if(les.verse){lb.insertAdjacentHTML("afterbegin",'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>');}
-    lb.insertAdjacentHTML("beforeend",les.body.map(function(p,i){
-      var cls=/^\s*(تدريب|تمرين)/.test(p)?' tadreeb':'';
-      return '<p class="rv'+cls+'">'+esc(p)+'</p>';
-    }).join(""));
-    if(les.examples&&les.examples.length){lb.insertAdjacentHTML("beforeend",'<div class="ex-head rv">أمثلة</div>'+les.examples.map(function(x){return '<p class="rv ex">'+esc(x)+'</p>';}).join(""));}
-    var qz=document.getElementById("quiz");
-    if(les.questions&&les.questions.length&&qz){
-      qz.innerHTML='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">أجب على كل الأسئلة إجابة صحيحة لفتح الدرس التالي.</div>'+les.questions.map(function(q,qi){
-        return '<div class="q rv" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+'</div><div class="opts">'+
-        q.options.map(function(o,oi){return '<button type="button" class="opt" data-o="'+oi+'"><span class="ol">'+["أ","ب","ج","د"][oi]+'</span>'+esc(o)+'</button>';}).join("")+
-        '</div><div class="exp"></div></div>';
-      }).join("")+'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>';
-      var done=0,total=les.questions.length,pg=document.getElementById("pager");
-      if(pg)pg.classList.add("locked");
-      qz.addEventListener("click",function(e){
-        var b=e.target.closest(".opt");if(!b||b.disabled)return;
-        var qEl=b.closest(".q"),qi=+qEl.getAttribute("data-q"),oi=+b.getAttribute("data-o"),q=les.questions[qi],exp=qEl.querySelector(".exp");
-        if(oi===q.answer){
-          b.classList.add("ok");
-          qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
-          exp.className="exp show";exp.textContent=q.explanation;
-          done++;
-          if(done===total){var d=document.getElementById("quiz-done");d.hidden=false;var p=document.getElementById("pager");if(p)p.classList.remove("locked");}
-        }else{
-          b.classList.add("bad");b.disabled=true;
-          exp.className="exp show try";exp.textContent="إجابة غير صحيحة، حاول مرة أخرى.";
+    var segs=les.segments&&les.segments.length?les.segments:[{verse:les.verse,body:les.body,examples:les.examples,questions:les.questions}];
+    var pg=document.getElementById("pager");
+    var counters=segs.map(function(sg){return sg.questions&&sg.questions.length?sg.questions.length:0;});
+    var segDone=counters.map(function(c){return c===0;});
+    for(var u=1;u<segs.length;u++)segDone[u]=counters[u]===0&&segDone[u-1];
+    var totalQ=counters.reduce(function(a,b){return a+b;},0);
+    var unlocked=segs.map(function(_,i){return i===0;});
+    for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
+    var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
+    lb.innerHTML=preV+segs.map(function(sg,si){
+      var h='<div class="seg" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
+      if(sg.verse)h+='<div class="verse-card rv"><div class="verse-meta">البيت '+ar(sg.verse.number)+' ◆ '+esc(sg.verse.section)+'</div><div class="verse-text">'+esc(sg.verse.text)+'</div></div>';
+      var paras=Array.isArray(sg.body)?sg.body:(sg.body?[sg.body]:[]);
+      h+=paras.map(function(p){var cls=/^\s*(تدريب|تمرين)/.test(p)?' tadreeb':'';return '<p class="rv'+cls+'">'+esc(p)+'</p>';}).join("");
+      if(sg.examples&&sg.examples.length)h+='<div class="ex-head rv">أمثلة</div>'+sg.examples.map(function(x){return '<p class="rv ex">'+esc(x)+'</p>';}).join("");
+      if(counters[si]){
+        var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
+        h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أجب على كل الأسئلة إجابة صحيحة لفتح الجزء التالي.':'أجب على كل الأسئلة إجابة صحيحة لفتح الدرس التالي.')+'</div>'+sg.questions.map(function(q,qi){
+          return '<div class="q rv" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+'</div><div class="opts">'+
+          q.options.map(function(o,oi){return '<button type="button" class="opt" data-o="'+oi+'"><span class="ol">'+["أ","ب","ج","د"][oi]+'</span>'+esc(o)+'</button>';}).join("")+
+          '</div><div class="exp"></div></div>';
+        }).join("");
+      }
+      h+='</div>';
+      if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
+      return h;
+    }).join("")+(totalQ?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>':'');
+    if(totalQ&&pg)pg.classList.add("locked");
+    var doneCount=counters.map(function(){return 0;});
+    lb.addEventListener("click",function(e){
+      var b=e.target.closest(".opt");if(!b||b.disabled)return;
+      var qEl=b.closest(".q"),si=+qEl.getAttribute("data-s"),qi=+qEl.getAttribute("data-q"),oi=+b.getAttribute("data-o"),q=segs[si].questions[qi],exp=qEl.querySelector(".exp");
+      if(oi===q.answer){
+        b.classList.add("ok");
+        qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
+        exp.className="exp show";exp.textContent=q.explanation;
+        doneCount[si]++;
+        if(doneCount[si]===counters[si]){
+          segDone[si]=true;
+          var dEl=lb.querySelector('.seg-pass[data-s="'+si+'"]');if(dEl)dEl.hidden=false;
+          var nEl=lb.querySelector('.seg[data-s="'+(si+1)+'"]');
+          if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
+          if(segDone.every(function(x){return x;})){
+            var d=document.getElementById("quiz-done");if(d)d.hidden=false;
+            if(pg)pg.classList.remove("locked");
+          }
         }
-      });
-    }
+      }else{
+        b.classList.add("bad");b.disabled=true;
+        exp.className="exp show try";exp.textContent="إجابة غير صحيحة، حاول مرة أخرى.";
+      }
+    });
     function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
     var prev=pool[li-1],next=pool[li+1];
     var backTo=crs2?'section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id):'section.html?id='+encodeURIComponent(sec2.id);
