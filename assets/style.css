@@ -151,3 +151,38 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2
   .founder-photo{width:min(250px,78%)}
   .founder-info .mark{margin-inline:auto}
 }
+
+/* المسارات الجانبية والأقسام القادمة */
+.side-head{display:flex;align-items:center;gap:18px;margin:76px 0 30px}
+.side-head h3{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.3rem);font-weight:700}
+.tile.side{min-height:250px}
+.tile.side h3{font-size:2rem;margin-top:40px}
+.soon-card{border:1px dashed var(--line);border-radius:22px;padding:64px 30px;text-align:center;color:var(--mute);font-family:var(--serif);font-size:1.35rem}
+@media (max-width:900px){.side-head{margin-top:56px}}
+
+/* دروس وحي المنام: البيت والأمثلة والأسئلة */
+.verse-card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,var(--card),#0e0c09);padding:34px 32px;margin-bottom:34px;text-align:center}
+.verse-meta{color:var(--gold);font-size:.95rem;margin-bottom:14px}
+.verse-text{font-family:var(--serif);font-size:1.9rem;line-height:2.1;color:var(--gold2)}
+.ex-head{font-family:var(--display);font-size:1.5rem;color:var(--gold);margin:44px 0 16px;padding-inline-start:16px;border-inline-start:3px solid var(--gold)}
+.article p.ex{color:var(--mute)}
+.quiz{margin-top:10px}
+.quiz-note{color:var(--mute);margin-bottom:22px}
+.q{border:1px solid var(--line);border-radius:20px;background:var(--card);padding:26px 26px 20px;margin-bottom:20px}
+.q-t{font-weight:700;font-size:1.15rem;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;text-align:start;background:#0e0c09;border:1px solid var(--line);border-radius:14px;color:var(--text);font-family:var(--sans);font-size:1.05rem;padding:13px 16px;cursor:pointer;transition:border-color .25s,background .25s,transform .2s var(--ease)}
+.opt:hover:not(:disabled){border-color:rgba(212,175,95,.45);transform:translateY(-1px)}
+.opt .ol{width:30px;height:30px;flex:none;display:grid;place-items:center;border:1px solid var(--gold);color:var(--gold);border-radius:8px;font-size:.9rem}
+.opt:disabled{cursor:default;opacity:.55}
+.opt.ok{border-color:var(--gold);background:rgba(212,175,95,.08);opacity:1}
+.opt.ok .ol{background:var(--gold);color:#150f04}
+.opt.bad{border-color:#7a3b2e;opacity:.45;text-decoration:line-through}
+.exp{display:none;margin-top:14px;padding:12px 16px;border-radius:12px;background:rgba(212,175,95,.07);border:1px solid var(--line);color:var(--mute);font-size:.98rem}
+.exp.show{display:block}
+.exp.try{background:rgba(122,59,46,.12);border-color:#7a3b2e}
+.quiz-done{display:flex;align-items:center;gap:18px;border:1px solid var(--gold);border-radius:20px;padding:24px 26px;margin-top:26px;background:rgba(212,175,95,.06)}
+.quiz-done b{font-family:var(--display);font-size:1.25rem;color:var(--gold);display:block}
+.quiz-done span{color:var(--mute)}
+.pager.locked{opacity:.35;pointer-events:none;filter:saturate(.5)}
+.quiz-done[hidden]{display:none}
