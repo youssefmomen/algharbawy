@@ -27,8 +27,16 @@
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
   '<div class="links" id="links"><a href="index.html">الرئيسة</a>'+
   topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
-  '</div><button class="burger" id="burger" aria-label="القائمة">☰</button></div></nav>';
+  '</div><div class="nav-side">'+'<button class="theme-btn" id="themeBtn" aria-label="تبديل المظهر">'+'<svg class="ic-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5Z"/></svg>'+'<svg class="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'+'</button>'+'<button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
+  var themeBtn=document.getElementById("themeBtn");
+  if(themeBtn)themeBtn.addEventListener("click",function(){
+    var h=document.documentElement;
+    var next=h.getAttribute("data-theme")==="light"?"dark":"light";
+    h.setAttribute("data-theme",next);
+    try{localStorage.setItem("gharbawy-theme",next);}catch(e){}
+    var mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.setAttribute("content",next==="light"?"#f6f0e1":"#0f0d09");
+  });
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
@@ -52,8 +60,8 @@
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta"><span>قريبًا</span><span class="go">←</span></div></a>';
     }).join("");}
-    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أقسام"],[total,"درسًا"],[28,"حرفًا"]];
-    document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
+    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أقسام",""],[200,"طالب","+"],[total,"درس تفاعلي","+"]];
+    document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+x[2]+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
   function progGet(){try{return JSON.parse(localStorage.getItem("gharbawy-progress-v1"))||{};}catch(e){return{};}}
@@ -67,10 +75,12 @@
     var courseParam=crs?'&course='+encodeURIComponent(crs.id):'';
     document.title=(crs?crs.title:sec.title)+" | "+data.siteTitle;
     var grp=sec.group?find(data.sections,sec.group):null;
+    if(sec.id==="tasis")document.body.classList.add("kids");
     document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp?'<a href="section.html?id='+encodeURIComponent(grp.id)+'">'+esc(grp.title)+'</a><span class="sep">◆</span>':'')+(crs?'<a href="section.html?id='+encodeURIComponent(sec.id)+'">'+esc(sec.title)+'</a><span class="sep">◆</span><span>'+esc(crs.title)+'</span>':'<span>'+esc(sec.title)+'</span>');
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(crs?crs.title:sec.title)+'</span>';
     document.getElementById("page-desc").textContent=crs?crs.description:sec.description;
+    if(crs&&crs.price&&crs.lessons&&crs.lessons.length)document.getElementById("page-desc").insertAdjacentHTML('afterend','<div class="price-row hero-price"><del>'+esc(crs.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>');
     if(sec.children){document.getElementById("lessons").innerHTML=sec.children.map(function(cid,i){
       var c=find(data.sections,cid);if(!c)return '';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(c.id)+'">'+
@@ -87,7 +97,7 @@
     if(sec.courses){rows+=sec.courses.map(function(c,i){
       if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قريبًا</span>'+esc(c.title)+'</div></div></div></li>';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
-      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div>'+(c.price?'<div class="price-row"><del>'+esc(c.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>':'')+'</div><span class="go">←</span></a></li>';
     }).join("");}
     rows+=sec.lessons.map(function(l,i){
       var open=i===0||progDone(sec.lessons[i-1].id);
