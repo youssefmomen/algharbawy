@@ -119,8 +119,9 @@
     var totalQ=counters.reduce(function(a,b){return a+b;},0);
     var already=progDone(les.id);
     if(already)segDone=segDone.map(function(){return true;});
+    var tapMode=totalQ===0&&segs.length>1;
     var unlocked=segs.map(function(_,i){return i===0||already;});
-    for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
+    if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
     lb.innerHTML=preV+segs.map(function(sg,si){
       var h='<div class="seg" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
@@ -136,12 +137,22 @@
           '</div><div class="exp"></div></div>';
         }).join("");
       }
+      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">الجزء التالي <span class="ar">←</span></button></div>';
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
-    }).join("")+(totalQ?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>':'');
-    if(totalQ&&pg&&!already)pg.classList.add("locked");
-    if(totalQ===0&&!already)progMark(les.id);
+    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>':'');
+    if((totalQ>0||tapMode)&&pg&&!already)pg.classList.add("locked");
+    if(totalQ===0&&!tapMode&&!already)progMark(les.id);
+    if(tapMode)lb.addEventListener("click",function(e){
+      var nb=e.target.closest(".seg-next");if(!nb)return;
+      var si=+nb.getAttribute("data-s"),nx=si+1;
+      var w=nb.closest(".seg-next-wrap");if(w)w.remove();
+      var dEl=lb.querySelector('.seg-pass[data-s="'+si+'"]');if(dEl)dEl.hidden=false;
+      var nEl=lb.querySelector('.seg[data-s="'+nx+'"]');
+      if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
+      if(nx===segs.length-1){progMark(les.id);var d=document.getElementById("quiz-done");if(d)d.hidden=false;if(pg)pg.classList.remove("locked");}
+    });
     var doneCount=counters.map(function(){return 0;});
     lb.addEventListener("click",function(e){
       var b=e.target.closest(".opt");if(!b||b.disabled)return;
