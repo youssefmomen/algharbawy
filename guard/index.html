@@ -42,6 +42,21 @@ button:disabled{opacity:.5}
 <script>
 const out=document.getElementById("out"),score=document.getElementById("score"),sum=document.getElementById("sum"),bar=document.getElementById("bar"),prog=document.getElementById("progress");
 let pts,total,counts,cat;
+const STEPS={
+ secrets:["افتح الخدمة اللي طلعت منها المفتاح (GitHub أو AWS أو غيرها).","ألغِ المفتاح القديم فورًا وأنشئ واحد جديد.","احذف المفتاح من الكود، وخزّنه كمتغير سري على السيرفر لا في الملفات.","ارفع التعديل وافحص تاني."],
+ email:["حدد الملف المذكور في (فين الضعف).","استبدل الإيميل بنموذج تواصل أو بصورة، أو بصيغة مقسّمة بالكود.","لو الإيميل لصلاحية أدمن، خزّن التحقق في قاعدة البيانات مش في الكود.","ارفع التعديل وافحص تاني."],
+ fbkey:["افتح console.cloud.google.com واختر المشروع.","من APIs & Services ثم Credentials افتح مفتاح الويب.","اختر Websites في Application restrictions وأضف نطاق موقعك فقط.","احفظ، وتأكد إن قواعد Firestore لا تسمح بقراءة عامة."],
+ files:["احذف الملف المذكور من المستودع.","لو فيه كلمات سر أو مفاتيح بداخله، غيّرها كلها.","ارفع التعديل وافحص تاني."],
+ maps:["عطّل إنشاء ملفات .map في إعدادات البناء للنسخة المنشورة.","احذف ملفات .map من المستودع وأعد النشر."],
+ sectxt:["أنشئ ملف باسم security.txt داخل مجلد .well-known.","اكتب فيه سطر: Contact: mailto:بريدك","ارفعه وأعد النشر."],
+ sri:["لكل سكربت خارجي احسب بصمة SRI من srihash.org.","أضف integrity وcrossorigin=anonymous للوسم.","أو انسخ السكربت لموقعك."],
+ xss:["حدد الأماكن المذكورة.","لو النص جاي من مستخدم استبدل innerHTML بـtextContent.","لو لازم HTML، نظّفه بمكتبة DOMPurify قبل العرض."],
+ csp:['افتح ملف index.html وضيف داخل head: <meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\' https://www.gstatic.com; img-src \'self\' data: https:; style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src \'self\' https://*.googleapis.com https://*.firebaseio.com">',"افتح الموقع وراقب الـConsole، لو في حاجة اتحجبت أضف مصدرها.","اختبر الدخول والدرس قبل ما تثبّت التعديل."],
+ ref:['ضيف في head: <meta name="referrer" content="strict-origin-when-cross-origin">'],
+ noopener:['ابحث عن target="_blank" في الملفات.','أضف rel="noopener noreferrer" لكل رابط.'],
+ weight:["افصل البيانات الكبيرة في ملفات صغيرة تتحمل عند الحاجة فقط.","استخدم lazy loading للصفحات الثقيلة."]
+};
+
 const W={bad:3,warn:2};
 function section(t){const h=document.createElement("div");h.className="cat";h.textContent=t;out.appendChild(h)}
 // f: {level,title,where,why,fix,attack}
@@ -51,7 +66,9 @@ function add(f){
   const d=document.createElement("details");d.className="box "+f.level;
   const s=document.createElement("summary");const tg=document.createElement("span");tg.className="tag";tg.textContent=l;s.append(tg,f.title);d.appendChild(s);
   const det=document.createElement("div");det.className="det";
-  [["فين الضعف",f.where],["ليه ده مهم",f.why],["إزاي تصلحه",f.fix],["إيه اللي كان ممكن يحصل",f.attack]].forEach(([k,v])=>{if(v){const p=document.createElement("p");const b=document.createElement("b");b.textContent=k+": ";p.append(b,v);det.appendChild(p)}});
+  [["فين الضعف بالظبط",f.where],["ليه ده مهم",f.why],["إيه اللي كان ممكن يحصل",f.attack],["الحل باختصار",f.fix]].forEach(([k,v])=>{if(v){const p=document.createElement("p");const b=document.createElement("b");b.textContent=k+": ";p.append(b,v);det.appendChild(p)}});
+  const st=STEPS[f.key];
+  if(st&&f.level!=="ok"){const p=document.createElement("p");const b=document.createElement("b");b.textContent="خطوات الإصلاح:";p.appendChild(b);const ol=document.createElement("ol");st.forEach(x=>{const li=document.createElement("li");li.textContent=x;li.dir="auto";ol.appendChild(li)});det.append(p,ol)}
   if(det.children.length)d.appendChild(det);
   if(f.level!=="ok")d.open=f.level==="bad";
   out.appendChild(d);
@@ -74,11 +91,11 @@ async function run(T){
   add(BASE.startsWith("https://")?{level:"ok",title:"الموقع شغال بـHTTPS (اتصال مشفّر)"}:{level:"bad",title:"الموقع مش بيستخدم HTTPS",where:"عنوان الموقع نفسه.",why:"من غير تشفير أي حد على نفس الشبكة يقرا اللي بيتبعت.",fix:"فعّل HTTPS من إعدادات الاستضافة.",attack:"التجسس على كلمات السر وتعديل الصفحة أثناء وصولها للزائر."});
   const pats=[[/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}/,"توكن GitHub"],[/AKIA[0-9A-Z]{16}/,"مفتاح AWS"],[/sk_live_[0-9A-Za-z]{10,}|sk-[A-Za-z0-9]{32,}/,"مفتاح سري لخدمة دفع أو ذكاء اصطناعي"],[/-----BEGIN [A-Z ]*PRIVATE KEY-----/,"مفتاح خاص"],[/"private_key_id"/,"ملف حساب خدمة Google"]];
   const found=pats.filter(p=>p[0].test(all)).map(p=>p[1]);
-  add(found.length?{level:"bad",title:"أسرار ظاهرة في كود الموقع: "+found.join("، "),where:"داخل ملفات JavaScript اللي أي زائر بيحمّلها.",why:"أي حد بيفتح الكود بيشوف المفتاح.",fix:"امسحه من الكود فورًا، وغيّر المفتاح من الخدمة اللي طلعته منها (القديم يعتبر مسرّب).",attack:"استخدام حسابك أو خدمتك باسمك، أو الدخول على مستودعك وتعديل الموقع."}:{level:"ok",title:"مفيش مفاتيح سرية ظاهرة في الكود"});
+  add(found.length?{key:"secrets",level:"bad",title:"أسرار ظاهرة في كود الموقع: "+found.join("، "),where:"داخل ملفات JavaScript اللي أي زائر بيحمّلها.",why:"أي حد بيفتح الكود بيشوف المفتاح.",fix:"امسحه من الكود فورًا، وغيّر المفتاح من الخدمة اللي طلعته منها (القديم يعتبر مسرّب).",attack:"استخدام حسابك أو خدمتك باسمك، أو الدخول على مستودعك وتعديل الموقع."}:{level:"ok",title:"مفيش مفاتيح سرية ظاهرة في الكود"});
   const emails=[...new Set((all.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}/gi)||[]).filter(e=>!/@\d/.test(e)&&!/\.(png|jpg|svg|js|css|webp)$/i.test(e)&&!/@(example|fontawesome)/i.test(e)))];
-  add(emails.length?{level:"warn",title:"إيميلات ظاهرة في الكود ("+emails.length+")",where:"داخل ملفات JavaScript.",why:"الإيميل الظاهر بيتجمع تلقائيًا بواسطة برامج السبام.",fix:"شيله من الكود، أو خزّنه كبصمة مشفّرة (hash)، وخلّي التحقق من الأدمن في قاعدة البيانات.",attack:"سبام وتصيّد موجّه لإيميل الأدمن، ومحاولات سرقة حسابه، لأن المهاجم عرف مين صاحب الصلاحية."}:{level:"ok",title:"مفيش إيميلات ظاهرة في الكود"});
+  add(emails.length?{key:"email",level:"warn",title:"إيميلات ظاهرة في الكود ("+emails.length+")",where:"الإيميلات: "+emails.join("، ")+" | موجودة في: "+Object.entries(codes).filter(([k,v])=>emails.some(e=>v.includes(e))).map(x=>x[0]).join("، "),why:"الإيميل الظاهر بيتجمع تلقائيًا بواسطة برامج السبام.",fix:"شيله من الكود، أو خزّنه كبصمة مشفّرة (hash)، وخلّي التحقق من الأدمن في قاعدة البيانات.",attack:"سبام وتصيّد موجّه لإيميل الأدمن، ومحاولات سرقة حسابه، لأن المهاجم عرف مين صاحب الصلاحية."}:{level:"ok",title:"مفيش إيميلات ظاهرة في الكود"});
   const fbKey=/AIza[0-9A-Za-z_-]{35}/.test(all);
-  add(fbKey?{level:"warn",title:"مفتاح Firebase ظاهر في الكود (ده طبيعي بس يتأمّن)",where:"ملف إعدادات Firebase.",why:"مفتاح الويب في Firebase مش سر، لكن أمانه بيعتمد على قيود المفتاح وقواعد قاعدة البيانات.",fix:"من Google Cloud، قيّد المفتاح بحيث يشتغل من نطاق موقعك فقط، وخلي قواعد Firestore صارمة.",attack:"لو القواعد ضعيفة، حد يستخدم المفتاح ويقرا أو يكتب في بياناتك، أو يستهلك الحصة المجانية."}:{level:"ok",title:"مفيش مفتاح Firebase ظاهر"});
+  add(fbKey?{key:"fbkey",level:"warn",title:"مفتاح Firebase ظاهر في الكود (ده طبيعي بس يتأمّن)",where:"ملف إعدادات Firebase.",why:"مفتاح الويب في Firebase مش سر، لكن أمانه بيعتمد على قيود المفتاح وقواعد قاعدة البيانات.",fix:"من Google Cloud، قيّد المفتاح بحيث يشتغل من نطاق موقعك فقط، وخلي قواعد Firestore صارمة.",attack:"لو القواعد ضعيفة، حد يستخدم المفتاح ويقرا أو يكتب في بياناتك، أو يستهلك الحصة المجانية."}:{level:"ok",title:"مفيش مفتاح Firebase ظاهر"});
   step(3,10);
 
   step(5,10);
@@ -87,36 +104,36 @@ async function run(T){
   const hard=[".git/config",".env","package.json","backup.zip","db.sql"];
   const exposed=[];
   for(const f of hard){const r=await get(abs(f));if(r.ok&&r.text&&!/<title>[^<]*(404|not found)/i.test(r.text)&&!/<html/i.test(r.text.slice(0,200)))exposed.push(f)}
-  add(exposed.length?{level:"bad",title:"ملفات حساسة مكشوفة: "+exposed.join("، "),where:"ملفات متاحة بالرابط المباشر على الموقع.",why:"الملفات دي مش المفروض تكون على استضافة عامة.",fix:"احذفها من المستودع (واعتبر أي سر فيها مسرّب وغيّره).",attack:"قراءة الإعدادات وكلمات السر، أو تحميل نسخة كاملة من كود الموقع وقاعدة بياناته."}:{level:"ok",title:"مفيش ملفات حساسة مكشوفة (.git, .env, نسخ احتياطية)"});
+  add(exposed.length?{key:"files",level:"bad",title:"ملفات حساسة مكشوفة: "+exposed.join("، "),where:"ملفات متاحة بالرابط المباشر على الموقع.",why:"الملفات دي مش المفروض تكون على استضافة عامة.",fix:"احذفها من المستودع (واعتبر أي سر فيها مسرّب وغيّره).",attack:"قراءة الإعدادات وكلمات السر، أو تحميل نسخة كاملة من كود الموقع وقاعدة بياناته."}:{level:"ok",title:"مفيش ملفات حساسة مكشوفة (.git, .env, نسخ احتياطية)"});
   const maps=Object.keys(codes).filter(k=>k.endsWith(".js"));let mapHit=[];
   for(const k of maps){const r=await get(abs(k+".map"));if(r.ok&&r.text.startsWith("{"))mapHit.push(k+".map")}
-  add(mapHit.length?{level:"warn",title:"ملفات source map مكشوفة",where:mapHit.join("، "),why:"بتكشف الكود الأصلي قبل الضغط بتعليقاته.",fix:"متنشرهاش على الموقع الحقيقي.",attack:"فهم منطق الموقع بسهولة وإيجاد ثغرات أسرع."}:{level:"ok",title:"مفيش source maps مكشوفة"});
+  add(mapHit.length?{key:"maps",level:"warn",title:"ملفات source map مكشوفة",where:mapHit.join("، "),why:"بتكشف الكود الأصلي قبل الضغط بتعليقاته.",fix:"متنشرهاش على الموقع الحقيقي.",attack:"فهم منطق الموقع بسهولة وإيجاد ثغرات أسرع."}:{level:"ok",title:"مفيش source maps مكشوفة"});
   const sec=await get(abs(".well-known/security.txt"));
-  add(sec.ok&&/Contact:/i.test(sec.text)?{level:"ok",title:"فيه ملف security.txt لاستقبال بلاغات الثغرات"}:{level:"warn",title:"مفيش ملف security.txt",where:"/.well-known/security.txt",why:"بيحدد لمين يبلّغ أي باحث شاف ثغرة.",fix:"أنشئ الملف وحط فيه سطر Contact: mailto:بريدك.",attack:"مفيش هجوم مباشر، لكن ثغرة ممكن تتعرف وتتسرب من غير ما تعرف لأن مفيش قناة إبلاغ."});
+  add(sec.ok&&/Contact:/i.test(sec.text)?{level:"ok",title:"فيه ملف security.txt لاستقبال بلاغات الثغرات"}:{key:"sectxt",level:"warn",title:"مفيش ملف security.txt",where:"/.well-known/security.txt",why:"بيحدد لمين يبلّغ أي باحث شاف ثغرة.",fix:"أنشئ الملف وحط فيه سطر Contact: mailto:بريدك.",attack:"مفيش هجوم مباشر، لكن ثغرة ممكن تتعرف وتتسرب من غير ما تعرف لأن مفيش قناة إبلاغ."});
   step(7,10);
 
   section("🧱 قوة الكود (الهجمات على الزوار)");
   const ext=scripts.filter(s=>/^https?:/.test(s.getAttribute("src"))&&!s.getAttribute("src").startsWith(BASE));
   const trusted=/gstatic\.com\/firebasejs|googleapis\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net/;
   const risky=ext.filter(s=>!s.integrity&&!/gstatic\.com\/firebasejs/.test(s.getAttribute("src")));
-  add(risky.length?{level:"warn",title:"سكربتات خارجية من غير بصمة تحقق (SRI): "+risky.length,where:risky.map(s=>new URL(s.src).host).join("، "),why:"لو المصدر اتخترق الكود الخبيث بيتحمّل في موقعك.",fix:"أضف خاصية integrity وcrossorigin لكل سكربت خارجي.",attack:"سرقة جلسات وبيانات الزوار عبر سكربت مخترق من طرف تالت."}:{level:"ok",title:"السكربتات الخارجية من مصادر معروفة"});
+  add(risky.length?{key:"sri",level:"warn",title:"سكربتات خارجية من غير بصمة تحقق (SRI): "+risky.length,where:risky.map(s=>new URL(s.src).host).join("، "),why:"لو المصدر اتخترق الكود الخبيث بيتحمّل في موقعك.",fix:"أضف خاصية integrity وcrossorigin لكل سكربت خارجي.",attack:"سرقة جلسات وبيانات الزوار عبر سكربت مخترق من طرف تالت."}:{level:"ok",title:"السكربتات الخارجية من مصادر معروفة"});
   const mixed=/(src|href|action)=["']http:\/\//i.test(all);
   add(mixed?{level:"bad",title:"فيه روابط HTTP غير مشفّرة",where:"روابط http:// داخل الصفحة.",why:"تحميل محتوى غير مشفّر داخل صفحة مشفّرة.",fix:"غيّر كل http:// إلى https://.",attack:"تبديل الملف أثناء الطريق بكود خبيث."}:{level:"ok",title:"كل الروابط مشفّرة"});
   const xss=/\.innerHTML\s*=|document\.write\(|eval\(|new Function\(/.test(all);
-  add(xss?{level:"warn",title:"الكود بيستخدم innerHTML أو eval",where:"ملفات JavaScript.",why:"لو النص جاي من مستخدم (اسم، تعليق، نتيجة) ومتنضفش، ينفذ كود.",fix:"استخدم textContent للنص القادم من المستخدمين، ونظّف أي HTML قبل عرضه.",attack:"حقن سكربت (XSS): سرقة جلسة الأدمن أو تحويل الزوار لموقع مزيّف."}:{level:"ok",title:"مفيش استخدام خطر لـeval/document.write"});
+  add(xss?{key:"xss",level:"warn",title:"الكود بيستخدم innerHTML أو eval",where:"موجود في: "+Object.entries(codes).filter(([k,v])=>/\.innerHTML\s*=|document\.write\(|eval\(|new Function\(/.test(v)).map(x=>x[0]+" ("+(codes[x[0]].match(/\.innerHTML\s*=|document\.write\(|eval\(|new Function\(/g)||[]).length+" مرة)").join("، "),why:"لو النص جاي من مستخدم (اسم، تعليق، نتيجة) ومتنضفش، ينفذ كود.",fix:"استخدم textContent للنص القادم من المستخدمين، ونظّف أي HTML قبل عرضه.",attack:"حقن سكربت (XSS): سرقة جلسة الأدمن أو تحويل الزوار لموقع مزيّف."}:{level:"ok",title:"مفيش استخدام خطر لـeval/document.write"});
   const csp=!!doc.querySelector('meta[http-equiv="Content-Security-Policy"]');
-  add(csp?{level:"ok",title:"فيه سياسة أمان محتوى (CSP)"}:{level:"warn",title:"مفيش سياسة أمان محتوى (CSP)",where:"وسوم head في الصفحة.",why:"CSP بتحدد مصادر الكود المسموحة وبتوقف معظم هجمات الحقن.",fix:"أضف meta من نوع Content-Security-Policy يسمح بموقعك وgstatic وgoogleapis فقط.",attack:"لو حصلت ثغرة حقن، الكود الخبيث بيشتغل بحرية ويكلم أي سيرفر."});
+  add(csp?{level:"ok",title:"فيه سياسة أمان محتوى (CSP)"}:{key:"csp",level:"warn",title:"مفيش سياسة أمان محتوى (CSP)",where:"وسوم head في الصفحة.",why:"CSP بتحدد مصادر الكود المسموحة وبتوقف معظم هجمات الحقن.",fix:"أضف meta من نوع Content-Security-Policy يسمح بموقعك وgstatic وgoogleapis فقط.",attack:"لو حصلت ثغرة حقن، الكود الخبيث بيشتغل بحرية ويكلم أي سيرفر."});
   const ref=!!doc.querySelector('meta[name="referrer"]');
-  add(ref?{level:"ok",title:"سياسة الـreferrer محددة"}:{level:"warn",title:"سياسة الـreferrer مش محددة",where:"head الصفحة.",why:"الروابط الخارجية ممكن تكشف عنوان الصفحة اللي جيت منها.",fix:'أضف <meta name="referrer" content="strict-origin-when-cross-origin">.',attack:"تسريب روابط داخلية للمواقع الخارجية."});
+  add(ref?{level:"ok",title:"سياسة الـreferrer محددة"}:{key:"ref",level:"warn",title:"سياسة الـreferrer مش محددة",where:"head الصفحة.",why:"الروابط الخارجية ممكن تكشف عنوان الصفحة اللي جيت منها.",fix:'أضف <meta name="referrer" content="strict-origin-when-cross-origin">.',attack:"تسريب روابط داخلية للمواقع الخارجية."});
   const bl=[...doc.querySelectorAll('a[target="_blank"]')].filter(a=>!/noopener/.test(a.rel));
-  add(bl.length?{level:"warn",title:"روابط تتفتح في تبويب جديد من غير noopener ("+bl.length+")",where:"روابط target=_blank.",why:"الصفحة المفتوحة تقدر تتحكم في صفحتك الأصلية.",fix:'أضف rel="noopener noreferrer".',attack:"تحويل صفحتك لصفحة تسجيل دخول مزيّفة (Tabnabbing)."}:{level:"ok",title:"الروابط الخارجية آمنة"});
+  add(bl.length?{key:"noopener",level:"warn",title:"روابط تتفتح في تبويب جديد من غير noopener ("+bl.length+")",where:"روابط target=_blank.",why:"الصفحة المفتوحة تقدر تتحكم في صفحتك الأصلية.",fix:'أضف rel="noopener noreferrer".',attack:"تحويل صفحتك لصفحة تسجيل دخول مزيّفة (Tabnabbing)."}:{level:"ok",title:"الروابط الخارجية آمنة"});
   const forms=[...doc.querySelectorAll("form")].filter(f=>/^http:/.test(f.getAttribute("action")||""));
   add(forms.length?{level:"bad",title:"نموذج بيرسل بيانات عبر HTTP",where:"form action.",why:"البيانات بتتبعت من غير تشفير.",fix:"استخدم https.",attack:"التقاط كلمات السر أثناء الإرسال."}:{level:"ok",title:"مفيش نماذج بترسل بيانات غير مشفّرة"});
   step(9,10);
 
   section("⚡ الأداء والتحمّل");
   const big=Object.entries(codes).map(([k,v])=>[k,new Blob([v]).size]).filter(x=>x[1]>400000);
-  add(big.length?{level:"warn",title:"ملفات كود تقيلة: "+big.map(x=>x[0]+" ("+Math.round(x[1]/1024)+"KB)").join("، "),where:"ملفات JavaScript.",why:"بتبطّأ الموقع وبتخلي إغراقه بالطلبات أسهل.",fix:"قسّم الملف وحمّل الأجزاء عند الحاجة.",attack:"إغراق الموقع بطلبات تقيلة لتعطيله."}:{level:"ok",title:"حجم ملفات الكود معقول"});
+  add(big.length?{key:"weight",level:"warn",title:"ملفات كود تقيلة: "+big.map(x=>x[0]+" ("+Math.round(x[1]/1024)+"KB)").join("، "),where:"ملفات JavaScript.",why:"بتبطّأ الموقع وبتخلي إغراقه بالطلبات أسهل.",fix:"قسّم الملف وحمّل الأجزاء عند الحاجة.",attack:"إغراق الموقع بطلبات تقيلة لتعطيله."}:{level:"ok",title:"حجم ملفات الكود معقول"});
   const rb=await get(abs("robots.txt"));
   add(rb.ok&&/Disallow:\s*\/(admin|dashboard)/i.test(rb.text)?{level:"warn",title:"robots.txt بيعلن مسار الأدمن",where:"robots.txt",why:"بيدل أي حد على أماكن حساسة.",fix:"احمِ الصفحة بتسجيل دخول حقيقي بدل إخفائها.",attack:"توجيه المهاجم مباشرة لصفحة الإدارة."}:{level:"ok",title:"robots.txt مش بيكشف مسارات إدارية"});
   step(10,10);
