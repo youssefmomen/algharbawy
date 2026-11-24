@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://*.googleusercontent.com; media-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com https://apis.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<meta name="robots" content="noindex">
+<title>لوحة المعلم | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=37">
+</head>
+<body data-page="teacher">
+<main class="wrap">
+  <div class="adm-head rv">
+    <div class="page-mark"><span class="mark"><i>غ</i></span></div>
+    <h1>لوحة المعلم</h1>
+    <p class="sub">أنشئ الاختبارات والألعاب لطلابك وتابع نتائجهم</p>
+  </div>
+
+  <div class="adm-note" id="t-gate" hidden></div>
+
+  <!-- تسجيل معلم جديد -->
+  <div class="auth-card" id="t-register" hidden>
+    <h2>انضم كمعلم</h2>
+    <p class="sub">سجّل بياناتك وستراجع إدارة الموقع طلبك، ثم تتمكن من إنشاء الاختبارات والألعاب.</p>
+    <div class="field"><label for="t-name">اسمك (يظهر للطلاب)</label><input type="text" id="t-name" maxlength="60"></div>
+    <div class="form-err" id="t-reg-err" role="alert"></div>
+    <button class="btn fill block" id="t-reg-go" type="button">إرسال الطلب</button>
+  </div>
+
+  <!-- بانتظار الموافقة -->
+  <div class="auth-card" id="t-pending" hidden>
+    <h2>طلبك قيد المراجعة</h2>
+    <p class="sub">وصلنا طلب انضمامك كمعلم. ستتمكن من استخدام اللوحة فور موافقة الإدارة. جرّب تحديث الصفحة لاحقًا.</p>
+  </div>
+
+  <!-- اللوحة -->
+  <div id="t-dash" hidden>
+    <div class="tabs t-tabs">
+      <button type="button" class="on" data-tab="exams">اختباراتي</button>
+      <button type="button" data-tab="games">ألعابي</button>
+      <button type="button" data-tab="new">إنشاء جديد</button>
+      <button type="button" data-tab="results">النتائج</button>
+    </div>
+
+    <div id="tab-exams" class="t-panel"><div class="t-list" id="t-exams"></div><div class="adm-note" id="t-exams-empty" hidden>لا اختبارات بعد، أنشئ أول اختبار من تبويب «إنشاء جديد».</div></div>
+    <div id="tab-games" class="t-panel" hidden><div class="t-list" id="t-games"></div><div class="adm-note" id="t-games-empty" hidden>لا ألعاب بعد، أنشئ أول لعبة من تبويب «إنشاء جديد».</div></div>
+
+    <div id="tab-new" class="t-panel" hidden>
+      <div class="auth-card t-form">
+        <div class="field"><label for="f-kind">النوع</label>
+          <select id="f-kind">
+            <option value="exam">اختبار (درجات ووقت)</option>
+            <option value="race">لعبة سباق</option>
+            <option value="quiz">لعبة تحدي السرعة</option>
+          </select></div>
+        <div class="field"><label for="f-title">العنوان</label><input type="text" id="f-title" maxlength="120" placeholder="مثال: اختبار الدرس الثالث"></div>
+        <div class="field"><label for="f-desc">وصف قصير (اختياري)</label><input type="text" id="f-desc" maxlength="200"></div>
+        <div class="field" id="f-time-wrap"><label for="f-time">الوقت بالدقائق (0 = بدون وقت)</label><input type="number" id="f-time" min="0" max="180" value="10" dir="ltr"></div>
+        <h3 class="t-qhead">الأسئلة</h3>
+        <div id="f-questions"></div>
+        <button class="btn ghost block" id="f-addq" type="button">+ إضافة سؤال</button>
+        <div class="field t-pub"><label for="f-pub"><input type="checkbox" id="f-pub" checked> منشور للطلاب فورًا</label></div>
+        <div class="form-err" id="f-err" role="alert"></div>
+        <button class="btn fill block" id="f-save" type="button">حفظ</button>
+      </div>
+    </div>
+
+    <div id="tab-results" class="t-panel" hidden>
+      <div class="field"><label for="r-pick">اختر الاختبار أو اللعبة</label><select id="r-pick"></select></div>
+      <div class="adm-tablewrap"><table class="adm-table"><thead><tr>
+        <th>الطالب</th><th>النتيجة</th><th>الوقت</th><th>التاريخ</th>
+      </tr></thead><tbody id="r-rows"></tbody></table>
+      <div class="adm-note" id="r-empty" hidden>لا نتائج بعد.</div></div>
+    </div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/data/meta.js?v=1"></script>
+<script src="assets/firebase-config.js?v=2"></script>
+<script src="assets/store.js?v=3"></script>
+<script src="assets/teach.js?v=1"></script>
+<script src="assets/app.js?v=36"></script>
+<script src="assets/teacher.js?v=1"></script>
+</body>
+</html>

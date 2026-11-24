@@ -1,27 +1,38 @@
 rules_version = '2';
-// قواعد Firestore — مؤسسة الغرباوي
-// انسخ هذا المحتوى كاملًا إلى: Firebase Console ← Firestore Database ← Rules ← نشر
+// قواعد Firestore — مؤسسة الغرباوي (المرحلة ٢: المعلمون والاختبارات والألعاب)
+// الصق هذا المحتوى كاملًا في: Firebase Console ← Firestore Database ← Rules ← نشر (Publish)
 //
-// بعد النشر، أنشئ وثيقة المدير مرة واحدة:
-//   1. من Firebase Console ← Authentication انسخ UID الخاص بحساب المدير.
-//   2. من Firestore Database أنشئ مجموعة admins وأضف وثيقة معرّفها هو ذلك UID.
+// ملاحظة مهمة: بريد المدير لا يُكتب هنا حفاظًا على الخصوصية.
+// المدير يُعرَّف عبر وثيقة config/admin في قاعدة البيانات تحوي الحقل email.
+// (يُنشئها المالك مرة واحدة من لوحة Firebase — خطوة واحدة موضحة في التعليمات.)
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function signedIn() { return request.auth != null; }
+    // المدير: بريده مطابق للحقل email في وثيقة config/admin، أو وثيقة admins/{uid}
     function isAdmin() {
+      return signedIn() && (
+        request.auth.token.email == get(/databases/$(database)/documents/config/admin).data.email
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+    // معلم مقبول
+    function isTeacher() {
       return signedIn()
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+        && get(/databases/$(database)/documents/teachers/$(request.auth.uid)).data.status == "approved";
     }
 
-    // وثائق المديرين: يقرأها صاحبها فقط (لمعرفة أنه مدير)، وتُدار يدويًا من وحدة التحكم
+    // إعدادات داخلية: لا قراءة ولا كتابة من المتصفح (تُقرأ من القواعد فقط)
+    match /config/{doc} {
+      allow read, write: if false;
+    }
+
     match /admins/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
       allow list: if false;
       allow write: if false;
     }
 
-    // ملف الطالب: يقرأه صاحبه أو المدير، ويكتبه صاحبه فقط
     match /users/{uid} {
       allow get, list: if isAdmin() || (signedIn() && request.auth.uid == uid);
       allow create, update: if signedIn() && request.auth.uid == uid
@@ -29,12 +40,52 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // تقدم الطالب: يقرأه صاحبه أو المدير، ويكتبه صاحبه فقط
     match /progress/{uid} {
       allow get, list: if isAdmin() || (signedIn() && request.auth.uid == uid);
       allow create, update: if signedIn() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['completed', 'xp', 'stars']);
       allow delete: if false;
+    }
+
+    // المعلمون: تسجيل ذاتي بحالة pending، والموافقة من المدير فقط
+    match /teachers/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.status == "pending"
+        && request.resource.data.keys().hasOnly(['email', 'name', 'status', 'createdAt']);
+      allow update, delete: if isAdmin();
+    }
+
+    // الاختبارات والألعاب: الطلاب يقرأون المنشور، والمعلم المقبول يدير ما أنشأه
+    match /exams/{id} {
+      allow get: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow list: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow create: if isTeacher() && request.resource.data.teacherId == request.auth.uid;
+      allow update: if isTeacher() && resource.data.teacherId == request.auth.uid
+        && request.resource.data.teacherId == resource.data.teacherId;
+      allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+    }
+    match /games/{id} {
+      allow get: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow list: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow create: if isTeacher() && request.resource.data.teacherId == request.auth.uid;
+      allow update: if isTeacher() && resource.data.teacherId == request.auth.uid
+        && request.resource.data.teacherId == resource.data.teacherId;
+      allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+    }
+
+    // النتائج: الطالب يكتب نتيجته فقط، ويقرأها هو أو المعلم صاحب النشاط أو المدير
+    match /results/{id} {
+      allow get, list: if signedIn() && (
+        resource.data.studentUid == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+        || isAdmin()
+      );
+      allow create: if signedIn()
+        && request.resource.data.studentUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['kind', 'refId', 'teacherId', 'studentUid', 'studentEmail', 'title', 'score', 'total', 'durationSec', 'finishedAt']);
+      allow update, delete: if false;
     }
   }
 }

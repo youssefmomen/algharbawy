@@ -21,6 +21,7 @@
         if (!ok) { gate("غير مصرح لك بعرض هذه الصفحة.", false); return; }
         gate("جارٍ التحميل…", false);
         loadDash();
+        loadTeachers();
       });
     });
   });
@@ -65,6 +66,33 @@
       $("adm-body").hidden = false;
     });
   }
+  /* موافقات المعلمين */
+  function loadTeachers() {
+    if (!window.Teach) return;
+    Teach.listTeachers().then(function (rows) {
+      if (!rows) return;
+      var pend = rows.filter(function (t) { return t.status === "pending"; });
+      var others = rows.filter(function (t) { return t.status !== "pending"; });
+      $("adm-teachers-empty").hidden = pend.length > 0;
+      $("adm-teachers").innerHTML = pend.map(function (t) {
+        return '<div class="t-item"><div class="t-item-main"><b>' + esc(t.name || t.email || t.uid) + '</b>' +
+          '<span class="t-meta" dir="ltr">' + esc(t.email || "") + '</span></div>' +
+          '<div class="t-item-acts">' +
+          '<button type="button" class="btn fill" data-t="' + t.uid + '" data-s="approved">قبول</button>' +
+          '<button type="button" class="btn ghost t-del" data-t="' + t.uid + '" data-s="rejected">رفض</button>' +
+          '</div></div>';
+      }).join("") + (others.length ? '<div class="t-meta t-sect-sm">المعلمون الحاليون: ' + others.map(function (t) {
+        return esc(t.name || t.email || t.uid) + " (" + (t.status === "approved" ? "مقبول" : "مرفوض") + ")";
+      }).join("، ") + "</div>" : "");
+    });
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-t]");
+    if (!b) return;
+    b.disabled = true;
+    Teach.setTeacherStatus(b.dataset.t, b.dataset.s).then(loadTeachers);
+  });
+
   function card(num, label) {
     return '<div class="adm-card rv"><b>' + num + '</b><span>' + esc(label) + '</span></div>';
   }

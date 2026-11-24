@@ -560,3 +560,53 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 /* قائمة ثابتة تظهر فقط عند تعطيل JavaScript */
 .ns-list{list-style:none;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:0;margin:24px 0}
 .ns-list a{display:block;padding:12px 22px;border:1px solid rgba(212,175,95,.4);border-radius:12px;color:#d4af5f;text-decoration:none;background:rgba(212,175,95,.06)}
+
+/* ===== المعلمون والاختبارات والألعاب (المرحلة ٢) ===== */
+.t-sect{margin:34px 0 14px;font-family:"Reem Kufi",serif;color:#d4af5f}
+.t-sect-sm{margin-top:14px;opacity:.7}
+.t-sect-wrap{margin-bottom:26px}
+.t-tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:18px 0 22px}
+.t-list{display:flex;flex-direction:column;gap:12px;margin-bottom:10px}
+.t-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border:1px solid rgba(212,175,95,.25);border-radius:14px;background:rgba(212,175,95,.04)}
+.t-item-link{text-decoration:none;color:inherit;transition:border-color .2s}
+.t-item-link:hover{border-color:rgba(212,175,95,.6)}
+.t-item-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.t-item-main b{font-size:1.05rem}
+.t-meta{font-size:.85rem;opacity:.75}
+.t-live{color:#7fd08a}
+.t-item-acts{display:flex;gap:8px;flex-shrink:0}
+.t-item-acts .btn{padding:8px 14px;font-size:.85rem}
+.t-del{color:#e08a8a!important}
+.t-form h3,.t-qhead{margin:22px 0 10px;color:#d4af5f}
+.t-q{border:1px solid rgba(212,175,95,.2);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px}
+.t-q-top{display:flex;justify-content:space-between;align-items:center}
+.t-q-del{background:none;border:none;color:#e08a8a;font-size:1.1rem;cursor:pointer}
+.t-q input[type=text]{width:100%;padding:10px 12px;border:1px solid rgba(212,175,95,.25);border-radius:10px;background:rgba(0,0,0,.25);color:inherit;font-family:inherit}
+.t-opt{display:flex;align-items:center;gap:8px}
+.t-opt input[type=radio]{accent-color:#d4af5f;width:18px;height:18px;flex-shrink:0}
+.t-hint{font-size:.78rem;opacity:.6}
+.t-pub label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.t-pub input{accent-color:#d4af5f;width:18px;height:18px}
+.t-form select{width:100%;padding:12px;border:1px solid rgba(212,175,95,.25);border-radius:10px;background:#171310;color:inherit;font-family:inherit}
+.t-acts-col{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+
+/* صفحة الاختبار */
+.x-hud{display:flex;justify-content:space-between;align-items:center;margin:18px 0;font-size:1.05rem}
+.x-timer{color:#d4af5f;font-weight:700}
+.x-q{border:1px solid rgba(212,175,95,.2);border-radius:14px;padding:18px;margin-bottom:16px;background:rgba(212,175,95,.03)}
+.x-q-t{font-weight:700;margin-bottom:12px;line-height:1.8}
+.x-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(212,175,95,.18);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.x-opt:hover{border-color:rgba(212,175,95,.5)}
+.x-opt input{accent-color:#d4af5f;width:18px;height:18px}
+.x-opt-btn{width:100%;background:rgba(0,0,0,.25);color:inherit;font-family:inherit;font-size:1rem;text-align:start}
+.x-opt-s{padding:8px 12px;border-radius:8px;margin-bottom:6px;opacity:.85}
+.x-correct{background:rgba(80,180,100,.18);border:1px solid rgba(80,180,100,.5);opacity:1}
+.x-wrong{background:rgba(220,90,90,.18)!important;border:1px solid rgba(220,90,90,.5)!important;opacity:1}
+.x-score{font-size:1.5rem;color:#d4af5f;font-weight:700;margin:12px 0}
+
+/* لعبة السباق */
+.race-track{position:relative;margin:26px 0 30px;padding:10px 0 6px;border-bottom:3px dashed rgba(212,175,95,.4)}
+.race-lane{position:relative;height:56px}
+.race-name{position:absolute;inset-inline-start:0;top:-6px;font-size:.8rem;opacity:.7}
+.race-runner{position:absolute;inset-inline-start:calc(0% - 20px);font-size:2rem;transition:inset-inline-start .6s ease;transform:scaleX(-1)}
+.race-flag{position:absolute;top:0;inset-inline-end:2px;font-size:2.2rem}

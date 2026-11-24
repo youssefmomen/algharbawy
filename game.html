@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://*.googleusercontent.com; media-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com https://apis.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<meta name="robots" content="noindex">
+<title>اللعبة | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=37">
+</head>
+<body data-page="game">
+<main class="wrap">
+  <div class="adm-note" id="g-gate" hidden></div>
+
+  <div class="auth-card" id="g-intro" hidden>
+    <h2 id="g-title"></h2>
+    <p class="sub" id="g-desc"></p>
+    <p class="t-meta" id="g-info"></p>
+    <button class="btn fill block" id="g-start" type="button">ابدأ اللعب</button>
+  </div>
+
+  <!-- سباق -->
+  <div id="g-race" hidden>
+    <div class="race-track">
+      <div class="race-lane"><span class="race-name">أنت</span><span class="race-runner" id="race-me">🐎</span></div>
+      <div class="race-lane"><span class="race-name">المنافس</span><span class="race-runner race-bot" id="race-bot">🐪</span></div>
+      <div class="race-flag">🏁</div>
+    </div>
+    <div class="x-q" id="race-q"></div>
+  </div>
+
+  <!-- تحدي السرعة -->
+  <div id="g-quiz" hidden>
+    <div class="x-hud"><span id="quiz-score"></span><span class="x-timer" id="quiz-timer"></span></div>
+    <div class="x-q" id="quiz-q"></div>
+  </div>
+
+  <div class="auth-card" id="g-done" hidden>
+    <h2 id="g-result-title"></h2>
+    <p class="x-score" id="g-score"></p>
+    <p class="sub">ستظهر نتيجتك عند معلمك.</p>
+    <div class="t-acts-col">
+      <button class="btn fill block" id="g-again" type="button">العب مرة أخرى</button>
+      <a class="btn ghost block" href="student.html">عودة إلى الاختبارات والألعاب</a>
+    </div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/data/meta.js?v=1"></script>
+<script src="assets/firebase-config.js?v=2"></script>
+<script src="assets/store.js?v=3"></script>
+<script src="assets/teach.js?v=1"></script>
+<script src="assets/app.js?v=36"></script>
+<script src="assets/game.js?v=1"></script>
+</body>
+</html>
