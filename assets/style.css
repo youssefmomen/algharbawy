@@ -399,3 +399,41 @@ body.kids .q-t{display:flex;align-items:center;justify-content:center;gap:4px;fl
 #gmascot.jump{animation:gmjump .6s}
 @keyframes gmjump{30%{transform:translateY(-34px) rotate(-9deg)}60%{transform:translateY(0) rotate(7deg)}}
 @media(max-width:900px){#gmascot{width:70px;height:70px}}
+
+/* ---------- خريطة نور البيان ---------- */
+.nour-map-li{list-style:none}
+.nm-hud{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
+.nm-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-weight:700;color:var(--gold2);white-space:nowrap}
+.nm-pill svg{width:18px;height:18px;color:var(--gold2)}
+.nm-bar{flex:1;height:14px;border-radius:99px;background:#0d0b08;border:1px solid var(--line);overflow:hidden}
+.nm-bar i{display:block;height:100%;background:linear-gradient(90deg,#06d6a0,var(--gold));transition:width .6s}
+.nour-map{position:relative;margin:10px 0 30px}
+.nour-map>svg{position:absolute;inset:0;width:100%;height:100%}
+.nm-node{position:absolute;transform:translate(-50%,0);width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.55rem;font-weight:800;color:#fff;text-decoration:none;box-shadow:0 7px 0 rgba(0,0,0,.25);transition:transform .2s}
+.nm-node small{display:flex;align-items:center;gap:3px;font-size:.82rem;color:#ffe9a8;font-weight:700}
+.nm-node small svg{width:12px;height:12px}
+.nm-node.open{background:#ef476f;animation:nmbob 1.4s infinite}
+.nm-node.done{background:#06d6a0}
+.nm-node.locked{background:#3a3742;color:#8f8b9c;box-shadow:0 7px 0 rgba(0,0,0,.18)}
+.nm-node.locked svg{width:26px;height:26px}
+@keyframes nmbob{50%{transform:translate(-50%,-9px) scale(1.05)}}
+.nm-lbl{position:absolute;transform:translate(-50%,0);width:140px;text-align:center;font-size:.85rem;color:var(--mute);font-weight:600}
+.nm-guide{position:absolute;width:64px;height:64px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.2);animation:gmidle 2s infinite;pointer-events:none}
+/* ---------- HUD اللعبة: شريط ونقاط ---------- */
+.ghud-bar{height:8px;border-radius:99px;background:#0d0b08;border:1px solid var(--line);overflow:hidden;margin-top:8px}
+.ghud-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#06d6a0,var(--gold));transition:width .5s}
+.ghud-xp{display:inline-flex;align-items:center;gap:6px;color:var(--gold2);font-weight:700;margin-top:8px;font-size:.95rem}
+/* ---------- احتفالات المقاطع والمراحل ---------- */
+.fx-ov{position:fixed;inset:0;background:rgba(10,9,7,.84);display:none;align-items:center;justify-content:center;z-index:9500;padding:20px}
+.fx-ov.on{display:flex}
+.fx-ov-in{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:38px 44px;text-align:center;max-width:420px;width:100%;animation:fxpop .45s}
+@keyframes fxpop{from{transform:scale(.6);opacity:0}}
+.fx-ov-in h2{font-family:var(--display);color:var(--gold2);font-size:1.9rem;margin-bottom:12px}
+.fx-stars{font-size:3rem;letter-spacing:8px;color:var(--gold2);margin-bottom:14px;min-height:60px}
+.fx-stars span{display:inline-block;animation:fxstar .6s backwards}
+@keyframes fxstar{from{transform:scale(0) rotate(-180deg)}}
+.fx-badge{display:inline-block;background:rgba(155,93,229,.14);border:1px solid #9b5de5;color:#cdb2f0;border-radius:16px;padding:8px 18px;font-weight:700;margin-bottom:18px}
+.fx-combo{position:fixed;top:74px;left:50%;transform:translateX(-50%) scale(0);background:#ef476f;color:#fff;font-size:1.25rem;font-weight:800;padding:8px 22px;border-radius:999px;z-index:9600;transition:transform .3s;display:flex;align-items:center;gap:8px}
+.fx-combo.on{transform:translateX(-50%) scale(1)}
+.fx-combo svg{width:20px;height:20px}
+@media(max-width:700px){.nm-node{width:68px;height:68px;font-size:1.25rem}.nm-lbl{width:104px;font-size:.72rem}.nm-guide{width:50px;height:50px}}
