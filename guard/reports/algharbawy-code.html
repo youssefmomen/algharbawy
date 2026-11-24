@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>تقرير الكود: موقع الغرباوي</title><style>
+:root{--bg:#0a0907;--card:#16130f;--gold:#d4af5f;--txt:#f3ecdc;--mut:#a89f8a;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.wrap{max-width:780px;margin:auto;padding:18px}
+h1{color:var(--gold);margin:8px 0 0;font-size:1.8rem}p.lead{color:var(--mut);margin-top:4px}
+input[type=url],button{font:inherit;border-radius:12px;padding:13px;width:100%;margin-top:8px}
+input[type=url]{background:var(--card);color:var(--txt);border:1px solid #3a3326}
+button{background:var(--gold);color:#000;border:0;font-weight:bold;cursor:pointer;font-size:1.1rem}
+button:disabled{opacity:.5}
+#progress{height:8px;background:#2a2418;border-radius:8px;margin:14px 0;overflow:hidden;display:none}#bar{height:100%;width:0;background:var(--gold);transition:width .3s}
+#score{text-align:center;font-size:3rem;font-weight:bold;margin:6px 0 0}#sum{text-align:center;color:var(--mut);margin-bottom:8px}
+.box{background:var(--card);border-radius:14px;margin:10px 0;border-right:5px solid var(--mut);overflow:hidden}
+.box.ok{border-color:var(--ok)}.box.warn{border-color:var(--warn)}.box.bad{border-color:var(--bad)}
+.box summary{padding:12px 14px;cursor:pointer;font-weight:bold;list-style:none}
+.tag{font-size:.8rem;padding:1px 9px;border-radius:8px;margin-left:8px;color:#000}
+.ok .tag{background:var(--ok)}.warn .tag{background:var(--warn)}.bad .tag{background:var(--bad)}
+.det{padding:0 14px 12px;font-size:.95rem}.det b{color:var(--gold)}.det p{margin:6px 0}
+.cat{color:var(--gold);margin:22px 0 4px;font-size:1.05rem}
+.own{display:flex;gap:10px;align-items:flex-start;margin:12px 0}.own input{margin-top:8px;width:20px;height:20px}
+.note{font-size:.85rem;color:var(--mut);margin-top:24px}
+pre{background:#0a0907;padding:10px;border-radius:8px;overflow:auto;font-size:.8rem;white-space:pre-wrap;color:#e8dfc8}</style></head><body><div class="wrap">
+<h1>🥷 تقرير فحص الكود لموقع الغرباوي</h1>
+<p class="lead">قراءة مباشرة لكود المستودع (ملفات وسطور) بتاريخ 25 نوفمبر 2026. الشرح دفاعي: بيوضح الغلط والحل، من غير أي أكواد هجوم جاهزة.</p>
+<div id="sum">🔴 خطر: 1 | 🟡 تحسين: 3 | 🟢 سليم: 1 (والخطر الوحيد اتصلّح في الطلب الجديد)</div>
+<details class="box bad" open><summary><span class="tag">خطر</span>الدخول بيحوّل لأي رابط تحط في next (إعادة توجيه مفتوحة)</summary><div class="det"><p><b>فين بالظبط:</b> ملف assets/auth.js، السطور 6-8 و45</p><pre dir="ltr">function next() {
+    return new URLSearchParams(location.search).get(&quot;next&quot;) || &quot;index.html&quot;;
+  }
+  ...
+  if (u) location.href = next();</pre><p><b>إيه الغلط:</b> الصفحة بتاخد قيمة next من الرابط وتروح لها بعد الدخول من غير أي تحقق.</p><p><b>إيه اللي كان ممكن يحصل (شرح دفاعي):</b> حد يبعت لضحية رابط للموقع الحقيقي، لكن بقيمة next بتشاور على موقع تاني مزيّف أو على رابط من نوع javascript. الضحية بتشوف رابط موثوق، تسجل دخول، وبعدها تتحول لصفحة المهاجم (تصيّد)، وفي حالة javascript ممكن ينفذ كود في صفحة الموقع. (CSP اللي اتضاف بيقفل جزء التنفيذ، لكن التحويل الخارجي كان ممكن.)</p><p><b>الحل بالظبط:</b> اقبل بس اسم صفحة داخلية: if (/^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&amp;%.-]*)?$/.test(n)) استخدمه، وإلا index.html.</p><p><b>الحالة:</b> تم الإصلاح في الطلب القادم (PR جديد) في assets/auth.js.</p></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>نقاط الخبرة والنجوم يكتبها المتصفح من غير حدود</summary><div class="det"><p><b>فين بالظبط:</b> ملف assets/store.js السطور 57-62 + firestore.rules السطور 33-37</p><pre dir="ltr">db.collection(&quot;progress&quot;).doc(uid).set({ xp: stats.xp || 0, stars: stats.stars || {} }, { merge: true })
+// rules: allow create, update: ... hasOnly([&#x27;completed&#x27;,&#x27;xp&#x27;,&#x27;stars&#x27;])</pre><p><b>إيه الغلط:</b> القواعد بتتأكد من أسماء الحقول بس، مش من نوع القيمة ولا حجمها. أي طالب مسجل يقدر يكتب أي رقم في xp.</p><p><b>إيه اللي كان ممكن يحصل (شرح دفاعي):</b> طالب فاهم بيفتح أدوات المتصفح ويبعت xp بقيمة ضخمة لنفسه، فيطلع الأول في أي ترتيب، أو يملأ المستند بنص كبير يستهلك حصتك المجانية.</p><p><b>الحل بالظبط:</b> في firestore.rules أضف شروط: request.resource.data.xp is int &amp;&amp; request.resource.data.xp &gt;= 0 &amp;&amp; request.resource.data.xp &lt; 1000000، وstars is map، وcompleted is list وحجمها أقل من 2000.</p><p><b>الحالة:</b> يحتاج نشر القواعد من Firebase Console (المرحلة التانية). مش اتغير دلوقتي.</p></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>بريد الطالب في users بيكتبه المتصفح بدون تحقق</summary><div class="det"><p><b>فين بالظبط:</b> ملف assets/store.js السطور 41-52 + firestore.rules السطور 25-30</p><pre dir="ltr">db.collection(&quot;users&quot;).doc(u.uid).set({ email: u.email, lastActive: ... }, { merge: true })
+// rules: hasOnly([&#x27;email&#x27;,&#x27;lastActive&#x27;])</pre><p><b>إيه الغلط:</b> القواعد مش بتتأكد إن الإيميل المكتوب هو إيميل الحساب الحقيقي.</p><p><b>إيه اللي كان ممكن يحصل (شرح دفاعي):</b> حد يكتب في مستنده إيميل شخص تاني، فتظهر في لوحة المدير بيانات مزيفة (انتحال).</p><p><b>الحل بالظبط:</b> أضف في القواعد: request.resource.data.email == request.auth.token.email.</p><p><b>الحالة:</b> يحتاج نشر القواعد (المرحلة التانية).</p></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>التحقق من المدير بالبصمة داخل الكود</summary><div class="det"><p><b>فين بالظبط:</b> ملف assets/firebase-config.js السطر 12 + assets/store.js السطور 88-95</p><pre dir="ltr">adminEmailHash: &quot;733c5628...6bb4b28&quot;  //  hex === cfg.adminEmailHash</pre><p><b>إيه الغلط:</b> الإيميل نفسه اتشال، لكن البصمة (SHA-256) ظاهرة للعامة، وده فحص على جهاز الزائر. ده بيحدد هل تظهر لوحة المدير، مش هل البيانات متاحة.</p><p><b>إيه اللي كان ممكن يحصل (شرح دفاعي):</b> حد يجرب بصمات إيميلات متوقعة ويعرف إيميل المدير، أو يعدل الفحص في متصفحه عشان تظهر له واجهة الإدارة (لكن بدون بيانات لو القواعد متظبطة).</p><p><b>الحل بالظبط:</b> اعتمد على مستند admins/{uid} في Firestore فقط واحذف adminEmailHash بعد إنشائه، والقواعد هي اللي تحمي البيانات.</p><p><b>الحالة:</b> مؤقت، مرتبط بالمرحلة التانية (إنشاء مستند الأدمن ونشر القواعد).</p></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>استخدام innerHTML (26 مرة)</summary><div class="det"><p><b>فين بالظبط:</b> assets/app.js (23 مرة) وassets/admin.js (3 مرات)، مثال app.js السطر 138 و admin.js السطر 61</p><pre dir="ltr">document.getElementById(&quot;hero-title&quot;).innerHTML = words.map(... esc(w) ...)
+&quot;&lt;td&gt;&quot; + esc(r2.email) + &quot;&lt;/td&gt;&quot;</pre><p><b>إيه الغلط:</b> راجعت كل الاستخدامات: أي قيمة ممكن تيجي من مستخدم (الإيميل، رسائل الخطأ) بتعدي على esc() الأول، والباقي بيانات ثابتة من الموقع.</p><p><b>إيه اللي كان ممكن يحصل (شرح دفاعي):</b> مفيش استغلال ممكن حاليًا. الخطر إن حد يضيف سطر جديد بعدين ويحط فيه قيمة من الرابط أو المستخدم من غير esc().</p><p><b>الحل بالظبط:</b> سيب الكود زي ما هو، وأي سطر جديد يعرض نص من مستخدم لازم يستخدم esc() أو textContent.</p><p><b>الحالة:</b> لم يتغير: آمن حاليًا.</p></div></details>
+<details class="box ok"><summary><span class="tag">سليم</span>اللي اتأكدت إنه سليم</summary><div class="det"><p><b>فين بالظبط:</b> كل الملفات</p><p><b>إيه الغلط:</b> مفيش مفاتيح سرية ولا إيميل أدمن في الكود المنشور، وroutes الصفحات (id وcourse وlesson) بتتحقق بالبحث في بيانات الموقع، مش بتتحط في الصفحة مباشرة. بيانات users/progress/admins محمية من القراءة العامة (اختبرت بطلب بدون دخول ورجع 403). تمت إضافة CSP وreferrer وsecurity.txt.</p></div></details>
+
+<p class="note"><a href="../">ارجع للأداة</a></p></div></body></html>
