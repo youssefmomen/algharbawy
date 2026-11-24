@@ -293,6 +293,7 @@
     var starCfg=(les.stars)||{perCorrectAnswer:1,perfectSegmentBonus:2};
     var starTotal=0,wrongFlags=counters.map(function(){return false;}),doneCount=counters.map(function(){return 0;});
     var STAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.8 5.9 6.4.8-4.7 4.4 1.2 6.3L12 17l-5.7 3 1.2-6.3L2.8 9.3l6.4-.8z" fill="currentColor"/></svg>';
+    var SPK_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9a4.2 4.2 0 0 1 0 6"/><path d="M17.6 6.4a8 8 0 0 1 0 11.2"/></svg>';
     function snd(){
       if(!snd.ctx){try{var AC=window.AudioContext||window.webkitAudioContext;snd.ctx=AC?new AC():null;}catch(e){snd.ctx=null;}}
       if(snd.ctx&&snd.ctx.state==="suspended")snd.ctx.resume();
@@ -408,6 +409,7 @@
       if(sg.game&&kidSkin)h+='<div class="g-name rv">'+esc(sg.game)+'</div>';
       if(sg.vocab&&sg.vocab.length)h+='<div class="ex-head rv">الْمُفْرَدَاتُ</div><div class="vocab">'+sg.vocab.map(function(v){return '<div class="voc rv"><b>'+esc(v[0])+'</b><span>'+esc(v[1])+'</span></div>';}).join("")+'</div>';
       if(sg.meaning&&sg.meaning.length)h+='<div class="ex-head rv">الْمَعْنَى</div>'+sg.meaning.map(function(m){return '<div class="mean rv"><b>'+esc(m[0])+'</b><p>'+esc(m[1])+'</p></div>';}).join("");
+      if(sg.words&&sg.words.length)h+='<div class="wf" data-s="'+si+'"><div class="wf-head"><div class="wf-pill">★ <b class="wf-cnt">٠</b></div><div class="wf-bar"><i class="wf-fill"></i></div></div><div class="wf-card"></div><div class="wf-dots"></div><div class="wf-row"><button type="button" class="wf-say" aria-label="سماع">'+SPK_SVG+'</button><button type="button" class="wf-nx">التَّالِي <span class="ar">←</span></button></div></div>';
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
@@ -418,7 +420,7 @@
           '</div><div class="exp"></div></div>';
         }).join("");
       }
-      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">'+(poemMode?'جَاهِزٌ':'الْجُزْءُ التَّالِي')+' <span class="ar">←</span></button></div>';
+      if(tapMode&&si<segs.length-1&&!(sg.words&&sg.words.length))h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">'+(poemMode?'جَاهِزٌ':'الْجُزْءُ التَّالِي')+' <span class="ar">←</span></button></div>';
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
@@ -434,6 +436,36 @@
       if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
       if(poemMode){var pEl=lb.querySelector('.seg[data-s="'+si+'"]');if(pEl)pEl.hidden=true;}
       if(nx===segs.length-1&&counters[nx]===0){progMark(les.id);var d=document.getElementById("quiz-done");if(d)d.hidden=false;if(pg)pg.classList.remove("locked");}
+    });
+    lb.querySelectorAll(".wf").forEach(function(w){
+      var wsi=+w.getAttribute("data-s"),WL=segs[wsi].words,wi=0;
+      var wcard=w.querySelector(".wf-card"),wdots=w.querySelector(".wf-dots"),wfill=w.querySelector(".wf-fill"),wcnt=w.querySelector(".wf-cnt");
+      function wfShow(){
+        wcard.classList.remove("pop");void wcard.offsetWidth;wcard.classList.add("pop");
+        wcard.textContent=WL[wi];
+        wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
+        if(wfill)wfill.style.width=(wi/WL.length*100)+"%";
+        if(wcnt)wcnt.textContent=ar(wi);
+        speak(WL[wi]);
+      }
+      function wfDone(){
+        if(wfill)wfill.style.width="100%";
+        if(wcnt)wcnt.textContent=ar(WL.length);
+        var nx=wsi+1;
+        var dEl=lb.querySelector('.seg-pass[data-s="'+wsi+'"]');if(dEl)dEl.hidden=false;
+        var nEl=lb.querySelector('.seg[data-s="'+nx+'"]');
+        if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
+        else{
+          progMark(les.id);
+          var d=document.getElementById("quiz-done");if(d)d.hidden=false;
+          if(pg)pg.classList.remove("locked");
+          if(gameMode){sndWin();confetti(60);mascotJump();}
+          speak('أَحْسَنْتَ يَا بَطَلُ!');
+        }
+      }
+      w.querySelector(".wf-say").addEventListener("click",function(){speak(WL[wi]);});
+      w.querySelector(".wf-nx").addEventListener("click",function(){wi++;if(wi>=WL.length){wfDone();return;}wfShow();});
+      wfShow();
     });
     lb.addEventListener("click",function(e){
       var b=e.target.closest(".opt");if(!b||b.disabled)return;
