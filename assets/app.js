@@ -56,6 +56,10 @@
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
+  function progGet(){try{return JSON.parse(localStorage.getItem("gharbawy-progress-v1"))||{};}catch(e){return{};}}
+  function progDone(id){var p=progGet();return !!(p.completed&&p.completed[id]);}
+  function progMark(id){var p=progGet();p.completed=p.completed||{};p.completed[id]=Date.now();try{localStorage.setItem("gharbawy-progress-v1",JSON.stringify(p));}catch(e){}}
+  function lockRow(num,title){return '<div class="lock-row"><span class="n">'+num+'</span><div><div class="t"><span class="lock-ic" aria-hidden="true"></span>'+esc(title)+'</div><div class="s">أنهِ الدرس السابق أولًا</div></div></div>';}
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
     if(sec.id==="tasis")document.body.classList.add("kids");
@@ -73,6 +77,8 @@
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
     else if(crs){document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
+      var open=i===0||progDone(crs.lessons[i-1].id);
+      if(!open)return '<li class="rv locked" style="--d:'+i*.06+'s">'+lockRow(pad(i+1),l.title)+'</li>';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
@@ -83,6 +89,8 @@
       '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
     rows+=sec.lessons.map(function(l,i){
+      var open=i===0||progDone(sec.lessons[i-1].id);
+      if(!open)return '<li class="rv locked" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s">'+lockRow(pad(i+1+(sec.courses?sec.courses.length:0)),l.title)+'</li>';
       return '<li class="rv" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1+(sec.courses?sec.courses.length:0))+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");
@@ -109,7 +117,9 @@
     var segDone=counters.map(function(c){return c===0;});
     for(var u=1;u<segs.length;u++)segDone[u]=counters[u]===0&&segDone[u-1];
     var totalQ=counters.reduce(function(a,b){return a+b;},0);
-    var unlocked=segs.map(function(_,i){return i===0;});
+    var already=progDone(les.id);
+    if(already)segDone=segDone.map(function(){return true;});
+    var unlocked=segs.map(function(_,i){return i===0||already;});
     for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
     lb.innerHTML=preV+segs.map(function(sg,si){
@@ -130,7 +140,8 @@
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
     }).join("")+(totalQ?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>':'');
-    if(totalQ&&pg)pg.classList.add("locked");
+    if(totalQ&&pg&&!already)pg.classList.add("locked");
+    if(totalQ===0&&!already)progMark(les.id);
     var doneCount=counters.map(function(){return 0;});
     lb.addEventListener("click",function(e){
       var b=e.target.closest(".opt");if(!b||b.disabled)return;
@@ -146,6 +157,7 @@
           var nEl=lb.querySelector('.seg[data-s="'+(si+1)+'"]');
           if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
           if(segDone.every(function(x){return x;})){
+            progMark(les.id);
             var d=document.getElementById("quiz-done");if(d)d.hidden=false;
             if(pg)pg.classList.remove("locked");
           }
