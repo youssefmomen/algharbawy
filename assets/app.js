@@ -27,16 +27,8 @@
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
   '<div class="links" id="links"><a href="index.html">الرئيسة</a>'+
   topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
-  '</div><div class="nav-side">'+'<button class="theme-btn" id="themeBtn" aria-label="تبديل المظهر">'+'<svg class="ic-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5Z"/></svg>'+'<svg class="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'+'</button>'+'<button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
+  '</div><button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
-  var themeBtn=document.getElementById("themeBtn");
-  if(themeBtn)themeBtn.addEventListener("click",function(){
-    var h=document.documentElement;
-    var next=h.getAttribute("data-theme")==="light"?"dark":"light";
-    h.setAttribute("data-theme",next);
-    try{localStorage.setItem("gharbawy-theme",next);}catch(e){}
-    var mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.setAttribute("content",next==="light"?"#f6f0e1":"#0f0d09");
-  });
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
@@ -52,22 +44,22 @@
     document.getElementById("tiles").innerHTML=topSections.map(function(s,i){
       return '<a class="tile rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
       '<span class="num">'+pad(i+1)+'</span>'+markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
-      '<div class="meta"><span>'+(lessonsCount(s)?ar(lessonsCount(s))+' '+(lessonsCount(s)>2&&lessonsCount(s)<11?'دروس':'درس'):'قريبًا')+'</span><span class="go">←</span></div></a>';
+      '<div class="meta"><span>'+(lessonsCount(s)?ar(lessonsCount(s))+' '+(lessonsCount(s)>2&&lessonsCount(s)<11?'دُرُوس':'دَرْس'):'قريبًا')+'</span><span class="go">←</span></div></a>';
     }).join("");
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
       return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
-      '<div class="meta"><span>قريبًا</span><span class="go">←</span></div></a>';
+      '<div class="meta"><span>قَرِيبًا</span><span class="go">←</span></div></a>';
     }).join("");}
-    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أقسام",""],[200,"طالب","+"],[total,"درس تفاعلي","+"]];
+    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أَقْسَامٌ",""],[200,"طَالِبٌ","+"],[total,"دَرْسٌ تَفَاعُلِيٌّ","+"]];
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+x[2]+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
   function progGet(){try{return JSON.parse(localStorage.getItem("gharbawy-progress-v1"))||{};}catch(e){return{};}}
   function progDone(id){var p=progGet();return !!(p.completed&&p.completed[id]);}
   function progMark(id){var p=progGet();p.completed=p.completed||{};p.completed[id]=Date.now();try{localStorage.setItem("gharbawy-progress-v1",JSON.stringify(p));}catch(e){}}
-  function lockRow(num,title){return '<div class="lock-row"><span class="n">'+num+'</span><div><div class="t"><span class="lock-ic" aria-hidden="true"></span>'+esc(title)+'</div><div class="s">أنهِ الدرس السابق أولًا</div></div></div>';}
+  function lockRow(num,title){return '<div class="lock-row"><span class="n">'+num+'</span><div><div class="t"><span class="lock-ic" aria-hidden="true"></span>'+esc(title)+'</div><div class="s">أَنْهِ الدَّرْسَ السَّابِقَ أَوَّلًا</div></div></div>';}
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
     if(sec.id==="tasis")document.body.classList.add("kids");
@@ -80,24 +72,32 @@
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(crs?crs.title:sec.title)+'</span>';
     document.getElementById("page-desc").textContent=crs?crs.description:sec.description;
-    if(crs&&crs.price&&crs.lessons&&crs.lessons.length)document.getElementById("page-desc").insertAdjacentHTML('afterend','<div class="price-row hero-price"><del>'+esc(crs.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>');
+    if(crs&&crs.price&&crs.lessons&&crs.lessons.length)document.getElementById("page-desc").insertAdjacentHTML('afterend','<div class="price-row hero-price"><del>'+esc(crs.price)+'</del><span class="badge">مَجَّانِيَّةً لِفَتْرَةٍ مَحْدُودَةٍ</span></div>');
+    if(crs&&crs.lessons&&crs.lessons.length){
+      var cN=crs.lessons.length,cD=crs.lessons.filter(function(l){return progDone(l.id);}).length;
+      var metaH='<div class="course-meta"><span>'+ar(cN)+' '+(cN>2&&cN<11?'دُرُوس':'دَرْس')+'</span><span class="prog-line"><i style="width:'+Math.round(cD/cN*100)+'%"></i></span><span>'+ar(cD)+' / '+ar(cN)+'</span></div>';
+      document.getElementById("page-desc").insertAdjacentHTML('afterend',metaH);
+      var secLessonsEl=document.getElementById("lessons");
+      if(secLessonsEl)secLessonsEl.insertAdjacentHTML('beforebegin','<div class="inst-card rv"><img src="assets/founder.jpg" alt=""><div><b>يوسف مؤمن الغرباوي</b><span>خَرِيجُ كُلِّيَّةِ دَارِ الْعُلُومِ جَامِعَةِ الْقَاهِرَةِ</span></div></div>');
+    }
     if(sec.children){document.getElementById("lessons").innerHTML=sec.children.map(function(cid,i){
       var c=find(data.sections,cid);if(!c)return '';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(c.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
-    else if(crs){document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
+    else if(crs){var rowFound=false;document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
       var open=i===0||progDone(crs.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+i*.06+'s">'+lockRow(pad(i+1),l.title)+'</li>';
       var dn=progDone(l.id);
-      return '<li class="rv'+(dn?' done':'')+'" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
+      var cur=false;if(!dn&&!rowFound){cur=true;rowFound=true;}
+      return '<li class="rv'+(dn?' done':'')+(cur?' current':'')+'" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+(dn?'<span class="done-ic" aria-hidden="true"></span>':'')+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
     else{var rows='';
     if(sec.courses){rows+=sec.courses.map(function(c,i){
-      if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قريبًا</span>'+esc(c.title)+'</div></div></div></li>';
+      if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قَرِيبًا</span>'+esc(c.title)+'</div></div></div></li>';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
-      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div>'+(c.price?'<div class="price-row"><del>'+esc(c.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>':'')+'</div><span class="go">←</span></a></li>';
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دَوْرَةٌ</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div>'+(c.price?'<div class="price-row"><del>'+esc(c.price)+'</del><span class="badge">مجانية لفترة محدودة</span></div>':'')+'</div><span class="go">←</span></a></li>';
     }).join("");}
     rows+=sec.lessons.map(function(l,i){
       var open=i===0||progDone(sec.lessons[i-1].id);
@@ -106,7 +106,7 @@
       return '<li class="rv'+(dn?' done':'')+'" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1+(sec.courses?sec.courses.length:0))+'</span><div><div class="t">'+(dn?'<span class="done-ic" aria-hidden="true"></span>':'')+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");
-    document.getElementById("lessons").innerHTML=rows||'<li class="rv"><div class="soon-card">قريبًا</div></li>';}
+    document.getElementById("lessons").innerHTML=rows||'<li class="rv"><div class="soon-card">قَرِيبًا</div></li>';}
   }
 
   if(page==="lesson"){
@@ -143,17 +143,17 @@
       if(sg.examples&&sg.examples.length)h+='<div class="ex-head rv">أمثلة</div>'+sg.examples.map(function(x){return '<p class="rv ex">'+esc(x)+'</p>';}).join("");
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
-        h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أجب على كل الأسئلة إجابة صحيحة لفتح الجزء التالي.':'أجب على كل الأسئلة إجابة صحيحة لفتح الدرس التالي.')+'</div>'+sg.questions.map(function(q,qi){
+        h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
           return '<div class="q rv" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+'</div><div class="opts">'+
           q.options.map(function(o,oi){return '<button type="button" class="opt" data-o="'+oi+'"><span class="ol">'+["أ","ب","ج","د"][oi]+'</span>'+esc(o)+'</button>';}).join("")+
           '</div><div class="exp"></div></div>';
         }).join("");
       }
-      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">الجزء التالي <span class="ar">←</span></button></div>';
+      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">الْجُزْءُ التَّالِي <span class="ar">←</span></button></div>';
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
-    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أحسنت، أتممت هذا الدرس</b><span>يمكنك الانتقال إلى الدرس التالي.</span></div></div>':'');
+    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أَحْسَنْتَ، أَتْمَمْتَ هَذَا الدَّرْسَ</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div></div>':'');
     if((totalQ>0||tapMode)&&pg&&!already)pg.classList.add("locked");
     if(totalQ===0&&!tapMode&&!already)progMark(les.id);
     if(tapMode)lb.addEventListener("click",function(e){
@@ -187,14 +187,14 @@
         }
       }else{
         b.classList.add("bad");b.disabled=true;
-        exp.className="exp show try";exp.textContent="إجابة غير صحيحة، حاول مرة أخرى.";
+        exp.className="exp show try";exp.textContent="إِجَابَةٌ غَيْرُ صَحِيحَةٍ، حَاوِلْ مَرَّةً أُخْرَى.";
       }
     });
     function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
     var prev=pool[li-1],next=pool[li+1];
     var backTo=crs2?'section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id):'section.html?id='+encodeURIComponent(sec2.id);
-    var last=!next?'<a class="nx" href="'+backTo+'"><small>أحسنت، أنهيت القسم</small><b>العودة إلى '+esc(crs2?crs2.title:sec2.title)+'</b></a>':lk(next,"الدرس التالي ←","nx");
-    document.getElementById("pager").innerHTML=lk(prev,"→ الدرس السابق","pv")+last;
+    var last=!next?'<a class="nx" href="'+backTo+'"><small>أَحْسَنْتَ، أَنْهَيْتَ الْقِسْمَ</small><b>الْعَوْدَةُ إِلَى '+esc(crs2?crs2.title:sec2.title)+'</b></a>':lk(next,"الدَّرْسُ التَّالِي ←","nx");
+    document.getElementById("pager").innerHTML=lk(prev,"→ الدَّرْسُ السَّابِقُ","pv")+last;
   }
 
   // ---------- التفاعل ----------
