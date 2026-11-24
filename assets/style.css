@@ -186,3 +186,4 @@ footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2
 .quiz-done span{color:var(--mute)}
 .pager.locked{opacity:.35;pointer-events:none;filter:saturate(.5)}
 .quiz-done[hidden]{display:none}
+.chip{display:inline-block;font-size:.72rem;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:2px 12px;margin-inline-end:10px;vertical-align:middle}
