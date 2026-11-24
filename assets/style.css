@@ -332,3 +332,6 @@ body.game.kids .les-img img{width:100%;max-width:520px;display:block;margin-inli
   body.game.kids .q-t{font-size:1.35rem}
   body.game .ghud{top:56px;padding:10px 14px;gap:10px}
 }
+
+/* إخفاء الشرح أثناء الحل حتى لا يُغش منه، ويعود عند الخطأ */
+body.game .g-seg.solving>p,body.game .g-seg.solving .ex-h,body.game .g-seg.solving .ex-wrap,body.game .g-seg.solving .les-img,body.game .g-seg.solving .g-name,body.game .g-seg.solving .verse-card{display:none}
