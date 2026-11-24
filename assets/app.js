@@ -86,6 +86,7 @@
   }
 
   // ---------- النطق (لعبة الأطفال) ----------
+  var SEQ_OPEN_ALL=true; // مؤقت بطلب الأستاذ: فتح كل الدروس للتجربة — رجّعها false لإعادة قفل التتابع
   var ttsUnlocked=false,ttsVoice=null;
   document.addEventListener("pointerdown",function(){ttsUnlocked=true;},{once:true});
   function pickVoice(){
@@ -194,7 +195,7 @@
       LSN.forEach(function(l,i){
         var row=Math.floor(i/ROW),col=i%ROW,xx=(row%2?XS[ROW-1-col]:XS[col]),yy=Y0+row*DY;
         pts.push([xx,yy]);
-        var open=i===0||progDone(LSN[i-1].id),dn=progDone(l.id),st=dn?'done':open?'open':'locked';
+        var open=SEQ_OPEN_ALL||i===0||progDone(LSN[i-1].id),dn=progDone(l.id),st=dn?'done':open?'open':'locked';
         if(st==='open'&&firstOpen<0)firstOpen=i;
         var inner=dn?'<b>'+ar(i+1)+'</b><small>'+NST+' '+ar(lesStarsGet(l.id))+'</small>':(st==='locked'?NLK:'<b>'+ar(i+1)+'</b>');
         var pos='style="left:'+xx+'%;top:'+yy+'px"',lpos='style="left:'+xx+'%;top:'+(yy+92)+'px"';
@@ -211,7 +212,7 @@
         +nodesH+'<img class="nm-guide" src="assets/nour/321-mascot.jpg" alt="" style="left:calc('+pts[firstOpen][0]+'% + 96px);top:'+(pts[firstOpen][1]+8)+'px"></div></li>';
     }
     else if(crs){var rowFound=false;document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
-      var open=i===0||progDone(crs.lessons[i-1].id);
+      var open=SEQ_OPEN_ALL||i===0||progDone(crs.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+i*.06+'s">'+lockRow(pad(i+1),l.title)+'</li>';
       var dn=progDone(l.id);
       var cur=false;if(!dn&&!rowFound){cur=true;rowFound=true;}
@@ -227,7 +228,7 @@
     }).join("");}
     else if(sec.courses){rows+=sec.courses.map(function(c,i){return courseRow(sec,c,i);}).join("");}
     rows+=sec.lessons.map(function(l,i){
-      var open=i===0||progDone(sec.lessons[i-1].id);
+      var open=SEQ_OPEN_ALL||i===0||progDone(sec.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s">'+lockRow(pad(i+1+(sec.courses?sec.courses.length:0)),l.title)+'</li>';
       var dn=progDone(l.id);
       return '<li class="rv'+(dn?' done':'')+'" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
