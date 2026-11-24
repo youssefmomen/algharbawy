@@ -154,6 +154,13 @@
   function xpAdd(n){var p=progGet();p.xp=(p.xp||0)+n;progSave(p);}
   function lesStarsGet(id){var p=progGet();return (p.stars&&p.stars[id])||0;}
   function lesStarsSet(id,n){var p=progGet();p.stars=p.stars||{};p.stars[id]=Math.max(p.stars[id]||0,n);progSave(p);}
+  function nmTitle(t){var x=String(t||"").replace(/^الدرس\s+[^:：]{1,20}[:：]\s*/,"").trim();return x||t;}
+  function dzDecor(){if(!document.body.classList.contains("nour-skin")||document.getElementById("dz-sun"))return;
+    var PALM='<path d="M58,165 C56,120 55,90 60,55 L68,55 C70,90 70,120 72,165 Z" fill="#a5713f"/><g fill="#4f9b54"><path d="M64,58 C40,45 20,48 8,62 C28,60 44,62 62,70 Z"/><path d="M64,58 C88,45 108,48 118,64 C98,60 84,63 66,70 Z"/><path d="M64,56 C52,36 34,30 18,34 C36,40 48,50 60,66 Z"/><path d="M64,56 C78,36 96,30 110,36 C92,42 80,52 68,66 Z"/><path d="M64,55 C60,32 50,20 36,16 C50,26 56,40 62,58 Z"/><path d="M64,55 C70,32 82,22 96,18 C82,28 74,42 66,58 Z"/></g><circle cx="58" cy="66" r="6" fill="#c97b2e"/><circle cx="70" cy="68" r="6" fill="#c97b2e"/>';
+    document.body.insertAdjacentHTML("beforeend",'<div class="dz-sun" aria-hidden="true"></div>'
+    +'<svg class="dz-dunes" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true"><path d="M0,120 C240,60 420,150 720,110 C1020,70 1200,150 1440,100 L1440,220 L0,220 Z" fill="#f2cd8a"/><path d="M0,170 C260,120 520,190 820,150 C1100,115 1300,180 1440,150 L1440,220 L0,220 Z" fill="#eabf74"/></svg>'
+    +'<svg class="dz-palm" style="bottom:60px;left:3%;width:130px" viewBox="0 0 120 170" aria-hidden="true">'+PALM+'</svg>'
+    +'<svg class="dz-palm" style="bottom:230px;right:8%;width:95px" viewBox="0 0 120 170" aria-hidden="true">'+PALM+'</svg>');}
   function lockRow(num,title){return '<div class="lock-row"><span class="n">'+num+'</span><div><div class="t"><span class="lock-ic" aria-hidden="true"></span>'+esc(title)+'</div><div class="s">أَنْهِ الدَّرْسَ السَّابِقَ أَوَّلًا</div></div></div>';}
   function courseRow(sec,c,i){
     if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قَرِيبًا</span>'+esc(c.title)+'</div></div></div></li>';
@@ -191,10 +198,10 @@
       var NLK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z" fill="currentColor"/></svg>';
       var LSN=crs.lessons,totSt=0,doneN=0,firstOpen=-1;
       LSN.forEach(function(l){totSt+=lesStarsGet(l.id);if(progDone(l.id))doneN++;});
-      var ROW=4,XS=[10,36,62,88],Y0=70,DY=150,MH=Y0+Math.ceil(LSN.length/ROW)*DY+40,pts=[],nodesH='';
+      var XS=[50,70,50,30],Y0=70,DY=150,MH=Y0+LSN.length*DY+40,pts=[],nodesH='';
       LSN.forEach(function(l,i){
-        var row=Math.floor(i/ROW),col=i%ROW,xx=(row%2?XS[ROW-1-col]:XS[col]),yy=Y0+row*DY;
-        pts.push([xx,yy]);
+        var xx=XS[i%4],yy=Y0+i*DY;
+        pts.push([xx*10,yy]);
         var open=SEQ_OPEN_ALL||i===0||progDone(LSN[i-1].id),dn=progDone(l.id),st=dn?'done':open?'open':'locked';
         if(st==='open'&&firstOpen<0)firstOpen=i;
         var inner=dn?'<b>'+ar(i+1)+'</b><small>'+NST+' '+ar(lesStarsGet(l.id))+'</small>':(st==='locked'?NLK:'<b>'+ar(i+1)+'</b>');
@@ -202,14 +209,15 @@
         nodesH+=(st==='locked'
           ?'<span class="nm-node locked" '+pos+'>'+inner+'</span>'
           :'<a class="nm-node '+st+'" '+pos+' href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+inner+'</a>')
-          +'<span class="nm-lbl" '+lpos+'>'+esc(l.title)+'</span>';
+          +'<span class="nm-lbl" '+lpos+'>'+esc(nmTitle(l.title))+'</span>';
       });
       if(firstOpen<0)firstOpen=LSN.length-1;
       var pd='M'+pts.map(function(p){return p[0]+' '+(p[1]+42);}).join(' L');
       document.getElementById("lessons").innerHTML='<li class="nour-map-li">'
         +'<div class="nm-hud"><span class="nm-pill">'+NST+'<b>'+ar(totSt)+'</b></span><span class="nm-bar"><i style="width:'+Math.round(doneN/LSN.length*100)+'%"></i></span><span class="nm-pill"><b>'+ar(xpGet())+'</b>&nbsp;XP</span></div>'
-        +'<div class="nour-map" style="height:'+MH+'px"><svg viewBox="0 0 100 '+MH+'" preserveAspectRatio="none"><path d="'+pd+'" fill="none" stroke="rgba(212,175,95,.35)" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="0.2 4"/></svg>'
-        +nodesH+'<img class="nm-guide" src="assets/nour/321-mascot.jpg" alt="" style="left:calc('+pts[firstOpen][0]+'% + 96px);top:'+(pts[firstOpen][1]+8)+'px"></div></li>';
+        +'<div class="nour-map" style="height:'+MH+'px"><svg viewBox="0 0 1000 '+MH+'" preserveAspectRatio="none"><path d="'+pd+'" fill="none"/></svg>'
+        +nodesH+'<img class="nm-guide" src="assets/nour/321-mascot.jpg" alt="" style="left:calc('+XS[firstOpen%4]+'% '+(XS[firstOpen%4]>=70?'- 206px':'+ 96px')+');top:'+(pts[firstOpen][1]+8)+'px"></div></li>';
+      document.body.classList.add("nour-skin");dzDecor();
     }
     else if(crs){var rowFound=false;document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
       var open=SEQ_OPEN_ALL||i===0||progDone(crs.lessons[i-1].id);
@@ -252,7 +260,7 @@
     var kidSkin=!!kidCourse;
     var nourOv=!!(crs2&&crs2.id==="nour-albayan");var streak=0;
     if(gameMode){document.body.classList.add("game");if(kidSkin){document.body.classList.add("kids");document.body.classList.remove("school");}}
-    if(crs2&&crs2.id==="nour-albayan"){var gmi=document.createElement("img");gmi.id="gmascot";gmi.src="assets/nour/321-mascot.jpg";gmi.alt="";document.body.appendChild(gmi);}
+    if(crs2&&crs2.id==="nour-albayan"){document.body.classList.add("nour-skin");dzDecor();var gmi=document.createElement("img");gmi.id="gmascot";gmi.src="assets/nour/321-mascot.jpg";gmi.alt="";document.body.appendChild(gmi);}
     if(crs2&&crs2.id==="nour-albayan"){document.body.insertAdjacentHTML('beforeend',
       '<div class="fx-ov" id="fx-segov"><div class="fx-ov-in"><h2 id="fx-seg-t"></h2><div class="fx-stars" id="fx-seg-stars"></div><div class="fx-badge" id="fx-seg-b"></div><button type="button" class="btn fill" id="fx-seg-n"></button></div></div>'
       +'<div class="fx-ov" id="fx-lvov"><div class="fx-ov-in"><h2>مَرْحَلَةٌ جَدِيدَةٌ مَفْتُوحَةٌ!</h2><div class="fx-stars" id="fx-lv-stars"></div><div class="fx-badge" id="fx-lv-b"></div><button type="button" class="btn fill" id="fx-lv-n">إِلَى الْخَرِيطَةِ</button></div></div>'
