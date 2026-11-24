@@ -12,9 +12,9 @@
   function pad(n){return ar(n<10?"0"+n:n);}
   var allSections=data.sections.concat(data.tracks||[]);
   var topSections=data.sections.filter(function(s){return !s.group;});
-  function lessonsCount(s){return s.children?s.children.reduce(function(t,id){var c=find(data.sections,id);return t+(c?c.lessons.length:0);},0):s.lessons.length;}
+  function lessonsCount(s){var n=0;if(s.children){s.children.forEach(function(id){var c=find(data.sections,id);if(c)n+=lessonsCount(c);});return n;}n=s.lessons.length;if(s.courses)s.courses.forEach(function(c){n+=c.lessons.length;});return n;}
   var page=document.body.getAttribute("data-page");
-  var total=0;data.sections.forEach(function(s){if(!s.children)total+=s.lessons.length;});
+  var total=0;data.sections.forEach(function(s){if(!s.children)total+=lessonsCount(s);});
 
   // علامة القسم: أول حرف من اسمه بعد إسقاط «ال» التعريف
   function markOf(s){
@@ -25,7 +25,7 @@
   // ---------- الهيكل المشترك ----------
   var navHTML='<div class="progress" id="progress"></div>'+
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
-  '<div class="links" id="links"><a href="index.html">الرئيسة</a><a href="index.html#sections">الأقسام</a>'+
+  '<div class="links" id="links"><a href="index.html">الرئيسة</a>'+
   topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
   '</div><button class="burger" id="burger" aria-label="القائمة">☰</button></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
@@ -58,30 +58,45 @@
 
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
-    document.title=sec.title+" | "+data.siteTitle;
+    var crs=param("course")&&sec.courses?find(sec.courses,param("course")):null;
+    var courseParam=crs?'&course='+encodeURIComponent(crs.id):'';
+    document.title=(crs?crs.title:sec.title)+" | "+data.siteTitle;
     var grp=sec.group?find(data.sections,sec.group):null;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp?'<a href="section.html?id='+encodeURIComponent(grp.id)+'">'+esc(grp.title)+'</a><span class="sep">◆</span>':'')+'<span>'+esc(sec.title)+'</span>';
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp?'<a href="section.html?id='+encodeURIComponent(grp.id)+'">'+esc(grp.title)+'</a><span class="sep">◆</span>':'')+(crs?'<a href="section.html?id='+encodeURIComponent(sec.id)+'">'+esc(sec.title)+'</a><span class="sep">◆</span><span>'+esc(crs.title)+'</span>':'<span>'+esc(sec.title)+'</span>');
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
-    document.getElementById("page-title").innerHTML='<span class="gold">'+esc(sec.title)+'</span>';
-    document.getElementById("page-desc").textContent=sec.description;
+    document.getElementById("page-title").innerHTML='<span class="gold">'+esc(crs?crs.title:sec.title)+'</span>';
+    document.getElementById("page-desc").textContent=crs?crs.description:sec.description;
     if(sec.children){document.getElementById("lessons").innerHTML=sec.children.map(function(cid,i){
       var c=find(data.sections,cid);if(!c)return '';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(c.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
-    }).join("");}else
-    document.getElementById("lessons").innerHTML=sec.lessons.length?sec.lessons.map(function(l,i){
-      return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
+    }).join("");}
+    else if(crs){document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
+      return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
-    }).join(""):'<li class="rv"><div class="soon-card">قريبًا</div></li>';
+    }).join("");}
+    else{var rows='';
+    if(sec.courses){rows+=sec.courses.map(function(c,i){
+      return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
+    }).join("");}
+    rows+=sec.lessons.map(function(l,i){
+      return '<li class="rv" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
+      '<span class="n">'+pad(i+1+(sec.courses?sec.courses.length:0))+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
+    }).join("");
+    document.getElementById("lessons").innerHTML=rows||'<li class="rv"><div class="soon-card">قريبًا</div></li>';}
   }
 
   if(page==="lesson"){
     var sec2=find(allSections,param("section"))||data.sections[0];
-    var les=find(sec2.lessons,param("lesson"))||sec2.lessons[0];
-    var li=sec2.lessons.indexOf(les);
+    var crs2=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
+    var pool=crs2?crs2.lessons:sec2.lessons;
+    var courseParam2=crs2?'&course='+encodeURIComponent(crs2.id):'';
+    var les=find(pool,param("lesson"))||pool[0];
+    var li=pool.indexOf(les);
     document.title=les.title+" | "+data.siteTitle;
     var grp2=sec2.group?find(data.sections,sec2.group):null;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp2?'<a href="section.html?id='+encodeURIComponent(grp2.id)+'">'+esc(grp2.title)+'</a><span class="sep">◆</span>':'')+'<a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp2?'<a href="section.html?id='+encodeURIComponent(grp2.id)+'">'+esc(grp2.title)+'</a><span class="sep">◆</span>':'')+'<a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span>'+(crs2?'<a href="section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id)+'">'+esc(crs2.title)+'</a><span class="sep">◆</span>':'')+'<span>'+esc(les.title)+'</span>';
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(les.title)+'</span>';
     document.getElementById("page-desc").textContent=les.summary||"";
     var lb=document.getElementById("lesson-body");
@@ -115,9 +130,10 @@
         }
       });
     }
-    function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
-    var prev=sec2.lessons[li-1],next=sec2.lessons[li+1];
-    var last=!next?'<a class="nx" href="section.html?id='+encodeURIComponent(sec2.id)+'"><small>أحسنت، أنهيت القسم</small><b>العودة إلى '+esc(sec2.title)+'</b></a>':lk(next,"الدرس التالي ←","nx");
+    function lk(l,lab,c){return l?'<a class="'+c+'" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(l.id)+'"><small>'+lab+'</small><b>'+esc(l.title)+'</b></a>':'<a class="empty '+c+'"></a>';}
+    var prev=pool[li-1],next=pool[li+1];
+    var backTo=crs2?'section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id):'section.html?id='+encodeURIComponent(sec2.id);
+    var last=!next?'<a class="nx" href="'+backTo+'"><small>أحسنت، أنهيت القسم</small><b>العودة إلى '+esc(crs2?crs2.title:sec2.title)+'</b></a>':lk(next,"الدرس التالي ←","nx");
     document.getElementById("pager").innerHTML=lk(prev,"→ الدرس السابق","pv")+last;
   }
 
