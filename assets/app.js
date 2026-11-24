@@ -58,6 +58,7 @@
 
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
+    if(sec.id==="tasis")document.body.classList.add("kids");
     var crs=param("course")&&sec.courses?find(sec.courses,param("course")):null;
     var courseParam=crs?'&course='+encodeURIComponent(crs.id):'';
     document.title=(crs?crs.title:sec.title)+" | "+data.siteTitle;
@@ -89,6 +90,7 @@
 
   if(page==="lesson"){
     var sec2=find(allSections,param("section"))||data.sections[0];
+    if(sec2.id==="tasis")document.body.classList.add("kids");
     var crs2=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
     var pool=crs2?crs2.lessons:sec2.lessons;
     var courseParam2=crs2?'&course='+encodeURIComponent(crs2.id):'';
