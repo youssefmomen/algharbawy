@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<meta name="robots" content="noindex">
+<title>لوحة التحكم | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=32">
+</head>
+<body data-page="admin">
+<main class="wrap">
+  <div class="adm-head rv">
+    <div class="page-mark"><span class="mark"><i>غ</i></span></div>
+    <h1>لوحة التحكم</h1>
+    <p class="sub">متابعة الطلاب وتقدمهم</p>
+  </div>
+
+  <div class="adm-note" id="adm-gate" hidden></div>
+
+  <div id="adm-body" hidden>
+    <div class="adm-cards" id="adm-cards"></div>
+    <div class="adm-tablewrap">
+      <table class="adm-table">
+        <thead><tr>
+          <th>البريد الإلكتروني</th><th>دروس مكتملة</th><th>النجوم</th><th>نقاط الخبرة</th><th>آخر نشاط</th>
+        </tr></thead>
+        <tbody id="adm-rows"></tbody>
+      </table>
+      <div class="adm-note" id="adm-empty" hidden>لا يوجد طلاب مسجلون بعد</div>
+    </div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="data.js?v=43"></script>
+<script src="assets/firebase-config.js?v=1"></script>
+<script src="assets/store.js?v=2"></script>
+<script src="assets/admin.js?v=1"></script>
+</body>
+</html>
