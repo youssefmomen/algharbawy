@@ -216,9 +216,11 @@
     var les=find(pool,param("lesson"))||pool[0];
     var li=pool.indexOf(les);
     // وضع اللعب لدروس المناهج: جلد أطفال للصف الأول، وجلد مدرسي مبهج لباقي المناهج
-    var gameMode=sec2.id==="manahij";
-    var kidSkin=gameMode&&crs2&&crs2.id==="g1-arabic-t1";
+    var kidCourse=crs2&&(crs2.id==="nour-albayan"||(sec2.id==="manahij"&&crs2.id==="g1-arabic-t1"));
+    var gameMode=sec2.id==="manahij"||!!kidCourse;
+    var kidSkin=!!kidCourse;
     if(gameMode){document.body.classList.add("game");if(kidSkin){document.body.classList.add("kids");document.body.classList.remove("school");}}
+    if(crs2&&crs2.id==="nour-albayan"){var gmi=document.createElement("img");gmi.id="gmascot";gmi.src="assets/nour/321-mascot.jpg";gmi.alt="";document.body.appendChild(gmi);}
     document.title=les.title+" | "+data.siteTitle;
     var grp2=sec2.group?find(data.sections,sec2.group):null;
     document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp2?'<a href="section.html?id='+encodeURIComponent(grp2.id)+'">'+esc(grp2.title)+'</a><span class="sep">◆</span>':'')+'<a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span>'+(crs2?'<a href="section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id)+'">'+esc(crs2.title)+'</a><span class="sep">◆</span>':'')+'<span>'+esc(les.title)+'</span>';
@@ -259,6 +261,23 @@
     function sndBad(){tone(196,0,0.3,"sine",0.09);}
     function sndBonus(){tone(523.25,0,0.12);tone(659.25,0.1,0.12);tone(783.99,0.2,0.12);tone(1046.5,0.3,0.25);}
     function sndWin(){tone(523.25,0,0.14);tone(659.25,0.12,0.14);tone(783.99,0.24,0.14);tone(1046.5,0.36,0.3);tone(1318.5,0.5,0.4);}
+    function confetti(n){
+      var colors=["#ef476f","#ffd166","#06d6a0","#118ab2","#9b5de5"];
+      for(var i=0;i<n;i++){var e=document.createElement("div");e.className="fx-conf";e.style.left=(Math.random()*100)+"vw";e.style.background=colors[i%5];e.style.animationDelay=(Math.random()*.4)+"s";document.body.appendChild(e);(function(el){setTimeout(function(){el.remove();},2400);})(e);}
+    }
+    function flyStar(fromEl){
+      var cEl=document.getElementById("ghud-count");if(!fromEl||!cEl)return;
+      var r=fromEl.getBoundingClientRect(),t=cEl.getBoundingClientRect();
+      var s=document.createElement("div");s.className="fx-fly";s.innerHTML=STAR_SVG;
+      s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";
+      document.body.appendChild(s);
+      requestAnimationFrame(function(){s.style.left=(t.left+t.width/2)+"px";s.style.top=(t.top+t.height/2)+"px";s.style.opacity=".15";s.style.transform="translate(-50%,-50%) scale(.4)";});
+      setTimeout(function(){s.remove();},950);
+    }
+    function mascotJump(){
+      var gm=document.getElementById("gmascot");if(!gm)return;
+      gm.classList.remove("jump");void gm.offsetWidth;gm.classList.add("jump");
+    }
     function toast(txt){
       var t=document.createElement("div");t.className="g-toast";t.textContent=txt;document.body.appendChild(t);
       requestAnimationFrame(function(){t.classList.add("on");});
@@ -338,24 +357,24 @@
         qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
         exp.className="exp show";exp.textContent=reduceT(q.explanation);
         doneCount[si]++;
-        if(gameMode){sndGood();bumpStars(starCfg.perCorrectAnswer||1);toast('أَحْسَنْتَ!');}
+        if(gameMode){sndGood();bumpStars(starCfg.perCorrectAnswer||1);toast('أَحْسَنْتَ!');flyStar(b);mascotJump();if(kidSkin){confetti(18);speak('أَحْسَنْتَ!');}}
         if(doneCount[si]===counters[si]){
           segDone[si]=true;
-          if(gameMode&&!wrongFlags[si]&&counters[si]>0){bumpStars(starCfg.perfectSegmentBonus||2);sndBonus();}
+          if(gameMode&&!wrongFlags[si]&&counters[si]>0){bumpStars(starCfg.perfectSegmentBonus||2);sndBonus();confetti(35);}
           var dEl=lb.querySelector('.seg-pass[data-s="'+si+'"]');if(dEl)dEl.hidden=false;
           var nEl=lb.querySelector('.seg[data-s="'+(si+1)+'"]');
           if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
           if(segDone.every(function(x){return x;})){
             progMark(les.id);
             var d=document.getElementById("quiz-done");if(d)d.hidden=false;
-            if(gameMode)sndWin();
+            if(gameMode){sndWin();confetti(90);}
             if(pg)pg.classList.remove("locked");
           }
         }
       }else{
         b.classList.add("bad");b.disabled=true;
         wrongFlags[si]=true;
-        if(gameMode)sndBad();
+        if(gameMode)sndBad();if(kidSkin&&q.audio)setTimeout(function(){speak(q.audio);},900);
         exp.className="exp show try";exp.textContent="إِجَابَةٌ غَيْرُ صَحِيحَةٍ. رَاجِعِ الشَّرْحَ بِالْأَعْلَى ثُمَّ حَاوِلْ مِنْ جَدِيدٍ.";
         setTimeout(function(){
           lb.querySelectorAll('.q[data-s="'+si+'"]').forEach(function(q2){
