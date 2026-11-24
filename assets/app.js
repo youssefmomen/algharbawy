@@ -79,8 +79,9 @@
     else if(crs){document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
       var open=i===0||progDone(crs.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+i*.06+'s">'+lockRow(pad(i+1),l.title)+'</li>';
-      return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
-      '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
+      var dn=progDone(l.id);
+      return '<li class="rv'+(dn?' done':'')+'" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+courseParam+'&lesson='+encodeURIComponent(l.id)+'">'+
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+(dn?'<span class="done-ic" aria-hidden="true"></span>':'')+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
     else{var rows='';
     if(sec.courses){rows+=sec.courses.map(function(c,i){
@@ -91,8 +92,9 @@
     rows+=sec.lessons.map(function(l,i){
       var open=i===0||progDone(sec.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s">'+lockRow(pad(i+1+(sec.courses?sec.courses.length:0)),l.title)+'</li>';
-      return '<li class="rv" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
-      '<span class="n">'+pad(i+1+(sec.courses?sec.courses.length:0))+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
+      var dn=progDone(l.id);
+      return '<li class="rv'+(dn?' done':'')+'" style="--d:'+(i+(sec.courses?sec.courses.length:0))*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
+      '<span class="n">'+pad(i+1+(sec.courses?sec.courses.length:0))+'</span><div><div class="t">'+(dn?'<span class="done-ic" aria-hidden="true"></span>':'')+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
     }).join("");
     document.getElementById("lessons").innerHTML=rows||'<li class="rv"><div class="soon-card">قريبًا</div></li>';}
   }
