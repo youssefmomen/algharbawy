@@ -335,3 +335,45 @@ body.game.kids .les-img img{width:100%;max-width:520px;display:block;margin-inli
 
 /* إخفاء الشرح أثناء الحل حتى لا يُغش منه، ويعود عند الخطأ */
 body.game .g-seg.solving>p,body.game .g-seg.solving .ex-h,body.game .g-seg.solving .ex-wrap,body.game .g-seg.solving .les-img,body.game .g-seg.solving .g-name,body.game .g-seg.solving .verse-card{display:none}
+
+/* ---------- الحساب: شريحة الدخول ---------- */
+.chip{display:none;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:9px 20px;color:var(--gold2);font-size:.95rem;background:none;font-family:inherit;cursor:pointer;transition:border-color .3s,background .3s;text-decoration:none}
+.chip.show{display:inline-flex}
+.chip:hover{border-color:var(--gold);background:rgba(212,175,95,.07)}
+.mini{width:26px;height:26px;display:inline-grid;place-items:center;border:1px solid rgba(212,175,95,.5);border-radius:6px;transform:rotate(45deg)}
+.mini b{transform:rotate(-45deg);font-weight:500;color:var(--gold);font-family:var(--display);font-size:.82rem;line-height:1}
+.chip-menu{position:fixed;top:78px;inset-inline-end:max(20px,calc((100vw - 1200px)/2));z-index:80;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:8px;min-width:240px;box-shadow:0 24px 60px -28px rgba(0,0,0,.85)}
+.chip-menu .who{padding:12px 16px;color:var(--mute);font-size:.88rem;border-bottom:1px solid var(--line);direction:ltr;text-align:end}
+.chip-menu button{display:block;width:100%;text-align:start;padding:13px 16px;color:var(--text);background:none;border:0;font-family:inherit;font-size:1rem;cursor:pointer;border-radius:10px;transition:background .3s,color .3s}
+.chip-menu button:hover{background:rgba(212,175,95,.08);color:var(--gold2)}
+
+/* ---------- صفحة الدخول ---------- */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;padding:150px 0 100px}
+.auth-card{width:min(460px,100%);border:1px solid var(--line);border-radius:26px;background:var(--card);padding:44px 40px}
+.auth-card h1{font-family:var(--display);font-size:2.1rem;margin-bottom:8px}
+.auth-card .sub{color:var(--mute);margin-bottom:28px;font-family:var(--serif);font-size:1.08rem;line-height:1.9}
+.auth-card .page-mark .mark{width:54px;height:54px;border-radius:10px}
+.auth-card .page-mark .mark i{font-size:1.4rem}
+.tabs{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:28px}
+.tabs button{flex:1;padding:11px;background:none;border:0;color:var(--mute);font-family:inherit;font-size:.98rem;cursor:pointer;transition:background .3s,color .3s}
+.tabs button.on{background:rgba(212,175,95,.12);color:var(--gold2)}
+.field{margin-bottom:16px}
+.field label{display:block;color:var(--mute);font-size:.9rem;margin-bottom:8px}
+.field input{width:100%;background:#0d0b08;border:1px solid var(--line);border-radius:14px;padding:13px 16px;color:var(--text);font-family:inherit;font-size:1rem;transition:border-color .3s}
+.field input:focus{outline:none;border-color:var(--gold)}
+.form-err{color:#e08d8d;font-size:.92rem;min-height:1.4em;margin:4px 0 12px}
+.btn.block{width:100%;justify-content:center}
+.btn[disabled]{opacity:.5;cursor:default;pointer-events:none}
+.divider{display:flex;align-items:center;gap:14px;color:var(--mute);margin:22px 0;font-size:.85rem}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---------- النطق في لعبة الأطفال ---------- */
+.speak{display:inline-grid;place-items:center;vertical-align:middle;margin-inline-start:12px;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--gold2);cursor:pointer;transition:border-color .3s,background .3s;flex:none}
+.speak:hover{border-color:var(--gold);background:rgba(212,175,95,.08)}
+body.kids .q-t{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
+.opt.picked{border-color:var(--gold);background:rgba(212,175,95,.1)}
+@media(max-width:900px){
+  .chip{padding:8px 14px;font-size:.88rem}
+  .chip-menu{inset-inline-end:18px;min-width:210px}
+  .auth-card{padding:34px 26px}
+}
