@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>حارس الغرباوي | فحص أمان موقعك</title>
+<style>
+:root{--bg:#0a0907;--card:#16130f;--gold:#d4af5f;--txt:#f3ecdc;--mut:#a89f8a;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.wrap{max-width:760px;margin:auto;padding:20px}
+h1{color:var(--gold);margin:10px 0 0;font-size:1.8rem}p.lead{color:var(--mut);margin-top:4px}
+button{background:var(--gold);color:#000;border:0;border-radius:12px;padding:14px 26px;font-size:1.1rem;font-weight:bold;cursor:pointer;width:100%}
+button:disabled{opacity:.5}
+.box{background:var(--card);border-radius:14px;padding:14px 16px;margin:12px 0;border-right:5px solid var(--mut)}
+.box.ok{border-color:var(--ok)}.box.warn{border-color:var(--warn)}.box.bad{border-color:var(--bad)}
+.box h3{margin:0;font-size:1.05rem}.box .fix{color:var(--mut);font-size:.95rem;margin-top:6px}
+.tag{font-size:.8rem;padding:1px 8px;border-radius:8px;margin-left:6px}
+.ok .tag{background:var(--ok);color:#000}.warn .tag{background:var(--warn);color:#000}.bad .tag{background:var(--bad);color:#000}
+#score{text-align:center;font-size:3rem;font-weight:bold;margin:10px 0}
+.note{font-size:.85rem;color:var(--mut);margin-top:24px}
+a{color:var(--gold)}
+</style>
+</head>
+<body><div class="wrap">
+<h1>🛡️ حارس الغرباوي</h1>
+<p class="lead">أداة دفاعية تفحص موقعك أنت فقط: <b dir="ltr">youssefmomen.github.io/algharbawy</b> وتقولك فين الضعف وإزاي تصلحه. مش بتفحص أي موقع تاني، ومش بتغيّر ولا بتكتب أي حاجة في موقعك.</p>
+<button id="go">ابدأ الفحص</button>
+<div id="score"></div>
+<div id="out"></div>
+<p class="note">ملحوظة: GitHub Pages بيتحكم في ترويسات الأمان (زي CSP وX-Frame-Options)، فمش هتتغير من عندك. الفحص ده بيغطي اللي تقدر تتحكم فيه فعلًا: الكود، الملفات المكشوفة، وقواعد Firebase.</p>
+</div>
+<script>
+// الأداة مقفولة على موقع واحد فقط. مفيش خانة إدخال ومفيش أي رابط تاني.
+const BASE="https://youssefmomen.github.io/algharbawy/";
+const PROJECT="algharbawy";
+const out=document.getElementById("out"),score=document.getElementById("score");
+let pts=0,total=0;
+function add(level,title,fix){ // level: ok | warn | bad
+  total+=2; pts+= level==="ok"?2: level==="warn"?1:0;
+  const l={ok:"سليم",warn:"تحسين",bad:"خطر"}[level];
+  const d=document.createElement("div");d.className="box "+level;
+  d.innerHTML='<h3><span class="tag">'+l+'</span></h3>'+(fix?'<div class="fix"></div>':'');
+  d.querySelector("h3").append(title);
+  if(fix)d.querySelector(".fix").textContent=fix;
+  out.appendChild(d);
+}
+async function get(u){try{const r=await fetch(u,{cache:"no-store"});return {ok:r.ok,status:r.status,text:r.ok?await r.text():"",len:r.ok?0:0}}catch(e){return {ok:false,status:0,text:""}}}
+const abs=(u)=>new URL(u,BASE).href;
+async function run(){
+  out.innerHTML="";pts=0;total=0;score.textContent="";
+  const home=await get(BASE+"index.html");
+  if(!home.ok){add("bad","مقدرتش أفتح الموقع","تأكد إن الموقع شغال وجرّب تاني.");return}
+  const html=home.text;
+  // 1 HTTPS
+  add(BASE.startsWith("https://")?"ok":"bad","الموقع شغال بـHTTPS (اتصال مشفّر)","");
+  // 2 scripts + sources
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const srcs=[...doc.querySelectorAll("script[src]")].map(s=>s);
+  let codes={"index.html":html};
+  for(const s of srcs){const u=abs(s.getAttribute("src"));if(u.startsWith(BASE)){const r=await get(u);if(r.ok)codes[s.getAttribute("src").split("?")[0]]=r.text;}}
+  const all=Object.values(codes).join("\n");
+  // 3 secrets
+  const pats=[[/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}/,"توكن GitHub"],[/AKIA[0-9A-Z]{16}/,"مفتاح AWS"],[/sk_live_[0-9A-Za-z]{10,}|sk-[A-Za-z0-9]{32,}/,"مفتاح سري لخدمة دفع أو ذكاء اصطناعي"],[/-----BEGIN [A-Z ]*PRIVATE KEY-----/,"مفتاح خاص"],[/"private_key_id"/,"ملف حساب خدمة Google"]];
+  const found=pats.filter(p=>p[0].test(all)).map(p=>p[1]);
+  add(found.length?"bad":"ok",found.length?"لقيت أسرار في كود الموقع: "+found.join("، "):"مفيش مفاتيح سرية ظاهرة في الكود",found.length?"امسحها من الكود فورًا وغيّر المفتاح من مصدره، لأن أي حد يقدر يشوفها.":"");
+  // 4 emails exposed
+  const emails=[...new Set((all.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}/gi)||[]).filter(e=>!/@(\d|example)/i.test(e)&&!/\.(png|jpg|svg|js)$/i.test(e)))];
+  add(emails.length?"warn":"ok",emails.length?"إيميلات ظاهرة في الكود ("+emails.length+")":"مفيش إيميلات ظاهرة في الكود",emails.length?"الإيميل الظاهر بيخلي الناس تبعتلك سبام وتحاول تخترق حسابك. حوّله لبصمة مشفّرة (hash) أو شيله من الكود وخلّي التحقق من الأدمن في Firestore.":"");
+  // 5 Firebase rules probe (read only, no auth)
+  const fs=(c)=>"https://firestore.googleapis.com/v1/projects/"+PROJECT+"/databases/(default)/documents/"+c+"?pageSize=1";
+  for(const c of ["users","progress","admins"]){
+    let st;try{st=(await fetch(fs(c))).status}catch(e){st=0}
+    if(st===200)add("bad","قاعدة البيانات مفتوحة للعامة: مجموعة "+c,"أي حد من غير تسجيل دخول يقدر يقرأ بيانات "+c+". عدّل قواعد Firestore بحيث القراءة تتطلب تسجيل دخول وصاحب البيانات أو الأدمن فقط.");
+    else if(st===403||st===401)add("ok","بيانات "+c+" محمية من القراءة العامة","");
+    else add("warn","مقدرتش أتأكد من حماية "+c+" (الرد "+st+")","اتأكد من قواعد Firestore يدويًا من لوحة Firebase.");
+  }
+  // 6 exposed files
+  const files=[".git/config",".env","package.json","firebase.json","firestore.rules","backup.zip","config.json",".DS_Store","admin.html"];
+  const exposed=[];
+  for(const f of files){const r=await get(BASE+f);if(r.ok&&r.text&&!/<title>\s*(Page not found|404)/i.test(r.text))exposed.push(f)}
+  const sev=exposed.filter(f=>f!=="admin.html");
+  add(sev.length?"bad":"ok",sev.length?"ملفات حساسة مكشوفة: "+sev.join("، "):"مفيش ملفات حساسة مكشوفة (.env, .git, نسخ احتياطية)",sev.length?"شيل الملفات دي من المستودع، لأن أي حد يقدر يفتحها.":"");
+  // 7 external scripts SRI
+  const ext=srcs.filter(s=>/^https?:/.test(s.getAttribute("src"))&&!s.getAttribute("src").startsWith(BASE));
+  const noSri=ext.filter(s=>!s.integrity);
+  const trusted=noSri.filter(s=>!/gstatic\.com\/firebasejs/.test(s.getAttribute("src")));
+  add(trusted.length?"warn":"ok",trusted.length?"سكربتات خارجية من غير بصمة تحقق (SRI): "+trusted.length:"السكربتات الخارجية من مصادر موثوقة (Firebase/Google)",trusted.length?"أضف integrity لكل سكربت خارجي عشان لو المصدر اتخترق مايأثرش عليك.":"");
+  // 8 mixed content
+  const mixed=/(src|href)=["']http:\/\//i.test(all);
+  add(mixed?"bad":"ok",mixed?"فيه روابط HTTP غير مشفّرة":"كل الروابط مشفّرة","غيّر كل http:// إلى https://.".repeat(mixed?1:0));
+  // 9 dangerous js patterns
+  const risky=/\.innerHTML\s*=|document\.write\(|eval\(/.test(all);
+  add(risky?"warn":"ok",risky?"الكود بيستخدم innerHTML أو eval":"مفيش استخدام خطر لـeval/document.write",risky?"لو بتحط فيه نص جاي من مستخدم (اسم طالب، تعليق) لازم تنظّفه، وإلا ينفع حد يحقن كود خبيث (XSS). راجع الأماكن دي واستخدم textContent بدل innerHTML للنص القادم من المستخدمين.":"");
+  // 10 meta + csp
+  const csp=!!doc.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  add(csp?"ok":"warn",csp?"فيه سياسة أمان محتوى (CSP)":"مفيش سياسة أمان محتوى (CSP)",csp?"":"ضيف وسم meta من نوع Content-Security-Policy في الـhead يحدد المصادر المسموحة. ده بيقلل خطر حقن الكود.");
+  add(doc.querySelector('meta[name="referrer"]')?"ok":"warn",doc.querySelector('meta[name="referrer"]')?"سياسة الـreferrer محددة":"سياسة الـreferrer مش محددة",doc.querySelector('meta[name="referrer"]')?"":'ضيف <meta name="referrer" content="strict-origin-when-cross-origin">.');
+  // 11 login page rel noopener
+  const bl=[...doc.querySelectorAll('a[target="_blank"]')].filter(a=>!/noopener/.test(a.rel));
+  add(bl.length?"warn":"ok",bl.length?"روابط بتفتح في تبويب جديد من غير noopener ("+bl.length+")":"الروابط الخارجية آمنة",bl.length?'ضيف rel="noopener noreferrer" لكل رابط target="_blank".':"");
+  // 12 weight
+  const big=Object.entries(codes).map(([k,v])=>[k,new Blob([v]).size]).filter(x=>x[1]>400000);
+  add(big.length?"warn":"ok",big.length?"ملفات تقيلة: "+big.map(x=>x[0]+" ("+Math.round(x[1]/1024)+"KB)").join("، "):"حجم ملفات الكود معقول",big.length?"الملفات التقيلة بتبطّأ الموقع وبتسهّل هجمات إغراق الطلبات. قسّمها أو حمّلها عند الحاجة فقط.":"");
+  const pct=Math.round(pts/total*100);
+  score.textContent=pct+"% أمان";score.style.color=pct>=80?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)";
+}
+const b=document.getElementById("go");
+b.onclick=async()=>{b.disabled=true;b.textContent="جارٍ الفحص...";try{await run()}catch(e){out.textContent="حصل خطأ أثناء الفحص: "+e.message}b.disabled=false;b.textContent="افحص تاني"};
+</script>
+</body></html>
