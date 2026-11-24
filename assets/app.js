@@ -121,7 +121,7 @@
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
-   topSections.concat(data.tracks||[]).map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
+   topSections.concat(data.tracks||[]).map(function(s){return '<a href="'+(s.href||('section.html?id='+encodeURIComponent(s.id)))+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
    '</span><span>© '+year+' '+esc(data.siteTitle)+'</span></div></div>';
 
   // ---------- الصفحات ----------
@@ -138,7 +138,7 @@
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
       var live=data.sections&&data.sections.some(function(x){return x.id===s.id&&((x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));});
-      return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
+      return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="'+(s.href||('section.html?id='+encodeURIComponent(s.id)))+'">'+
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta">'+(live?'':'<span>قَرِيبًا</span>')+'<span class="go">←</span></div></a>';
     }).join("");}
@@ -221,7 +221,7 @@
       document.body.classList.add("nour-skin");dzDecor();
     }
     else if(crs){var rowFound=false;document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
-      var open=SEQ_OPEN_ALL||i===0||progDone(crs.lessons[i-1].id);
+      var open=(crs.flow==="poem"?false:SEQ_OPEN_ALL)||i===0||progDone(crs.lessons[i-1].id);
       if(!open)return '<li class="rv locked" style="--d:'+i*.06+'s">'+lockRow(pad(i+1),l.title)+'</li>';
       var dn=progDone(l.id);
       var cur=false;if(!dn&&!rowFound){cur=true;rowFound=true;}
@@ -280,7 +280,10 @@
     var totalQ=counters.reduce(function(a,b){return a+b;},0);
     var already=progDone(les.id);
     if(already)segDone=segDone.map(function(){return true;});
-    var tapMode=totalQ===0&&segs.length>1;
+    var poemMode=!!(crs2&&crs2.flow==="poem");
+    function shufQ(q){var idx=q.options.map(function(_,i){return i});for(var i=idx.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=idx[i];idx[i]=idx[j];idx[j]=t;}var o2={question:q.question,audio:q.audio,options:idx.map(function(k){return q.options[k];}),answer:idx.indexOf(q.answer),explanation:q.explanation||""};if(q.optionImages)o2.optionImages=idx.map(function(k){return q.optionImages[k];});if(q.questionImage)o2.questionImage=q.questionImage;return o2;}
+    if(poemMode)segs=segs.map(function(sg){if(!sg.questions||!sg.questions.length)return sg;var c={};for(var k2 in sg)c[k2]=sg[k2];c.questions=sg.questions.map(shufQ);return c;});
+    var tapMode=(totalQ===0&&segs.length>1)||poemMode;
     var unlocked=segs.map(function(_,i){return i===0||already;});
     if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     // إعداد اللعب: نجوم، أصوات، سلّم
@@ -400,6 +403,8 @@
       if(sg.examples&&sg.examples.length)h+='<div class="ex-head ex-h rv">أمثلة</div><div class="ex-wrap">'+sg.examples.map(function(x){return '<p class="rv ex">'+esc(reduceT(x))+'</p>';}).join("")+'</div>';
       if(sg.images&&sg.images.length)h+=sg.images.map(function(im){return '<figure class="les-img rv"><img src="'+esc(im.src)+'" alt="'+esc(im.alt||'')+'" loading="lazy"></figure>';}).join('');
       if(sg.game&&kidSkin)h+='<div class="g-name rv">'+esc(sg.game)+'</div>';
+      if(sg.vocab&&sg.vocab.length)h+='<div class="ex-head rv">الْمُفْرَدَاتُ</div><div class="vocab">'+sg.vocab.map(function(v){return '<div class="voc rv"><b>'+esc(v[0])+'</b><span>'+esc(v[1])+'</span></div>';}).join("")+'</div>';
+      if(sg.meaning&&sg.meaning.length)h+='<div class="ex-head rv">الْمَعْنَى</div>'+sg.meaning.map(function(m){return '<div class="mean rv"><b>'+esc(m[0])+'</b><p>'+esc(m[1])+'</p></div>';}).join("");
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
@@ -410,7 +415,7 @@
           '</div><div class="exp"></div></div>';
         }).join("");
       }
-      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">الْجُزْءُ التَّالِي <span class="ar">←</span></button></div>';
+      if(tapMode&&si<segs.length-1)h+='<div class="seg-next-wrap"><button type="button" class="btn fill seg-next" data-s="'+si+'">'+(poemMode?'جَاهِزٌ':'الْجُزْءُ التَّالِي')+' <span class="ar">←</span></button></div>';
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
@@ -424,7 +429,8 @@
       var dEl=lb.querySelector('.seg-pass[data-s="'+si+'"]');if(dEl)dEl.hidden=false;
       var nEl=lb.querySelector('.seg[data-s="'+nx+'"]');
       if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
-      if(nx===segs.length-1){progMark(les.id);var d=document.getElementById("quiz-done");if(d)d.hidden=false;if(pg)pg.classList.remove("locked");}
+      if(poemMode){var pEl=lb.querySelector('.seg[data-s="'+si+'"]');if(pEl)pEl.hidden=true;}
+      if(nx===segs.length-1&&counters[nx]===0){progMark(les.id);var d=document.getElementById("quiz-done");if(d)d.hidden=false;if(pg)pg.classList.remove("locked");}
     });
     lb.addEventListener("click",function(e){
       var b=e.target.closest(".opt");if(!b||b.disabled)return;
@@ -439,7 +445,7 @@
       if(oi===q.answer){
         b.classList.add("ok");
         qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
-        exp.className="exp show";exp.textContent=reduceT(q.explanation);
+        exp.className="exp show";exp.textContent=reduceT(q.explanation||"");
         var nxQ=qEl.parentElement.querySelector('.q[data-s="'+si+'"][data-q="'+(qi+1)+'"]');
         if(nxQ){setTimeout(function(){nxQ.classList.remove('q-hidden');nxQ.scrollIntoView({behavior:"smooth",block:"center"});},700);}
         doneCount[si]++;
