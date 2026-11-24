@@ -503,3 +503,32 @@ body.nour-skin main,body.nour-skin .wrap{position:relative;z-index:1}
 
 /* سؤال واحد في الشاشة */
 .q.q-hidden{display:none}
+
+/* ===== دورة الأدب: مفردات ومعنى ===== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0 18px}
+.voc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.voc b{display:block;color:var(--gold2);margin-bottom:4px}
+.voc span{color:var(--mute);font-size:.95rem;line-height:1.8}
+.mean{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:10px 0}
+.mean b{display:block;color:var(--gold2);margin-bottom:6px}
+.mean p{color:var(--text);line-height:2;margin:0}
+
+/* ===== قسم الكرتون ===== */
+body.cartoon-skin{--bg:#fdf6e9;--bg2:#fdf6e9;--card:#fff;--line:#f0e2c4;--line2:#e0c88f;--text:#4a3b1a;--mute:#8a7a52;--gold:#f4a832;--gold2:#c47f12;background:linear-gradient(#cfeeff 0%,#fdf6e9 420px)}
+body.cartoon-skin .ct-hero{position:relative;padding:120px 0 30px;overflow:hidden}
+body.cartoon-skin .ct-sun{position:absolute;top:40px;inset-inline-start:6%;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe9a8,#ffc93d);box-shadow:0 0 60px rgba(255,201,60,.6)}
+body.cartoon-skin .ct-title{font-family:'Reem Kufi',sans-serif;font-size:clamp(2.2rem,6vw,3.4rem);color:#b4620a;margin:18px 0 6px}
+body.cartoon-skin .ct-sub{color:#8a7a52;font-size:1.15rem;font-weight:600}
+body.cartoon-skin .crumbs a{color:#7a6a42}
+body.cartoon-skin .crumbs i{color:#f4a832;margin:0 8px;font-size:.7rem}
+body.cartoon-skin .ct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;margin:26px 0 10px}
+body.cartoon-skin .ct-card{background:#fff;border:3px solid #ffe1a3;border-radius:22px;overflow:hidden;cursor:pointer;padding:0;text-align:right;font-family:inherit;box-shadow:0 6px 0 #f0d9a8;transition:transform .15s,box-shadow .15s}
+body.cartoon-skin .ct-card:hover{transform:translateY(-4px);box-shadow:0 10px 0 #f0d9a8}
+body.cartoon-skin .ct-thumb{position:relative;display:block;aspect-ratio:16/9;background:#2a2118}
+body.cartoon-skin .ct-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+body.cartoon-skin .ct-thumb iframe{width:100%;height:100%;border:0;display:block;aspect-ratio:16/9}
+body.cartoon-skin .ct-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+body.cartoon-skin .ct-play svg{background:rgba(180,98,10,.85);border-radius:50%;padding:14px;box-sizing:content-box;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+body.cartoon-skin .ct-dur{position:absolute;bottom:8px;inset-inline-end:8px;background:rgba(0,0,0,.75);color:#fff;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:10px}
+body.cartoon-skin .ct-name{display:block;padding:14px 16px;font-size:1.15rem;font-weight:800;color:#4a3b1a;line-height:1.5}
+body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margin:26px 0 50px}
