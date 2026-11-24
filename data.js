@@ -58,7 +58,15 @@ window.SITE_DATA = {
       lessons: []
     },
     {
+      id: "ulum",
+      title: "علوم العربية",
+      description: "النحو والصرف والبلاغة والعروض والأدب",
+      children: ["nahw", "sarf", "balagha", "arud", "adab"],
+      lessons: []
+    },
+    {
       id: "nahw",
+      group: "ulum",
       title: "النحو",
       icon: "📐",
       description: "قواعد اللغة العربية بأسلوب بسيط وأمثلة واضحة.",
@@ -312,12 +320,14 @@ window.SITE_DATA = {
     },
     {
       id: "sarf",
+      group: "ulum",
       title: "الصرف",
       description: "قريبًا",
       lessons: []
     },
     {
       id: "balagha",
+      group: "ulum",
       title: "البلاغة",
       icon: "✨",
       description: "أسرار جمال اللغة: التشبيه والاستعارة والكناية.",
@@ -337,12 +347,14 @@ window.SITE_DATA = {
     },
     {
       id: "arud",
+      group: "ulum",
       title: "العروض",
       description: "قريبًا",
       lessons: []
     },
     {
       id: "adab",
+      group: "ulum",
       title: "الأدب",
       icon: "📖",
       description: "الشعر والنثر وأجمل النصوص العربية، مبسطة لكل الأعمار.",
