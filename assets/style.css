@@ -532,3 +532,6 @@ body.cartoon-skin .ct-play svg{background:rgba(180,98,10,.85);border-radius:50%;
 body.cartoon-skin .ct-dur{position:absolute;bottom:8px;inset-inline-end:8px;background:rgba(0,0,0,.75);color:#fff;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:10px}
 body.cartoon-skin .ct-name{display:block;padding:14px 16px;font-size:1.15rem;font-weight:800;color:#4a3b1a;line-height:1.5}
 body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margin:26px 0 50px}
+
+.load-pulse{text-align:center;font-size:2rem;color:var(--gold);animation:lp 1s ease-in-out infinite;padding:3rem 0}
+@keyframes lp{0%,100%{opacity:.25}50%{opacity:1}}
