@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex,nofollow"><title>تقرير فحص: weblix-web.lovable.app</title><style>
+:root{--bg:#0a0907;--card:#16130f;--gold:#d4af5f;--txt:#f3ecdc;--mut:#a89f8a;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.wrap{max-width:780px;margin:auto;padding:18px}
+h1{color:var(--gold);margin:8px 0 0;font-size:1.8rem}p.lead{color:var(--mut);margin-top:4px}
+input[type=url],button{font:inherit;border-radius:12px;padding:13px;width:100%;margin-top:8px}
+input[type=url]{background:var(--card);color:var(--txt);border:1px solid #3a3326}
+button{background:var(--gold);color:#000;border:0;font-weight:bold;cursor:pointer;font-size:1.1rem}
+button:disabled{opacity:.5}
+#progress{height:8px;background:#2a2418;border-radius:8px;margin:14px 0;overflow:hidden;display:none}#bar{height:100%;width:0;background:var(--gold);transition:width .3s}
+#score{text-align:center;font-size:3rem;font-weight:bold;margin:6px 0 0}#sum{text-align:center;color:var(--mut);margin-bottom:8px}
+.box{background:var(--card);border-radius:14px;margin:10px 0;border-right:5px solid var(--mut);overflow:hidden}
+.box.ok{border-color:var(--ok)}.box.warn{border-color:var(--warn)}.box.bad{border-color:var(--bad)}
+.box summary{padding:12px 14px;cursor:pointer;font-weight:bold;list-style:none}
+.tag{font-size:.8rem;padding:1px 9px;border-radius:8px;margin-left:8px;color:#000}
+.ok .tag{background:var(--ok)}.warn .tag{background:var(--warn)}.bad .tag{background:var(--bad)}
+.det{padding:0 14px 12px;font-size:.95rem}.det b{color:var(--gold)}.det p{margin:6px 0}
+.cat{color:var(--gold);margin:22px 0 4px;font-size:1.05rem}
+.own{display:flex;gap:10px;align-items:flex-start;margin:12px 0}.own input{margin-top:8px;width:20px;height:20px}
+.note{font-size:.85rem;color:var(--mut);margin-top:24px}
+</style></head><body><div class="wrap">
+<h1>🥷 تقرير فحص موقع Weblix</h1>
+<p class="lead">فحص سلبي (قراءة فقط) للصفحات والملفات العامة لموقع https://weblix-web.lovable.app/ ، بموافقة صاحبه حسب كلام صاحب هذه الأداة. تاريخ الفحص: 25 نوفمبر 2026. مفيش تسجيل دخول ولا كتابة ولا تخمين كلمات سر.</p>
+<div id="score" style="color:var(--ok)">الأساسيات سليمة</div><div id="sum">🔴 خطر: 0 | 🟡 تحسين: 5 | 🟢 سليم: 4</div>
+<details class="box ok"><summary><span class="tag">سليم</span>الاتصال مشفّر مع HSTS</summary><div class="det"><p><b>فين الضعف بالظبط:</b> الموقع شغال بـHTTPS ومعاه ترويسة HSTS اللي بتجبر المتصفح على الاتصال الآمن.</p></div></details>
+<details class="box ok"><summary><span class="tag">سليم</span>ترويسات أمان أساسية موجودة</summary><div class="det"><p><b>فين الضعف بالظبط:</b> referrer-policy وx-content-type-options موجودتين.</p></div></details>
+<details class="box ok"><summary><span class="tag">سليم</span>مفيش أسرار في الكود</summary><div class="det"><p><b>فين الضعف بالظبط:</b> فحصت 4 ملفات JavaScript (حوالي 530KB) وملقتش مفاتيح AWS أو GitHub أو مفاتيح دفع أو مفاتيح خاصة.</p></div></details>
+<details class="box ok"><summary><span class="tag">سليم</span>مفيش ملفات حساسة مكشوفة</summary><div class="det"><p><b>فين الضعف بالظبط:</b> المسارات .git/config و.env وbackup.zip وdb.sql مقفولة (رد 403).</p></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>مفيش سياسة أمان محتوى (Content-Security-Policy)</summary><div class="det"><p><b>فين الضعف بالظبط:</b> ترويسات الرد على الصفحة الرئيسية https://weblix-web.lovable.app/ مفيهاش CSP.</p><p><b>ليه ده مهم:</b> بتحدد المتصفح يشغّل كود من أنهي مصادر. من غيرها أي كود يتحقن بيشتغل بحرية.</p><p><b>إيه اللي كان ممكن يحصل:</b> لو حصلت ثغرة حقن في أي وقت، المهاجم يسرق بيانات الزوار أو يحوّلهم لموقع مزيّف.</p><p><b>خطوات الإصلاح:</b></p><ol><li dir='auto'>افتح إعدادات الاستضافة أو النطاق الخاص (لو موجود عبر Cloudflare).</li><li dir='auto'>أضف ترويسة Content-Security-Policy تسمح بموقعك والخطوط (fonts.googleapis.com وfonts.gstatic.com) فقط.</li><li dir='auto'>اختبر الموقع بعد التعديل وراقب أي حاجة اتحجبت.</li></ol></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>مفيش حماية من التضمين في إطار (X-Frame-Options / frame-ancestors)</summary><div class="det"><p><b>فين الضعف بالظبط:</b> ترويسات الصفحة الرئيسية مفيهاش X-Frame-Options ولا frame-ancestors.</p><p><b>ليه ده مهم:</b> أي موقع تاني يقدر يعرض موقعه جوه إطار مخفي.</p><p><b>إيه اللي كان ممكن يحصل:</b> هجوم Clickjacking: المهاجم يخدع الزائر يضغط على زر في موقعه وهو فاكر إنه بيضغط على حاجة تانية.</p><p><b>خطوات الإصلاح:</b></p><ol><li dir='auto'>أضف الترويسة X-Frame-Options: DENY.</li><li dir='auto'>أو أضف في CSP الجزء frame-ancestors &#x27;self&#x27;.</li></ol></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>مفيش ملف security.txt</summary><div class="det"><p><b>فين الضعف بالظبط:</b> المسار /.well-known/security.txt بيرد 404.</p><p><b>ليه ده مهم:</b> بيحدد لمين يبلّغ أي باحث شاف مشكلة.</p><p><b>إيه اللي كان ممكن يحصل:</b> مفيش هجوم مباشر، بس المشاكل ممكن تفضل من غير إبلاغ.</p><p><b>خطوات الإصلاح:</b></p><ol><li dir='auto'>أنشئ ملف security.txt داخل مجلد .well-known.</li><li dir='auto'>اكتب سطر Contact: mailto:بريد الإبلاغ.</li><li dir='auto'>انشره مع الموقع.</li></ol></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>إيميل ظاهر في كود الموقع</summary><div class="det"><p><b>فين الضعف بالظبط:</b> الإيميل web.weblix@gmail.com ظاهر داخل ملف JavaScript الرئيسي (index-BvvpUB7m.js). غالبًا مقصود كإيميل تواصل.</p><p><b>ليه ده مهم:</b> البرامج الآلية بتجمع الإيميلات من الكود.</p><p><b>إيه اللي كان ممكن يحصل:</b> سبام وتصيّد موجّه للإيميل ده.</p><p><b>خطوات الإصلاح:</b></p><ol><li dir='auto'>لو مقصود، سيبه واحمِ الإيميل بفلتر سبام.</li><li dir='auto'>لو مش مقصود، استبدله بنموذج تواصل.</li></ol></div></details>
+<details class="box warn" open><summary><span class="tag">تحسين</span>ملف package.json متاح للعامة</summary><div class="det"><p><b>فين الضعف بالظبط:</b> المسار /package.json بيرجع ملف صغير فيه اسم ملف السيرفر.</p><p><b>ليه ده مهم:</b> بيكشف تفصيلة بسيطة عن بنية الموقع.</p><p><b>إيه اللي كان ممكن يحصل:</b> قيمته للمهاجم قليلة جدًا (استكشاف فقط).</p><p><b>خطوات الإصلاح:</b></p><ol><li dir='auto'>لو أمكن، اقفل الملف من إعدادات الاستضافة.</li></ol></div></details>
+
+<p class="note">اللي مفحوصش: تسجيل الدخول، قاعدة البيانات، والخلفية. دول محتاجين صلاحية من صاحب الموقع. التقرير ده مش بديل لمراجعة أمنية كاملة. الموقع بيتحدث، فالنتائج صحيحة وقت الفحص فقط. <a href="../">ارجع للأداة</a></p></div></body></html>
