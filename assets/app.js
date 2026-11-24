@@ -11,8 +11,10 @@
   function ar(n){return String(n).replace(/\d/g,function(d){return AR[d];});}
   function pad(n){return ar(n<10?"0"+n:n);}
   var allSections=data.sections.concat(data.tracks||[]);
+  var topSections=data.sections.filter(function(s){return !s.group;});
+  function lessonsCount(s){return s.children?s.children.reduce(function(t,id){var c=find(data.sections,id);return t+(c?c.lessons.length:0);},0):s.lessons.length;}
   var page=document.body.getAttribute("data-page");
-  var total=0;data.sections.forEach(function(s){total+=s.lessons.length;});
+  var total=0;data.sections.forEach(function(s){if(!s.children)total+=s.lessons.length;});
 
   // علامة القسم: أول حرف من اسمه بعد إسقاط «ال» التعريف
   function markOf(s){
@@ -24,13 +26,13 @@
   var navHTML='<div class="progress" id="progress"></div>'+
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
   '<div class="links" id="links"><a href="index.html">الرئيسة</a><a href="index.html#sections">الأقسام</a>'+
-  data.sections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
+  topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
   '</div><button class="burger" id="burger" aria-label="القائمة">☰</button></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
-   allSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
+   topSections.concat(data.tracks||[]).map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
    '</span><span>© '+year+' '+esc(data.siteTitle)+'</span></div></div>';
 
   // ---------- الصفحات ----------
@@ -39,10 +41,10 @@
     var words=data.siteTitle.split(" ");
     document.getElementById("hero-title").innerHTML=words.map(function(w,i){return '<span class="rv'+(i?' gold':'')+'" style="--d:'+(.15+i*.14)+'s">'+esc(w)+'</span>';}).join("");
     document.getElementById("hero-tag").textContent=data.siteTagline;
-    document.getElementById("tiles").innerHTML=data.sections.map(function(s,i){
+    document.getElementById("tiles").innerHTML=topSections.map(function(s,i){
       return '<a class="tile rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
       '<span class="num">'+pad(i+1)+'</span>'+markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
-      '<div class="meta"><span>'+(s.lessons.length?ar(s.lessons.length)+' '+(s.lessons.length>2&&s.lessons.length<11?'دروس':'درس'):'قريبًا')+'</span><span class="go">←</span></div></a>';
+      '<div class="meta"><span>'+(lessonsCount(s)?ar(lessonsCount(s))+' '+(lessonsCount(s)>2&&lessonsCount(s)<11?'دروس':'درس'):'قريبًا')+'</span><span class="go">←</span></div></a>';
     }).join("");
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
@@ -50,17 +52,23 @@
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta"><span>قريبًا</span><span class="go">←</span></div></a>';
     }).join("");}
-    var stats=[[data.sections.length,"أقسام"],[total,"درسًا"],[28,"حرفًا"]];
+    var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أقسام"],[total,"درسًا"],[28,"حرفًا"]];
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
   }
 
   if(page==="section"){
     var sec=find(allSections,param("id"))||data.sections[0];
     document.title=sec.title+" | "+data.siteTitle;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span><span>'+esc(sec.title)+'</span>';
+    var grp=sec.group?find(data.sections,sec.group):null;
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp?'<a href="section.html?id='+encodeURIComponent(grp.id)+'">'+esc(grp.title)+'</a><span class="sep">◆</span>':'')+'<span>'+esc(sec.title)+'</span>';
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(sec.title)+'</span>';
     document.getElementById("page-desc").textContent=sec.description;
+    if(sec.children){document.getElementById("lessons").innerHTML=sec.children.map(function(cid,i){
+      var c=find(data.sections,cid);if(!c)return '';
+      return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(c.id)+'">'+
+      '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
+    }).join("");}else
     document.getElementById("lessons").innerHTML=sec.lessons.length?sec.lessons.map(function(l,i){
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="lesson.html?section='+encodeURIComponent(sec.id)+'&lesson='+encodeURIComponent(l.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t">'+esc(l.title)+'</div><div class="s">'+esc(l.summary)+'</div></div><span class="go">←</span></a></li>';
@@ -72,7 +80,8 @@
     var les=find(sec2.lessons,param("lesson"))||sec2.lessons[0];
     var li=sec2.lessons.indexOf(les);
     document.title=les.title+" | "+data.siteTitle;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span><a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
+    var grp2=sec2.group?find(data.sections,sec2.group):null;
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp2?'<a href="section.html?id='+encodeURIComponent(grp2.id)+'">'+esc(grp2.title)+'</a><span class="sep">◆</span>':'')+'<a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(les.title)+'</span>';
     document.getElementById("page-desc").textContent=les.summary||"";
     var lb=document.getElementById("lesson-body");
