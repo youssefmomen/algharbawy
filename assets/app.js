@@ -135,9 +135,10 @@
     }).join("");
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
+      var live=data.sections&&data.sections.some(function(x){return x.id===s.id&&((x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));});
       return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="section.html?id='+encodeURIComponent(s.id)+'">'+
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
-      '<div class="meta"><span>قَرِيبًا</span><span class="go">←</span></div></a>';
+      '<div class="meta">'+(live?'':'<span>قَرِيبًا</span>')+'<span class="go">←</span></div></a>';
     }).join("");}
     var contentSecs=allSections.filter(function(s){return !s.children;});var stats=[[contentSecs.length,"أَقْسَامٌ",""],[30,"طَالِبٌ","+"],[total,"دَرْسٌ تَفَاعُلِيٌّ","+"]];
     document.getElementById("stats").innerHTML=stats.map(function(x,i){return '<div class="stat rv" style="--d:'+i*.1+'s"><b class="gold">'+x[2]+ar(x[0])+'</b><span>'+x[1]+'</span></div>';}).join("");
@@ -299,8 +300,10 @@
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
-          return '<div class="q rv" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+(kidSkin?speakBtn(q.audio||q.question):"")+'</div><div class="opts">'+
-          q.options.map(function(o,oi){return '<button type="button" class="opt" data-o="'+oi+'" data-say="'+esc(o)+'"><span class="ol">'+["أ","ب","ج","د"][oi]+'</span>'+esc(reduceT(o))+'</button>';}).join("")+
+          return '<div class="q rv" data-s="'+si+'" data-q="'+qi+'"><div class="q-t">'+esc(q.question)+(kidSkin?speakBtn(q.audio||q.question):"")+'</div>'+
+          (q.questionImage?'<figure class="q-img rv"><img src="'+esc(q.questionImage)+'" alt="" loading="lazy"></figure>':'')+
+          '<div class="opts'+(q.optionImages?' has-imgs':'')+'">'+
+          q.options.map(function(o,oi){var im=q.optionImages&&q.optionImages[oi];return '<button type="button" class="opt'+(im?' has-img':'')+'" data-o="'+oi+'" data-say="'+esc(o)+'">'+(im?'<span class="oi"><img src="'+esc(im)+'" alt="'+esc(o)+'" loading="lazy"></span>':'<span class="ol">'+["أ","ب","ج","د"][oi]+'</span>')+'<span class="ot">'+esc(reduceT(o))+'</span></button>';}).join("")+
           '</div><div class="exp"></div></div>';
         }).join("");
       }
