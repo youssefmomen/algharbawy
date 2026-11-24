@@ -40,6 +40,11 @@ window.Store = (function () {
   function watchProfile() {
     if (!ready) return;
     auth.onAuthStateChanged(function (u) {
+      // علامة محلية: لهذا المتصفح حساب، ليحمّل firebase-loader المكتبات في الزيارات القادمة
+      try {
+        if (u) localStorage.setItem("gh-account", "1");
+        else localStorage.removeItem("gh-account");
+      } catch (e) {}
       if (!u || !u.email) return;
       db.collection("users").doc(u.uid).set({
         email: u.email,
@@ -76,9 +81,29 @@ window.Store = (function () {
     return auth.signInWithPopup(p);
   }
   function signOut() { return auth.signOut(); }
+  /* هل المستخدم مدير؟ وثيقة admins/{uid} في Firestore هي المرجع، وتفرضها القواعد.
+     ترجع Promise لأنها قراءة من القاعدة؛ النتيجة تُخزّن مؤقتًا للجلسة. */
+  var adminCache = {};
+  /* حل مؤقت للمرحلة ١: يقارن بصمة بريد المدير إلى أن تُنشأ وثيقة admins/{uid} */
+  function legacyAdmin(user) {
+    if (!user || !user.email || !cfg.adminEmailHash || !window.crypto || !crypto.subtle) return Promise.resolve(false);
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(user.email.trim().toLowerCase()))
+      .then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+        return hex === cfg.adminEmailHash;
+      })
+      .catch(function () { return false; });
+  }
   function isAdmin(user) {
-    return !!(user && cfg.adminEmail && user.email &&
-      user.email.toLowerCase() === String(cfg.adminEmail).toLowerCase());
+    if (!ready || !user) return Promise.resolve(false);
+    if (adminCache[user.uid] !== undefined) return Promise.resolve(adminCache[user.uid]);
+    return db.collection("admins").doc(user.uid).get()
+      .then(function (d) {
+        if (d && d.exists) { adminCache[user.uid] = true; return true; }
+        return legacyAdmin(user);
+      })
+      .catch(function () { return legacyAdmin(user); })
+      .then(function (ok) { adminCache[user.uid] = !!ok; return !!ok; });
   }
 
   /* تقدّم الطالب: وثيقة واحدة لكل مستخدم، لا يقرأها ولا يكتبها سواه (قواعد Firestore) */
