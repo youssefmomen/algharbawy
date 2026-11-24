@@ -485,3 +485,18 @@ body.nour-skin .fx-badge{border-color:#d98a2b}
 .dz-dunes{position:fixed;bottom:0;left:0;width:100vw;height:180px;z-index:0;pointer-events:none}
 .dz-palm{position:fixed;z-index:0;pointer-events:none}
 body.nour-skin main,body.nour-skin .wrap{position:relative;z-index:1}
+
+/* ===== لوحة التحكم ===== */
+.adm-head{text-align:center;margin:40px 0 26px}
+.adm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:26px 0}
+.adm-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 16px;text-align:center}
+.adm-card b{display:block;font-size:2rem;color:var(--gold2)}
+.adm-card span{color:var(--mute);font-size:.95rem}
+.adm-tablewrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+.adm-table{width:100%;border-collapse:collapse;font-size:.95rem}
+.adm-table th{color:var(--gold2);text-align:right;padding:14px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+.adm-table td{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--text)}
+.adm-table tr:last-child td{border-bottom:0}
+.adm-note{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--mute);margin:26px 0}
+.adm-note a{color:var(--gold2)}
+.chip-admin{display:block;color:var(--gold2);text-decoration:none;padding:6px 0;font-weight:700}
