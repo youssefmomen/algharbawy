@@ -443,3 +443,4 @@ body.kids .q-t{display:flex;align-items:center;justify-content:center;gap:4px;fl
 .lessons .nour-map a.nm-node:hover{background:inherit}
 .lessons .nour-map a.nm-node.open:hover,.lessons .nour-map a.nm-node.done:hover{transform:translate(-50%,-4px)}
 .nour-map{max-width:980px;margin-inline:auto}
+.lessons .nour-map a.nm-node,.lessons .nour-map span.nm-node{border-radius:50%}
