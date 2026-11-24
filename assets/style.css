@@ -444,3 +444,27 @@ body.kids .q-t{display:flex;align-items:center;justify-content:center;gap:4px;fl
 .lessons .nour-map a.nm-node.open:hover,.lessons .nour-map a.nm-node.done:hover{transform:translate(-50%,-4px)}
 .nour-map{max-width:980px;margin-inline:auto}
 .lessons .nour-map a.nm-node,.lessons .nour-map span.nm-node{border-radius:50%}
+
+/* ===== ثيم نور البيان الفاتح المبهج (تجريبي — بانتظار موافقة الأستاذ) ===== */
+body.kids{--bg:#bfe9ff;--bg2:#fff7d6;--card:#ffffff;--line:rgba(45,45,70,.16);--line2:rgba(45,45,70,.3);--gold:#f0a500;--gold2:#b97a00;--gold3:#e09400;--ink:#fff7d6;--text:#2d2d46;--mute:#6b6b8a}
+body.kids{background:linear-gradient(#bfe9ff,#fff7d6);background-attachment:fixed;color:#2d2d46}
+body.kids .nm-pill{background:#fff;border:3px solid #ffd166;color:#2d2d46;border-radius:20px}
+body.kids .nm-pill svg{color:#f0a500}
+body.kids .nm-bar{background:#fff;border:3px solid #ffd166;height:22px;border-radius:12px}
+body.kids .nm-bar i{background:linear-gradient(90deg,#06d6a0,#ffd166)}
+body.kids .nm-lbl{color:#2d2d46;font-weight:700;text-shadow:0 1px 0 #fff}
+body.kids .nour-map svg path{stroke:#e8a13c !important;stroke-width:2.2 !important}
+body.kids .nm-guide{border:6px solid #fff;border-radius:50%;box-shadow:0 6px 0 rgba(0,0,0,.13);background:#fff}
+body.kids .nm-node{box-shadow:0 8px 0 rgba(0,0,0,.16)}
+body.kids .nm-node.locked{background:#b8b8c8;box-shadow:0 8px 0 rgba(0,0,0,.1);color:#fff}
+body.kids .nm-node small{color:#ffd166}
+body.kids .fx-ov{background:rgba(255,255,255,.94)}
+body.kids .fx-ov h1{color:#2d2d46}
+body.kids .fx-badge{background:#fff;border:4px solid #9b5de5;color:#2d2d46}
+body.kids .g-seg .seg-next,body.kids .seg-next{background:#06d6a0;color:#fff;box-shadow:0 6px 0 #049a74;border:0}
+body.kids .q-opt img,body.kids .g-opt img{border-radius:30px}
+body.kids .card,body.kids .ex,body.kids .verse-card{background:#fff;border-color:rgba(45,45,70,.12)}
+body.kids .ex-head{color:#0e8aa8}
+body.kids .chip{border-color:#0e8aa8;color:#0e8aa8}
+body.kids .quiz-note{color:#0b7d8c}
+body.kids .seg-pass{color:#0a9b6c}
