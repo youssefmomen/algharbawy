@@ -78,6 +78,7 @@
     }).join("");}
     else{var rows='';
     if(sec.courses){rows+=sec.courses.map(function(c,i){
+      if(!(c.lessons&&c.lessons.length))return '<li class="rv" style="--d:'+i*.06+'s"><div class="soon-row"><span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">قريبًا</span>'+esc(c.title)+'</div></div></div></li>';
       return '<li class="rv" style="--d:'+i*.06+'s"><a href="section.html?id='+encodeURIComponent(sec.id)+'&course='+encodeURIComponent(c.id)+'">'+
       '<span class="n">'+pad(i+1)+'</span><div><div class="t"><span class="chip">دورة</span>'+esc(c.title)+'</div><div class="s">'+esc(c.description)+'</div></div><span class="go">←</span></a></li>';
     }).join("");}
