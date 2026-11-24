@@ -47,6 +47,7 @@
       var m=document.getElementById("chip-menu");
       if(m){m.remove();return;}
       var html='<div class="chip-menu open" id="chip-menu"><div class="who">'+esc(user.email||"")+'</div>'+
+        (Store.isAdmin(user)?'<a class="chip-admin" href="admin.html">لوحة التحكم</a>':'')+
         '<button type="button" id="btn-out">تسجيل الخروج</button></div>';
       document.body.insertAdjacentHTML("beforeend",html);
       document.getElementById("btn-out").addEventListener("click",function(){
@@ -151,9 +152,9 @@
     if(authUser&&window.Store&&Store.isReady()){Store.setLessonDone(authUser.uid,id,true).catch(function(){});}}
   function progSave(p){try{localStorage.setItem("gharbawy-progress-v1",JSON.stringify(p));}catch(e){}}
   function xpGet(){var p=progGet();return p.xp||0;}
-  function xpAdd(n){var p=progGet();p.xp=(p.xp||0)+n;progSave(p);}
+  function xpAdd(n){var p=progGet();p.xp=(p.xp||0)+n;progSave(p);if(authUser&&window.Store&&Store.isReady())Store.syncStats(authUser.uid,p);}
   function lesStarsGet(id){var p=progGet();return (p.stars&&p.stars[id])||0;}
-  function lesStarsSet(id,n){var p=progGet();p.stars=p.stars||{};p.stars[id]=Math.max(p.stars[id]||0,n);progSave(p);}
+  function lesStarsSet(id,n){var p=progGet();p.stars=p.stars||{};p.stars[id]=Math.max(p.stars[id]||0,n);progSave(p);if(authUser&&window.Store&&Store.isReady())Store.syncStats(authUser.uid,p);}
   function nmTitle(t){var x=String(t||"").replace(/^الدرس\s+[^:：]{1,20}[:：]\s*/,"").trim();return x||t;}
   function dzDecor(){if(!document.body.classList.contains("nour-skin")||document.getElementById("dz-sun"))return;
     var PALM='<path d="M58,165 C56,120 55,90 60,55 L68,55 C70,90 70,120 72,165 Z" fill="#a5713f"/><g fill="#4f9b54"><path d="M64,58 C40,45 20,48 8,62 C28,60 44,62 62,70 Z"/><path d="M64,58 C88,45 108,48 118,64 C98,60 84,63 66,70 Z"/><path d="M64,56 C52,36 34,30 18,34 C36,40 48,50 60,66 Z"/><path d="M64,56 C78,36 96,30 110,36 C92,42 80,52 68,66 Z"/><path d="M64,55 C60,32 50,20 36,16 C50,26 56,40 62,58 Z"/><path d="M64,55 C70,32 82,22 96,18 C82,28 74,42 66,58 Z"/></g><circle cx="58" cy="66" r="6" fill="#c97b2e"/><circle cx="70" cy="68" r="6" fill="#c97b2e"/>';
@@ -216,7 +217,7 @@
       document.getElementById("lessons").innerHTML='<li class="nour-map-li">'
         +'<div class="nm-hud"><span class="nm-pill">'+NST+'<b>'+ar(totSt)+'</b></span><span class="nm-bar"><i style="width:'+Math.round(doneN/LSN.length*100)+'%"></i></span><span class="nm-pill"><b>'+ar(xpGet())+'</b>&nbsp;XP</span></div>'
         +'<div class="nour-map" style="height:'+MH+'px"><svg viewBox="0 0 1000 '+MH+'" preserveAspectRatio="none"><path d="'+pd+'" fill="none"/></svg>'
-        +nodesH+'<img class="nm-guide" src="assets/nour/321-mascot.jpg" alt="" style="left:calc('+XS[firstOpen%4]+'% '+(XS[firstOpen%4]>=70?'- 206px':'+ 96px')+');top:'+(pts[firstOpen][1]+8)+'px"></div></li>';
+        +nodesH+'<img class="nm-guide" src="assets/nour/326-camel-mascot-512.png" alt="" style="left:calc('+XS[firstOpen%4]+'% '+(XS[firstOpen%4]>=70?'- 206px':'+ 96px')+');top:'+(pts[firstOpen][1]+8)+'px"></div></li>';
       document.body.classList.add("nour-skin");dzDecor();
     }
     else if(crs){var rowFound=false;document.getElementById("lessons").innerHTML=crs.lessons.map(function(l,i){
@@ -260,7 +261,7 @@
     var kidSkin=!!kidCourse;
     var nourOv=!!(crs2&&crs2.id==="nour-albayan");var streak=0;
     if(gameMode){document.body.classList.add("game");if(kidSkin){document.body.classList.add("kids");document.body.classList.remove("school");}}
-    if(crs2&&crs2.id==="nour-albayan"){document.body.classList.add("nour-skin");dzDecor();var gmi=document.createElement("img");gmi.id="gmascot";gmi.src="assets/nour/321-mascot.jpg";gmi.alt="";document.body.appendChild(gmi);}
+    if(crs2&&crs2.id==="nour-albayan"){document.body.classList.add("nour-skin");dzDecor();var gmi=document.createElement("img");gmi.id="gmascot";gmi.src="assets/nour/326-camel-mascot-512.png";gmi.alt="";document.body.appendChild(gmi);}
     if(crs2&&crs2.id==="nour-albayan"){document.body.insertAdjacentHTML('beforeend',
       '<div class="fx-ov" id="fx-segov"><div class="fx-ov-in"><h2 id="fx-seg-t"></h2><div class="fx-stars" id="fx-seg-stars"></div><div class="fx-badge" id="fx-seg-b"></div><button type="button" class="btn fill" id="fx-seg-n"></button></div></div>'
       +'<div class="fx-ov" id="fx-lvov"><div class="fx-ov-in"><h2>مَرْحَلَةٌ جَدِيدَةٌ مَفْتُوحَةٌ!</h2><div class="fx-stars" id="fx-lv-stars"></div><div class="fx-badge" id="fx-lv-b"></div><button type="button" class="btn fill" id="fx-lv-n">إِلَى الْخَرِيطَةِ</button></div></div>'
