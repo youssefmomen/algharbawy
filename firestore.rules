@@ -1,0 +1,40 @@
+rules_version = '2';
+// قواعد Firestore — مؤسسة الغرباوي
+// انسخ هذا المحتوى كاملًا إلى: Firebase Console ← Firestore Database ← Rules ← نشر
+//
+// بعد النشر، أنشئ وثيقة المدير مرة واحدة:
+//   1. من Firebase Console ← Authentication انسخ UID الخاص بحساب المدير.
+//   2. من Firestore Database أنشئ مجموعة admins وأضف وثيقة معرّفها هو ذلك UID.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // وثائق المديرين: يقرأها صاحبها فقط (لمعرفة أنه مدير)، وتُدار يدويًا من وحدة التحكم
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list: if false;
+      allow write: if false;
+    }
+
+    // ملف الطالب: يقرأه صاحبه أو المدير، ويكتبه صاحبه فقط
+    match /users/{uid} {
+      allow get, list: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'lastActive']);
+      allow delete: if false;
+    }
+
+    // تقدم الطالب: يقرأه صاحبه أو المدير، ويكتبه صاحبه فقط
+    match /progress/{uid} {
+      allow get, list: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['completed', 'xp', 'stars']);
+      allow delete: if false;
+    }
+  }
+}

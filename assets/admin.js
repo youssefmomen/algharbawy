@@ -17,9 +17,11 @@
   Store.init().then(function () {
     Store.onAuth(function (user) {
       if (!user) { gate("هذه الصفحة خاصة بإدارة الموقع.", true); return; }
-      if (!Store.isAdmin(user)) { gate("غير مصرح لك بعرض هذه الصفحة.", false); return; }
-      gate("جارٍ التحميل…", false);
-      loadDash();
+      Store.isAdmin(user).then(function (ok) {
+        if (!ok) { gate("غير مصرح لك بعرض هذه الصفحة.", false); return; }
+        gate("جارٍ التحميل…", false);
+        loadDash();
+      });
     });
   });
 

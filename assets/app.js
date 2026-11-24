@@ -1,6 +1,6 @@
 // منطق العرض: يقرأ كل المحتوى من data.js ويرسم الصفحة مع الحركات
 (function () {
-  var data = window.SITE_DATA;
+  var data = window.SITE_DATA || window.SITE_META;
   if (!data) return;
   document.documentElement.classList.add("js");
 
@@ -12,7 +12,7 @@
   function pad(n){return ar(n<10?"0"+n:n);}
   var allSections=data.sections.concat(data.tracks||[]);
   var topSections=data.sections.filter(function(s){return !s.group;});
-  function lessonsCount(s){var n=0;if(s.children){s.children.forEach(function(id){var c=find(data.sections,id);if(c)n+=lessonsCount(c);});return n;}n=s.lessons.length;if(s.courses)s.courses.forEach(function(c){n+=c.lessons.length;});return n;}
+  function lessonsCount(s){if(typeof s.count==="number")return s.count;var n=0;if(s.children){s.children.forEach(function(id){var c=find(data.sections,id);if(c)n+=lessonsCount(c);});return n;}n=s.lessons.length;if(s.courses)s.courses.forEach(function(c){n+=c.lessons.length;});return n;}
   var page=document.body.getAttribute("data-page");
   var total=0;data.sections.forEach(function(s){if(!s.children)total+=lessonsCount(s);});
 
@@ -46,16 +46,19 @@
       e.preventDefault();
       var m=document.getElementById("chip-menu");
       if(m){m.remove();return;}
-      var html='<div class="chip-menu open" id="chip-menu"><div class="who">'+esc(user.email||"")+'</div>'+
-        (Store.isAdmin(user)?'<a class="chip-admin" href="admin.html">لوحة التحكم</a>':'')+
-        '<button type="button" id="btn-out">تسجيل الخروج</button></div>';
-      document.body.insertAdjacentHTML("beforeend",html);
+      Store.isAdmin(user).then(function(isAdm){
+        var old2=document.getElementById("chip-menu");if(old2)old2.remove();
+        var html='<div class="chip-menu open" id="chip-menu"><div class="who">'+esc(user.email||"")+'</div>'+
+          (isAdm?'<a class="chip-admin" href="admin.html">لوحة التحكم</a>':'')+
+          '<button type="button" id="btn-out">تسجيل الخروج</button></div>';
+        document.body.insertAdjacentHTML("beforeend",html);
       document.getElementById("btn-out").addEventListener("click",function(){
         Store.signOut();
       });
-      document.addEventListener("click",function h(ev){
-        var m2=document.getElementById("chip-menu");
-        if(m2&&!m2.contains(ev.target)&&ev.target!==chip&&!chip.contains(ev.target)){m2.remove();document.removeEventListener("click",h);}
+        document.addEventListener("click",function h(ev){
+          var m2=document.getElementById("chip-menu");
+          if(m2&&!m2.contains(ev.target)&&ev.target!==chip&&!chip.contains(ev.target)){m2.remove();document.removeEventListener("click",h);}
+        });
       });
     };
   }
@@ -75,7 +78,8 @@
       }
     });
   }
-  if(window.Store){
+  function startStore(){
+    if(!window.Store)return;
     Store.init().then(function(){
       paintChip(null);
       Store.onAuth(function(user){
@@ -85,6 +89,8 @@
       });
     });
   }
+  if(window.Store){ startStore(); }
+  else if(window.StoreReady){ StoreReady.then(function(ok){ if(ok)startStore(); }); }
 
   // ---------- النطق (لعبة الأطفال) ----------
   var SEQ_OPEN_ALL=true; // مؤقت بطلب الأستاذ: فتح كل الدروس للتجربة — رجّعها false لإعادة قفل التتابع
@@ -118,6 +124,7 @@
   topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
   '</div><a class="chip" id="auth-chip" href="auth.html">دخول</a><button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
+  var chip0=document.getElementById("auth-chip");if(chip0)chip0.classList.add("show");
   var year=ar(new Date().getFullYear());
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
@@ -137,7 +144,7 @@
     }).join("");
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
-      var live=data.sections&&data.sections.some(function(x){return x.id===s.id&&((x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));});
+      var live=data.sections&&data.sections.some(function(x){return x.id===s.id&&(x.live||(x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));});
       return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="'+(s.href||('section.html?id='+encodeURIComponent(s.id)))+'">'+
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta">'+(live?'':'<span>قَرِيبًا</span>')+'<span class="go">←</span></div></a>';

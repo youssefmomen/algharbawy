@@ -556,3 +556,7 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 .wf-nx .ar{font-size:.8em}
 .wf-nx:active,.wf-say:active{transform:translateY(3px)}
 @media (max-width:640px){.wf-card{font-size:56px;min-height:170px}}
+
+/* قائمة ثابتة تظهر فقط عند تعطيل JavaScript */
+.ns-list{list-style:none;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:0;margin:24px 0}
+.ns-list a{display:block;padding:12px 22px;border:1px solid rgba(212,175,95,.4);border-radius:12px;color:#d4af5f;text-decoration:none;background:rgba(212,175,95,.06)}
