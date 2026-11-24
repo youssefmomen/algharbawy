@@ -22,7 +22,7 @@
   // ---------- الهيكل المشترك ----------
   var navHTML='<div class="progress" id="progress"></div>'+
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
-  '<div class="links" id="links"><a href="index.html">الرئيسية</a><a href="index.html#sections">الأقسام</a>'+
+  '<div class="links" id="links"><a href="index.html">الرئيسة</a><a href="index.html#sections">الأقسام</a>'+
   data.sections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
   '</div><button class="burger" id="burger" aria-label="القائمة">☰</button></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
@@ -50,7 +50,7 @@
   if(page==="section"){
     var sec=find(data.sections,param("id"))||data.sections[0];
     document.title=sec.title+" | "+data.siteTitle;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسية</a><span class="sep">◆</span><span>'+esc(sec.title)+'</span>';
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span><span>'+esc(sec.title)+'</span>';
     var pm=document.getElementById("page-mark");if(pm)pm.innerHTML=markOf(sec);
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(sec.title)+'</span>';
     document.getElementById("page-desc").textContent=sec.description;
@@ -65,7 +65,7 @@
     var les=find(sec2.lessons,param("lesson"))||sec2.lessons[0];
     var li=sec2.lessons.indexOf(les);
     document.title=les.title+" | "+data.siteTitle;
-    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسية</a><span class="sep">◆</span><a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
+    document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span><a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span><span>'+esc(les.title)+'</span>';
     document.getElementById("page-title").innerHTML='<span class="gold">'+esc(les.title)+'</span>';
     document.getElementById("page-desc").textContent=les.summary||"";
     document.getElementById("lesson-body").innerHTML=les.body.map(function(p,i){
