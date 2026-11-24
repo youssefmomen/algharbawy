@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>فحص أمانك الشخصي | حارس الغرباوي</title>
+<style>
+:root{--bg:#0a0907;--card:#16130f;--gold:#d4af5f;--txt:#f3ecdc;--mut:#a89f8a;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.wrap{max-width:780px;margin:auto;padding:18px}
+h1{color:var(--gold);margin:8px 0 0;font-size:1.7rem}.lead{color:var(--mut)}
+.cat{color:var(--gold);margin:24px 0 6px;font-size:1.1rem}
+.q{background:var(--card);border-radius:14px;padding:12px 14px;margin:10px 0}
+.q p{margin:0 0 8px;font-weight:bold}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts label{flex:1;min-width:90px;text-align:center;background:#221d15;border:1px solid #3a3326;border-radius:10px;padding:8px;cursor:pointer}
+.opts input{display:none}.opts input:checked+span{color:#000}
+.opts label:has(input:checked){background:var(--gold);color:#000;font-weight:bold}
+button{background:var(--gold);color:#000;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:bold;font-size:1.1rem;width:100%;cursor:pointer;margin-top:14px}
+#res{margin-top:18px}#score{text-align:center;font-size:3rem;font-weight:bold}#sum{text-align:center;color:var(--mut)}
+.box{background:var(--card);border-radius:14px;margin:10px 0;border-right:5px solid var(--warn);overflow:hidden}
+.box.bad{border-color:var(--bad)}
+.box summary{padding:12px 14px;cursor:pointer;font-weight:bold}
+.det{padding:0 14px 12px;font-size:.95rem}.det b{color:var(--gold)}.det p{margin:6px 0}
+.info{background:var(--card);border-radius:14px;padding:12px 14px;margin:12px 0;color:var(--mut);font-size:.92rem}
+a{color:var(--gold)}.note{font-size:.85rem;color:var(--mut);margin-top:22px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>🛡️ فحص أمانك الشخصي</h1>
+<p class="lead">أسئلة بسيطة عن الراوتر والموبايل والحسابات. المتصفح مش بيقدر يفحص شبكتك أو جهازك بنفسه، فالأداة بتسألك وبتقولك فين الخطر وإزاي تصلحه. كل إجاباتك بتفضل في الصفحة دي بس: مفيش حاجة بتتبعت ولا بتتخزن، ولما تقفل الصفحة بتتمسح.</p>
+<div class="info" id="browser"></div>
+<form id="f"></form>
+<button id="go" type="button">اعرف نتيجتي</button>
+<div id="res"></div>
+<p class="note">لو اخترت "مش متأكد" بنحسبها نقطة ضعف لحد ما تتأكد. الأداة مجانية وإرشادية وملهاش علاقة بأي فحص للشبكات أو الأجهزة.</p>
+</div>
+<script>
+// good = الإجابة السليمة: "y" أو "n"
+const Q=[
+{c:"📶 الراوتر والواي فاي",id:"r1",q:"غيّرت باسورد لوحة تحكم الراوتر (مش باسورد الواي فاي) عن الافتراضي المكتوب على ضهره (زي admin/admin)؟",good:"y",
+ risk:"باسورد الراوتر الافتراضي معروف للكل ومنشور على الإنترنت.",
+ attack:"أي حد متصل بشبكتك (جار أو ضيف) يدخل على الراوتر ويغيّر إعداداته ويحوّلك لمواقع مزيّفة ويسرق باسوردات.",
+ steps:["افتح المتصفح واكتب عنوان الراوتر، غالبًا 192.168.1.1 أو 192.168.0.1 (مكتوب على ضهر الراوتر).","ادخل بالاسم والباسورد المكتوبين على الراوتر.","دور على قسم اسمه Administration أو Management أو System ثم Change Password.","اختار باسورد طويل (12 حرف فأكتر) مختلف عن باسورد الواي فاي، واحفظه.","راوترات المزودين في مصر (WE وفودافون واورنج واتصالات) غالبًا بتاخد الإعدادات من حساب المزود، ولو مش لاقي الخيار كلم خدمة العملاء واطلب تغيير باسورد الإدارة."]},
+{c:"📶 الراوتر والواي فاي",id:"r2",q:"شبكة الواي فاي عندك مشفّرة بـWPA2 أو WPA3 وباسورد قوي (مش 12345678 ولا رقم تليفونك)؟",good:"y",
+ risk:"التشفير القديم (WEP) أو من غير تشفير أو الباسورد السهل بينكسر بسرعة.",
+ attack:"حد يدخل شبكتك، يستخدم النت على حسابك، ويشوف الأجهزة المتصلة ويحاول يخترقها.",
+ steps:["ادخل لوحة الراوتر.","روح Wireless أو WLAN ثم Security.","اختار WPA2-PSK (AES) أو WPA3 لو متاح، وماتختارش WEP ولا WPA القديم.","اكتب باسورد 12 حرف فأكتر فيه حروف وأرقام ورموز، أو 4 كلمات عشوائية ورا بعض.","احفظ، وأعد توصيل أجهزتك بالباسورد الجديد."]},
+{c:"📶 الراوتر والواي فاي",id:"r3",q:"وقفت خاصية WPS (زر أو رقم PIN للربط السريع)؟",good:"y",
+ risk:"WPS PIN فيه ضعف معروف بيسهّل تخمين الباسورد.",
+ attack:"مهاجم قريب من بيتك يجرب أرقام PIN لحد ما يوصل لباسورد الواي فاي.",
+ steps:["ادخل لوحة الراوتر.","دور على WPS داخل Wireless.","اختار Disable أو إيقاف.","احفظ."]},
+{c:"📶 الراوتر والواي فاي",id:"r4",q:"حدّثت نظام الراوتر (Firmware) في آخر سنة، أو عارف إنه بيتحدث تلقائيًا من المزود؟",good:"y",
+ risk:"الراوترات القديمة فيها ثغرات معروفة مش بتتصلح لوحدها.",
+ attack:"برامج آلية بتدور على راوترات قديمة وبتسيطر عليها وتستخدمها في هجمات أو تتجسس على الاتصال.",
+ steps:["ادخل لوحة الراوتر وروح System أو Administration ثم Firmware Update أو Software Upgrade.","لو في تحديث جديد اعمله وماتفصلش الكهربا أثناءه.","لو الراوتر من المزود اسأل خدمة العملاء عن التحديث، ولو الراوتر قديم جدًا (5 سنين+) فكّر تغيّره."]},
+{c:"📶 الراوتر والواي فاي",id:"r5",q:"بتخلي الضيوف يستخدموا شبكة ضيوف (Guest) منفصلة، مش باسورد الواي فاي الأساسي؟",good:"y",
+ risk:"أي جهاز ضيف مصاب بفيروس على نفس شبكتك ممكن يوصل لأجهزتك.",
+ attack:"جهاز مصاب يسرّب ملفاتك أو يهاجم الكاميرات والأجهزة الذكية على نفس الشبكة.",
+ steps:["ادخل لوحة الراوتر.","دور على Guest Network أو Guest WiFi داخل Wireless.","فعّلها واديها اسم وباسورد مختلفين.","فعّل خيار منع الضيوف من الوصول لباقي الأجهزة (Isolation) لو موجود."]},
+{c:"📶 الراوتر والواي فاي",id:"r6",q:"وقفت الدخول على لوحة الراوتر من الإنترنت (Remote Management) ؟",good:"y",
+ risk:"فتح اللوحة من برّه البيت بيخلي أي حد في العالم يحاول يدخلها.",
+ attack:"تخمين الباسورد أو استغلال ثغرة من أي مكان على الإنترنت.",
+ steps:["ادخل لوحة الراوتر.","روح Administration ثم Remote Management أو Remote Access.","اختار Disable أو إيقاف.","احفظ."]},
+{c:"📶 الراوتر والواي فاي",id:"r7",q:"عارف أو شفت قائمة الأجهزة المتصلة بالواي فاي وكلها أجهزتك؟",good:"y",
+ risk:"جهاز غريب معناه إن حد دخل شبكتك.",
+ attack:"سرقة النت، أو مراقبة الاتصال، أو محاولة اختراق الأجهزة.",
+ steps:["ادخل لوحة الراوتر وروح Connected Devices أو DHCP Clients.","قارن الأجهزة بأجهزتك (اسم الموبايل أو اللابتوب).","لو في جهاز غريب غيّر باسورد الواي فاي فورًا."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d1",q:"نظام الموبايل والكمبيوتر محدّث لآخر إصدار (أو التحديث التلقائي شغال)؟",good:"y",
+ risk:"التحديثات بتقفل ثغرات الأمان اللي بتتكتشف.",
+ attack:"ثغرة معروفة في نظامك تتستغل من رابط أو ملف خبيث وتسيطر على الجهاز.",
+ steps:["أندرويد: الإعدادات ثم النظام ثم تحديث النظام (أو About phone ثم Software update).","آيفون: الإعدادات ثم عام ثم تحديث البرنامج، وفعّل التحديث التلقائي.","ويندوز: الإعدادات ثم Windows Update.","ماك: إعدادات النظام ثم عام ثم تحديث البرنامج."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d2",q:"موبايلك عليه قفل شاشة قوي (بصمة أو وجه أو PIN من 6 أرقام فأكتر) ؟",good:"y",
+ risk:"من غير قفل قوي أي حد يمسك الموبايل يوصل لكل حاجة.",
+ attack:"لو الموبايل ضاع أو اتسرق، اللي لقاه يشوف رسايلك وحساباتك وصورك ويستعمل الحسابات المفتوحة.",
+ steps:["أندرويد: الإعدادات ثم الأمان ثم قفل الشاشة، واختار بصمة أو PIN 6 أرقام فأكتر (مش نمط سهل).","آيفون: الإعدادات ثم Face ID وكلمة السر ثم غيّر كلمة السر إلى 6 أرقام أو أكتر.","ماتستخدمش 123456 ولا تاريخ ميلادك."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d3",q:"فعّلت قفل الشاشة التلقائي (بعد دقيقة أو دقيقتين) على الموبايل واللابتوب؟",good:"y",
+ risk:"الجهاز المفتوح بيدي وصول كامل لأي حد جنبك.",
+ attack:"حد يمسك جهازك المفتوح لثواني ويدخل على حساباتك أو يبعت رسايل باسمك.",
+ steps:["أندرويد: الإعدادات ثم الشاشة ثم مهلة إيقاف الشاشة، اختار 30 ثانية أو دقيقة.","آيفون: الإعدادات ثم شاشة العرض والسطوع ثم القفل التلقائي.","ويندوز: Win+L لقفل الجهاز بسرعة، والإعدادات ثم الحسابات ثم خيارات تسجيل الدخول."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d4",q:"تشفير الجهاز مفعّل (الموبايل غالبًا بيكون مفعّل تلقائيًا، واللابتوب لازم تتأكد)؟",good:"y",
+ risk:"من غير تشفير حد يفك الهارد ويقرا ملفاتك حتى لو عليه باسورد.",
+ attack:"لو اللابتوب اتسرق، يقدر يوصل لكل ملفاتك وصورك وحساباتك المحفوظة.",
+ steps:["ويندوز: الإعدادات ثم الخصوصية والأمان ثم تشفير الجهاز، أو BitLocker في إصدارات Pro.","ماك: إعدادات النظام ثم الخصوصية والأمان ثم FileVault وفعّله.","آيفون: بيتفعل لما تحط كلمة سر. أندرويد: الإعدادات ثم الأمان ثم التشفير وتأكد إنه مفعّل."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d5",q:"راجعت صلاحيات التطبيقات (الكاميرا والمايك والموقع والرسائل) وشلت اللي مش محتاجه؟",good:"y",
+ risk:"تطبيقات كتير بتاخد صلاحيات أكتر من اللي محتاجاها.",
+ attack:"تطبيق مشبوه يسمعك أو يشوفك أو يتتبع موقعك أو يقرا رسايلك.",
+ steps:["أندرويد: الإعدادات ثم الخصوصية ثم مدير الأذونات، وراجع كل صلاحية.","آيفون: الإعدادات ثم الخصوصية والأمان وراجع الكاميرا والميكروفون والموقع.","امسح أي تطبيق مش بتستخدمه."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d6",q:"بتنزّل التطبيقات من المتجر الرسمي بس (Google Play أو App Store) ومش من ملفات APK أو روابط؟",good:"y",
+ risk:"التطبيقات خارج المتجر ممكن تحتوي على برامج تجسس أو فيروسات.",
+ attack:"تطبيق مزيّف شبه تطبيق مشهور يسرق رسايلك وباسوردات البنك.",
+ steps:["نزّل من المتجر الرسمي فقط.","أندرويد: الإعدادات ثم الأمان ثم ثبّت تطبيقات مجهولة المصدر، وتأكد إنها مقفولة.","احذف أي تطبيق نزلته من ملف APK ومش واثق فيه."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d7",q:"على الكمبيوتر عندك حماية شغالة (Windows Defender أو برنامج حماية معروف) ومفيش برامج مقرصنة؟",good:"y",
+ risk:"البرامج المقرصنة بتيجي كتير ومعاها فيروسات.",
+ attack:"برنامج مكراك يثبّت برنامج تجسس يسرق باسورداتك وجلسات حساباتك.",
+ steps:["ويندوز: الإعدادات ثم الخصوصية والأمان ثم أمن Windows وتأكد إن الحماية من الفيروسات شغالة.","اعمل فحص كامل مرة في الشهر.","ماتنزلش برامج مكركة، استخدم بدائل مجانية رسمية."]},
+{c:"📱 الموبايل والكمبيوتر",id:"d8",q:"بتعمل نسخة احتياطية لصورك وملفاتك المهمة (سحابة أو هارد خارجي) ؟",good:"y",
+ risk:"الجهاز ممكن يضيع أو يتعطل أو يتشفر بفيروس فدية.",
+ attack:"فيروس فدية بيقفل ملفاتك ويطلب فلوس عشان يرجّعها.",
+ steps:["اختار مكان: Google Photos أو iCloud أو Google Drive أو هارد خارجي.","فعّل النسخ التلقائي من إعدادات الخدمة.","احتفظ بنسخة واحدة على الأقل مش متصلة بالجهاز."]},
+{c:"🔑 الحسابات والباسوردات",id:"a1",q:"مفعّل التحقق بخطوتين (2FA) على الإيميل الأساسي وواتساب وفيسبوك وأي حساب بنك؟",good:"y",
+ risk:"الباسورد لوحده بيتسرق أو بيتخمن بسهولة.",
+ attack:"لو الباسورد اتسرب أو اتخمن، المهاجم يدخل حسابك ويغيّر باسوردات حساباتك التانية من الإيميل.",
+ steps:["جوجل: myaccount.google.com ثم الأمان ثم التحقق بخطوتين، وفضّل تطبيق Google Authenticator بدل الرسايل.","واتساب: الإعدادات ثم الحساب ثم التحقق بخطوتين، واختار PIN من 6 أرقام.","فيسبوك: الإعدادات ثم الأمان ثم المصادقة الثنائية.","احفظ أكواد الطوارئ في مكان آمن."]},
+{c:"🔑 الحسابات والباسوردات",id:"a2",q:"باسورد كل حساب مختلف (مش بتكرر نفس الباسورد في حسابات كتير)؟",good:"y",
+ risk:"لما موقع واحد يتسرب، باسوردك بيتجرب على باقي حساباتك.",
+ attack:"هجوم بتجريب الباسورد المسرّب على الإيميل والبنك والسوشيال (Credential Stuffing).",
+ steps:["استخدم مدير باسوردات مجاني: Bitwarden أو مدير باسوردات جوجل أو آبل.","غيّر باسوردات الإيميل والبنك أولًا لباسوردات جديدة مختلفة وطويلة.","خلي الأداة تولّد الباسورد وتحفظه عنك."]},
+{c:"🔑 الحسابات والباسوردات",id:"a3",q:"فحصت إيميلك على موقع haveibeenpwned.com لمعرفة لو اتسرب في اختراقات؟",good:"y",
+ risk:"إيميلك ممكن يكون ظهر في تسريبات بيانات من غير ما تعرف.",
+ attack:"المهاجمين بيستخدموا بيانات التسريبات لتخمين باسورداتك أو لإرسال رسايل تصيّد مقنعة.",
+ steps:["افتح https://haveibeenpwned.com/ (موقع معروف ومجاني).","اكتب إيميلك واضغط pwned. الموقع ماينفعش تكتب فيه باسورد.","لو ظهر في تسريب، غيّر باسورد الحساب المذكور وأي حساب شبهه، وفعّل 2FA."]},
+{c:"🔑 الحسابات والباسوردات",id:"a4",q:"بيانات الاسترجاع (رقم التليفون وإيميل بديل) محدثة ومحمية على إيميلك الأساسي؟",good:"y",
+ risk:"بيانات الاسترجاع القديمة ممكن تضيّعك حسابك أو تتحول لإيدي مهاجم.",
+ attack:"لو رقمك القديم اتباع لحد تاني، يقدر يستلم كود الاسترجاع ويسرق حسابك.",
+ steps:["جوجل: myaccount.google.com ثم الأمان ثم طرق استرجاع الحساب.","تأكد من الرقم والإيميل البديل.","شوف الأجهزة المسجلة وامسح أي جهاز مش بتاعك."]},
+{c:"🔑 الحسابات والباسوردات",id:"a5",q:"بتفتح رابط أو مرفق وصلك من رقم غريب أو من واحد صاحبك بس شكله غريب من غير ما تتأكد؟",good:"n",
+ risk:"التصيّد (Phishing) هو أشهر طريقة لسرقة الحسابات.",
+ attack:"رسالة شكلها رسمية فيها رابط لصفحة مزيّفة تطلب باسوردك أو كود التحقق، وتسرق حسابك في ثواني.",
+ steps:["ماتدوسش على رابط جاي في رسالة غير متوقعة، افتح الموقع بنفسك من المتصفح.","ماتبعتش كود التحقق (OTP) لأي حد حتى لو قال إنه من البنك أو واتساب.","لو صاحبك بعت رابط غريب كلمه بمكالمة قبل ما تفتح."]},
+{c:"🌐 المتصفح والواي فاي العام",id:"b1",q:"متصفحك محدّث ومبتحطش باسوردات في صفحات لو الرابط فيها مش https أو شكله غريب؟",good:"y",
+ risk:"المتصفح القديم فيه ثغرات، والصفحات المزيّفة بتشبه الأصلية.",
+ attack:"موقع خبيث يستغل ثغرة في متصفح قديم أو يخدعك بصفحة تسجيل دخول مزيّفة.",
+ steps:["كروم: القائمة ثم Help ثم About Google Chrome، وهو يحدّث نفسه.","اتأكد إن اسم الموقع صح (مثلًا facebook.com مش faceb00k.com) قبل ما تكتب أي باسورد.","فعّل التصفح الآمن (Safe Browsing) من إعدادات الأمان."]},
+{c:"🌐 المتصفح والواي فاي العام",id:"b2",q:"بتتجنب الدخول على حسابات مهمة (بنك أو إيميل) من واي فاي عام (كافيه أو مطار) من غير VPN موثوق؟",good:"y",
+ risk:"الشبكات العامة ممكن يكون عليها حد بيراقب أو شبكة مزيّفة بنفس الاسم.",
+ attack:"شبكة مزيّفة باسم الكافيه تخلي الناس يدخلوا عليها وتشوف الصفحات اللي بيفتحوها وتحاول تسرق جلساتهم.",
+ steps:["استخدم بيانات الموبايل (الداتا) للحاجات المهمة بدل الواي فاي العام.","لو لازم، استخدم VPN معروف ومدفوع من شركة موثوقة (ماتستخدمش VPN مجاني غير معروف).","اتأكد من اسم الشبكة الصحيح من الكافيه."]},
+{c:"🌐 المتصفح والواي فاي العام",id:"b3",q:"بتمسح الإضافات (Extensions) اللي مش بتستخدمها من المتصفح وبتنزل بس من المتجر الرسمي؟",good:"y",
+ risk:"الإضافات الخبيثة بتقرا كل اللي بتفتحه.",
+ attack:"إضافة بتتحدث وتتحول لخبيثة فتسرق باسوردات وجلسات من كل الصفحات.",
+ steps:["كروم: القائمة ثم Extensions ثم Manage Extensions.","امسح أي إضافة مش بتعرفها أو مش بتستخدمها.","راجع الصلاحيات اللي كل إضافة طالباها."]}
+];
+const f=document.getElementById("f");let lastCat="";
+Q.forEach(x=>{
+  if(x.c!==lastCat){const h=document.createElement("div");h.className="cat";h.textContent=x.c;f.appendChild(h);lastCat=x.c}
+  const d=document.createElement("div");d.className="q";
+  const p=document.createElement("p");p.textContent=x.q;d.appendChild(p);
+  const o=document.createElement("div");o.className="opts";
+  [["y","نعم"],["n","لا"],["u","مش متأكد"]].forEach(([v,l])=>{const lb=document.createElement("label");const i=document.createElement("input");i.type="radio";i.name=x.id;i.value=v;const s=document.createElement("span");s.textContent=l;lb.append(i,s);o.appendChild(lb)});
+  d.appendChild(o);f.appendChild(d);
+});
+// معلومات المتصفح (قراءة محلية فقط، مفيش أي اتصال)
+(function(){
+  const ua=navigator.userAgent;let br="متصفح غير معروف";
+  const m=ua.match(/(Edg|Chrome|Firefox|Version)\/(\d+)/);
+  if(m)br=(m[1]==="Version"?"Safari":m[1]==="Edg"?"Edge":m[1])+" إصدار "+m[2];
+  const lines=["الاتصال بالصفحة دي: "+(location.protocol==="https:"?"مشفّر (HTTPS)":"غير مشفّر أو ملف محلي"),
+   "سياق آمن (Secure Context): "+(window.isSecureContext?"نعم":"لا"),
+   "متصفحك: "+br+". المتصفح مش بيقدر يعرف لوحده لو في إصدار أحدث، فاتأكد من صفحة About في متصفحك.",
+   "ملحوظة عن تسريب العنوان المحلي (WebRTC): بعض المواقع تقدر تعرف عنوان جهازك الداخلي. لو بتستخدم VPN، شغّل خيار منع تسريب WebRTC أو استخدم إضافة موثوقة. الأداة دي ماجربتهوش عشان ماتتصلش بأي حاجة."];
+  const b=document.getElementById("browser");lines.forEach(t=>{const p=document.createElement("div");p.textContent="• "+t;b.appendChild(p)});
+})();
+document.getElementById("go").onclick=()=>{
+  const res=document.getElementById("res");res.textContent="";
+  let pts=0,ans=0;const weak=[];
+  Q.forEach(x=>{
+    const v=(document.querySelector('input[name="'+x.id+'"]:checked')||{}).value;
+    if(!v)return;ans++;
+    if(v===x.good)pts++;else weak.push({x,u:v==="u"});
+  });
+  if(ans<Q.length){const m=document.createElement("div");m.className="info";m.textContent="جاوب على كل الأسئلة ("+ans+" من "+Q.length+") عشان النتيجة تبقى دقيقة.";res.appendChild(m);if(ans===0)return}
+  const pct=Math.round(pts/ans*100);
+  const sc=document.createElement("div");sc.id="score";sc.textContent=pct+"% أمان";sc.style.color=pct>=80?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)";
+  const sm=document.createElement("div");sm.id="sum";sm.textContent="نقاط ضعف: "+weak.length+" | سليم: "+pts;
+  res.append(sc,sm);
+  weak.forEach(({x,u})=>{
+    const d=document.createElement("details");d.className="box"+(u?"":" bad");d.open=!u;
+    const s=document.createElement("summary");s.textContent=(u?"❓ ":"⚠️ ")+x.q;d.appendChild(s);
+    const det=document.createElement("div");det.className="det";
+    [["الخطر",x.risk],["إيه اللي ممكن يحصل",x.attack]].forEach(([k,t])=>{const p=document.createElement("p");const b=document.createElement("b");b.textContent=k+": ";p.append(b,t);det.appendChild(p)});
+    const p=document.createElement("p");const b=document.createElement("b");b.textContent="خطوات الإصلاح:";p.appendChild(b);det.appendChild(p);
+    const ol=document.createElement("ol");x.steps.forEach(t=>{const li=document.createElement("li");li.textContent=t;ol.appendChild(li)});det.appendChild(ol);
+    d.appendChild(det);res.appendChild(d)});
+  if(!weak.length){const m=document.createElement("div");m.className="info";m.textContent="ممتاز! مفيش نقاط ضعف فيما جاوبت عليه. كرر الفحص كل 3 شهور.";res.appendChild(m)}
+  res.scrollIntoView({behavior:"smooth"});
+};
+</script>
+</body></html>
