@@ -126,6 +126,10 @@
     var courseParam2=crs2?'&course='+encodeURIComponent(crs2.id):'';
     var les=find(pool,param("lesson"))||pool[0];
     var li=pool.indexOf(les);
+    // وضع اللعب لدروس المناهج: جلد أطفال للصف الأول، وجلد مدرسي مبهج لباقي المناهج
+    var gameMode=sec2.id==="manahij";
+    var kidSkin=gameMode&&crs2&&crs2.id==="g1-arabic-t1";
+    if(gameMode){document.body.classList.add("game");if(kidSkin){document.body.classList.add("kids");document.body.classList.remove("school");}}
     document.title=les.title+" | "+data.siteTitle;
     var grp2=sec2.group?find(data.sections,sec2.group):null;
     document.getElementById("crumbs").innerHTML='<a href="index.html">الرئيسة</a><span class="sep">◆</span>'+(grp2?'<a href="section.html?id='+encodeURIComponent(grp2.id)+'">'+esc(grp2.title)+'</a><span class="sep">◆</span>':'')+'<a href="section.html?id='+encodeURIComponent(sec2.id)+'">'+esc(sec2.title)+'</a><span class="sep">◆</span>'+(crs2?'<a href="section.html?id='+encodeURIComponent(sec2.id)+'&course='+encodeURIComponent(crs2.id)+'">'+esc(crs2.title)+'</a><span class="sep">◆</span>':'')+'<span>'+esc(les.title)+'</span>';
@@ -143,15 +147,58 @@
     var tapMode=totalQ===0&&segs.length>1;
     var unlocked=segs.map(function(_,i){return i===0||already;});
     if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
+    // إعداد اللعب: نجوم، أصوات، سلّم
+    var starCfg=(les.stars)||{perCorrectAnswer:1,perfectSegmentBonus:2};
+    var starTotal=0,wrongFlags=counters.map(function(){return false;}),doneCount=counters.map(function(){return 0;});
+    var STAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.8 5.9 6.4.8-4.7 4.4 1.2 6.3L12 17l-5.7 3 1.2-6.3L2.8 9.3l6.4-.8z" fill="currentColor"/></svg>';
+    function snd(){
+      if(!snd.ctx){try{var AC=window.AudioContext||window.webkitAudioContext;snd.ctx=AC?new AC():null;}catch(e){snd.ctx=null;}}
+      if(snd.ctx&&snd.ctx.state==="suspended")snd.ctx.resume();
+      return snd.ctx;
+    }
+    function tone(fr,t0,dur,type,vol){
+      var c=snd();if(!c)return;
+      var o=c.createOscillator(),g=c.createGain();
+      o.type=type||"triangle";o.frequency.value=fr;
+      g.gain.setValueAtTime(0.0001,c.currentTime+t0);
+      g.gain.exponentialRampToValueAtTime(vol||0.12,c.currentTime+t0+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t0+dur);
+      o.connect(g);g.connect(c.destination);
+      o.start(c.currentTime+t0);o.stop(c.currentTime+t0+dur+0.05);
+    }
+    function sndGood(){tone(523.25,0,0.14);tone(783.99,0.09,0.22);}
+    function sndBad(){tone(196,0,0.3,"sine",0.09);}
+    function sndBonus(){tone(523.25,0,0.12);tone(659.25,0.1,0.12);tone(783.99,0.2,0.12);tone(1046.5,0.3,0.25);}
+    function sndWin(){tone(523.25,0,0.14);tone(659.25,0.12,0.14);tone(783.99,0.24,0.14);tone(1046.5,0.36,0.3);tone(1318.5,0.5,0.4);}
+    function toast(txt){
+      var t=document.createElement("div");t.className="g-toast";t.textContent=txt;document.body.appendChild(t);
+      requestAnimationFrame(function(){t.classList.add("on");});
+      setTimeout(function(){t.classList.remove("on");setTimeout(function(){t.remove();},400);},1100);
+    }
+    function bumpStars(n){
+      starTotal+=n;
+      var cEl=document.getElementById("ghud-count");if(!cEl)return;
+      cEl.textContent=ar(starTotal);
+      var w=cEl.closest(".ghud-stars");if(w){w.classList.remove("pop");void w.offsetWidth;w.classList.add("pop");}
+      var steps=document.querySelectorAll("#ghud-ladder .step:not(.full)");
+      for(var i=0;i<n&&i<steps.length;i++)steps[i].classList.add("full");
+    }
+    if(gameMode&&totalQ>0){
+      var lad='';for(var ls=0;ls<totalQ;ls++)lad+='<span class="step"></span>';
+      document.getElementById("page-desc").insertAdjacentHTML('afterend',
+        '<div class="ghud" id="ghud"><div class="ghud-stars"><span class="gs-ic">'+STAR_SVG+'</span><span class="gs-lb">نُجُومُكَ</span><b id="ghud-count">٠</b></div><div class="ghud-ladder" id="ghud-ladder">'+lad+'</div></div>');
+    }
     var preV=(les.segments&&les.segments.length&&les.verse)?'<div class="verse-card rv"><div class="verse-meta">البيت '+ar(les.verse.number)+' ◆ '+esc(les.verse.section)+'</div><div class="verse-text">'+esc(les.verse.text)+'</div></div>':'';
     if(les['شاهد'])preV+='<div class="verse-card rv"><div class="verse-meta">الشاهد</div><div class="verse-text">'+esc(String(les['شاهد']).split('***').join('\n'))+'</div></div>';
     if(les.images&&les.images.length)preV+=les.images.map(function(im){return '<figure class="les-img rv"><img src="'+esc(im.src)+'" alt="'+esc(im.alt||'')+'" loading="lazy"></figure>';}).join('');
     lb.innerHTML=preV+segs.map(function(sg,si){
-      var h='<div class="seg" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
+      var h='<div class="seg'+(gameMode?' g-seg':'')+'" data-s="'+si+'"'+(unlocked[si]?'':' hidden')+'>';
       if(sg.verse)h+='<div class="verse-card rv"><div class="verse-meta">البيت '+ar(sg.verse.number)+' ◆ '+esc(sg.verse.section)+'</div><div class="verse-text">'+esc(sg.verse.text)+'</div></div>';
       var paras=Array.isArray(sg.body)?sg.body:(sg.body?[sg.body]:[]);
       h+=paras.map(function(p){var cls=/^\s*(تدريب|تمرين)/.test(p)?' tadreeb':'';return '<p class="rv'+cls+'">'+esc(p)+'</p>';}).join("");
-      if(sg.examples&&sg.examples.length)h+='<div class="ex-head rv">أمثلة</div>'+sg.examples.map(function(x){return '<p class="rv ex">'+esc(x)+'</p>';}).join("");
+      if(sg.examples&&sg.examples.length)h+='<div class="ex-head rv">أمثلة</div><div class="ex-wrap">'+sg.examples.map(function(x){return '<p class="rv ex">'+esc(x)+'</p>';}).join("")+'</div>';
+      if(sg.images&&sg.images.length)h+=sg.images.map(function(im){return '<figure class="les-img rv"><img src="'+esc(im.src)+'" alt="'+esc(im.alt||'')+'" loading="lazy"></figure>';}).join('');
+      if(sg.game&&kidSkin)h+='<div class="g-name rv">'+esc(sg.game)+'</div>';
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
@@ -164,7 +211,7 @@
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
-    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>أَحْسَنْتَ، أَتْمَمْتَ هَذَا الدَّرْسَ</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div>'+(pool[li+1]?'<a class="btn fill next-les" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(pool[li+1].id)+'">الدَّرْسُ التَّالِي <span class="ar">←</span></a>':'')+'</div>':'');
+    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>'+(kidSkin?'أَحْسَنْتَ يَا بَطَلُ!':'أَحْسَنْتَ، أَتَمْمْتَ هَذَا الدَّرْسَ')+'</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div>'+(pool[li+1]?'<a class="btn fill next-les" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(pool[li+1].id)+'">الدَّرْسُ التَّالِي <span class="ar">←</span></a>':'')+'</div>':'');
     if((totalQ>0||tapMode)&&pg&&!already)pg.classList.add("locked");
     if(totalQ===0&&!tapMode&&!already)progMark(les.id);
     if(tapMode)lb.addEventListener("click",function(e){
@@ -176,7 +223,6 @@
       if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
       if(nx===segs.length-1){progMark(les.id);var d=document.getElementById("quiz-done");if(d)d.hidden=false;if(pg)pg.classList.remove("locked");}
     });
-    var doneCount=counters.map(function(){return 0;});
     lb.addEventListener("click",function(e){
       var b=e.target.closest(".opt");if(!b||b.disabled)return;
       var qEl=b.closest(".q"),si=+qEl.getAttribute("data-s"),qi=+qEl.getAttribute("data-q"),oi=+b.getAttribute("data-o"),q=segs[si].questions[qi],exp=qEl.querySelector(".exp");
@@ -185,19 +231,24 @@
         qEl.querySelectorAll(".opt").forEach(function(x){x.disabled=true;});
         exp.className="exp show";exp.textContent=q.explanation;
         doneCount[si]++;
+        if(gameMode){sndGood();bumpStars(starCfg.perCorrectAnswer||1);toast('أَحْسَنْتَ!');}
         if(doneCount[si]===counters[si]){
           segDone[si]=true;
+          if(gameMode&&!wrongFlags[si]&&counters[si]>0){bumpStars(starCfg.perfectSegmentBonus||2);sndBonus();}
           var dEl=lb.querySelector('.seg-pass[data-s="'+si+'"]');if(dEl)dEl.hidden=false;
           var nEl=lb.querySelector('.seg[data-s="'+(si+1)+'"]');
           if(nEl){nEl.hidden=false;nEl.scrollIntoView({behavior:"smooth",block:"start"});}
           if(segDone.every(function(x){return x;})){
             progMark(les.id);
             var d=document.getElementById("quiz-done");if(d)d.hidden=false;
+            if(gameMode)sndWin();
             if(pg)pg.classList.remove("locked");
           }
         }
       }else{
         b.classList.add("bad");b.disabled=true;
+        wrongFlags[si]=true;
+        if(gameMode)sndBad();
         exp.className="exp show try";exp.textContent="إِجَابَةٌ غَيْرُ صَحِيحَةٍ. رَاجِعِ الشَّرْحَ بِالْأَعْلَى ثُمَّ حَاوِلْ مِنْ جَدِيدٍ.";
         setTimeout(function(){
           lb.querySelectorAll('.q[data-s="'+si+'"]').forEach(function(q2){
