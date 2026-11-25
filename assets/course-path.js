@@ -37,6 +37,13 @@
   var wrap = document.getElementById("cg-wrap");
   if (!wrap || !window.PathEngine) return;
 
+  /* مؤقت تحميل فوري + بدء جلب ملف الدورة بالتوازي مع تحميل الحساب */
+  var loadNote = document.createElement("div");
+  loadNote.className = "cg-banner";
+  loadNote.textContent = "جارٍ تجهيز اللعبة…";
+  wrap.parentNode.insertBefore(loadNote, wrap);
+  var courseP = new Promise(function (res) { loadCourse(res); });
+
   /* تبديل إلى القائمة التقليدية */
   var tog = document.createElement("div");
   tog.className = "cg-toggle";
@@ -48,6 +55,9 @@
   var meta = document.querySelector(".course-meta");
   if (meta) meta.style.display = "none";
   wrap.hidden = false;
+  function clearLoad() { if (loadNote.parentNode) loadNote.parentNode.removeChild(loadNote); }
+  var cgGate0 = cgGate;
+  cgGate = function (html) { clearLoad(); cgGate0(html); };
 
   if (!window.StoreLoader) { cgGate("خدمة الحسابات غير متاحة حاليًا."); return; }
   StoreLoader.load().then(function (ok) {
@@ -91,7 +101,7 @@
   }
 
   function start(user) {
-    loadCourse(function (course) {
+    courseP.then(function (course) {
       if (!course || !course.lessons || !course.lessons.length) { cgGate("تعذّر تحميل بيانات الدورة."); return; }
       var steps = toSteps(course.lessons);
       if (!steps.length) { cgGate("لا خطوات في هذه الدورة بعد."); return; }
@@ -108,6 +118,7 @@
           prog.streak = prog.lastDay === y ? (prog.streak || 0) + 1 : 1;
           prog.lastDay = today;
         }
+        clearLoad();
         PathEngine.mount({
           steps: steps,
           title: (document.getElementById("page-title").textContent || "").trim(),
