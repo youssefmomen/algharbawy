@@ -9,10 +9,10 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function signedIn() { return request.auth != null; }
-    // المدير: بريده مطابق للحقل email في وثيقة config/admin، أو وثيقة admins/{uid}
+    // المدير: بريده مطابق للحقل email في وثيقة config/admin (المقارنة لا تتأثر بكِبَر/صِغَر الأحرف)، أو وثيقة admins/{uid}
     function isAdmin() {
       return signedIn() && (
-        request.auth.token.email == get(/databases/$(database)/documents/config/admin).data.email
+        request.auth.token.email.lower() == get(/databases/$(database)/documents/config/admin).data.email.lower()
         || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
