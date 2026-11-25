@@ -683,3 +683,5 @@ body.has-ticker .hero{padding-top:190px}
 .pf-up-preview{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
 .form-ok{color:#7fce9a;font-size:.9rem;min-height:1.2em;margin:6px 0}
 @media (max-width:640px){.pf-stats{grid-template-columns:repeat(2,1fr)}.pf-avas{grid-template-columns:repeat(4,1fr)}.pf-roles{grid-template-columns:1fr}.pf-card{flex-wrap:wrap}}
+/* سمة hidden تغلب أي display من الفئات */
+[hidden]{display:none!important}
