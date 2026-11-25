@@ -86,9 +86,10 @@ footer{height:30px}
 .linkline{width:4px;height:14px;background:#cfe0ea;border-radius:2px}
 .nlabel{font-size:11.5px;font-weight:800;color:#456;max-width:130px;text-align:center;line-height:1.6}
 .overlay{position:fixed;inset:0;background:rgba(0,30,50,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
-.pop{background:#fff;border-radius:20px;padding:22px 20px;max-width:340px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.pop .robot{font-size:44px;margin-bottom:8px}
-.pop p{font-size:15.5px;font-weight:700;line-height:2;color:#123}
+.pop{background:#fff;border-radius:4px;padding:0 0 4px;max-width:340px;text-align:right;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25);border-top:4px solid #fa9005}
+.pop .pop-h{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;font-size:16.5px;font-weight:900;color:#1c3d5a;line-height:1.8}
+.pop p{padding:4px 16px 12px;font-size:15px;font-weight:600;line-height:2;color:#333}
+.pop .pop-btn{display:block;width:calc(100% - 32px);margin:6px 16px 12px;background:#1c3d5a;color:#fff;border:0;border-radius:4px;padding:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer}
 </style></head><body>
 <header>
   <div class="crumbs">المناهج الدراسية المصرية ◂ البكالوريا المصرية ◂ تانية ثانوي ◂ الجزء الأول ◂ التاريخ الوطني</div>
@@ -99,7 +100,7 @@ footer{height:30px}
 <main id="main"></main>
 <footer></footer>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
-<script src="assets/data/25-bac-tarikh-g2p1.js?v=3"></script>
+<script src="assets/data/25-bac-tarikh-g2p1.js?v=4"></script>
 <script>
 var D=window.BAC_G2P1,LES=D.lessons[0],STG=D.stages.filter(function(s){return s.id===LES.stage;})[0];
 var IMG='assets/book/taw-g2p1/L1/',KEY='bac-g2p1-l1';
@@ -156,7 +157,7 @@ function renderMap(){
   LES.segments.forEach(function(sg,i){
     var done=segDone(i),unlocked=(i===0)||segDone(i-1);
     var cls=done?'done':(unlocked?'cur':'lock');
-    var inner=done?'✓':(unlocked?ar(i+1):'🔒');
+    var inner=done?'✓':(unlocked?ar(i+1):'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>');
     h+='<div class="node" style="transform:translateX('+offs[i%4]+'px)">';
     h+='<button class="circle '+cls+'" data-node="'+i+'" '+(unlocked?'':'disabled')+'>'+inner+'</button>';
     h+='<div class="nlabel">'+sg.label.split(':')[0]+'</div>';
@@ -169,7 +170,7 @@ function renderMap(){
     S.view='lesson';S.seg=+b.dataset.node;S.sub=0;save();render();
   };});
   if(!S.seenIntro){
-    var o=showPop('<div class="robot">🤖</div><p>تنبيه مهم يا بطل:<br>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة 💪</p><button class="btn btn-done" id="introOk">يلا نبدأ 🚀</button>');
+    var o=showPop('<div class="pop-h"><svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"><rect x="8" y="14" width="32" height="24" rx="6"/><line x1="24" y1="7" x2="24" y2="14"/><circle cx="24" cy="5" r="2.4" fill="#1c3d5a" stroke="none"/><circle cx="17" cy="26" r="2.6" fill="#1c3d5a" stroke="none"/><circle cx="31" cy="26" r="2.6" fill="#1c3d5a" stroke="none"/><line x1="18" y1="33" x2="30" y2="33"/></svg><span>تنبيه مهم</span></div><p>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>');
     S.seenIntro=true;save();
     o.querySelector('#introOk').onclick=function(){o.remove();};
   }
@@ -197,7 +198,7 @@ function mcqHTML(q,id,letters){
   if(done){
     if(done.picked===q.a)h+='<div class="feed ok">أحسنت! إجابة صحيحة ✓</div>';
     else h+='<div class="feed no">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
-    if(q.why)h+='<details class="why"><summary>📖 المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
+    if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
 }
@@ -206,12 +207,12 @@ function openHTML(q,id){
   var h='<div class="q" id="'+id+'"><span class="src">'+q.src+'</span><h3>'+q.q+'</h3>';
   if(!done){
     h+='<textarea id="ta-'+id+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
-    h+='<button class="btn btn-reveal" data-rev="'+id+'">🔍 اعرض الإجابة من الكتاب</button>';
-    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h">📖 الإجابة من الكتاب — قارنها بما كتبت</div>'+refHTML(q.ans)+'</div>';
+    h+='<button class="btn btn-reveal" data-rev="'+id+'">اعرض الإجابة من الكتاب</button>';
+    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h">الإجابة من الكتاب — قارنها بما كتبت</div>'+refHTML(q.ans)+'</div>';
     h+='<button class="btn btn-done" data-ok="'+id+'" hidden id="ok-'+id+'">✓ راجعت إجابتي</button>';
   }else{
     h+='<div class="feed ok">تمت المراجعة ✓</div>';
-    h+='<details class="why"><summary>📖 الإجابة من الكتاب</summary>'+refHTML(q.ans)+'</details>';
+    h+='<details class="why"><summary>الإجابة من الكتاب</summary>'+refHTML(q.ans)+'</details>';
   }
   return h+'</div>';
 }
@@ -222,32 +223,32 @@ function segIds(i){
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
 function cheerFor(seg){
-  if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس 🏁';
-  if(seg>=5)return 'كمل يا بطل! 🔥 عديت النص';
-  if(seg>=2)return 'كمل، شغلك حلو! 💪';
-  return 'عاش يا بطل! 💪 بداية جامدة';
+  if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس';
+  if(seg>=5)return 'كمل يا بطل! عديت النص';
+  if(seg>=2)return 'كمل، شغلك حلو';
+  return 'عاش يا بطل! بداية جامدة';
 }
 function renderLesson(){
   var m=document.getElementById('main');
   if(S.seg>=LES.segments.length){
-    m.innerHTML='<div class="done-screen"><div class="big">🏆</div><h2>أحسنت! أنهيت الدرس الأول</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>الدرس التالي يُفتح بعد اعتماد المعلم.</p></div><button class="next" id="toMap">العودة للخريطة ◂</button>';
+    m.innerHTML='<div class="done-screen"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="#fa9005" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="#1c3d5a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت الدرس الأول</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>الدرس التالي يُفتح بعد اعتماد المعلم.</p></div><button class="next" id="toMap">العودة للخريطة ◂</button>';
     paint();chime();window.scrollTo(0,0);
     document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
     return;
   }
   var sg=LES.segments[S.seg];
   var base=0;for(var i=0;i<S.seg;i++)base+=LES.segments[i].questions.length;
-  var h='<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span> '+sg.label+' — '+(S.sub===0?'📖 الشرح':'✏️ الأسئلة')+'</div>';
+  var h='<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span> '+sg.label+' — '+(S.sub===0?'الشرح':'الأسئلة')+'</div>';
   if(S.sub===0){
     h+=explainHTML(sg.explain);
   }else{
     var letters=['أ','ب','ج','د'];
     if(sg.check&&sg.check.length){
-      h+='<div class="sec-h">⚡ أسئلة سريعة على اللي قرأته</div>';
+      h+='<div class="sec-h">أسئلة سريعة على ما قرأته</div>';
       h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
     }
     if(sg.questions.length){
-      h+='<div class="sec-h">📖 أسئلة الكتاب</div>';
+      h+='<div class="sec-h">أسئلة الكتاب</div>';
       h+=sg.questions.map(function(q,i){
         var id='q'+(base+i);
         return q.t==='mcq'?mcqHTML(q,id,letters):openHTML(q,id);
@@ -259,9 +260,9 @@ function renderLesson(){
   h+='<div class="navrow">';
   h+='<button class="prev" id="prevBtn">رجوع ▸</button>';
   if(S.sub===0)h+='<button class="next" id="nextBtn">انتقل للأسئلة ◂</button>';
-  else h+='<button class="next" id="nextBtn" '+(allDone?'':'disabled')+'>'+(isLast?'إنهاء الدرس 🏆':'الجزء التالي ◂')+'</button>';
+  else h+='<button class="next" id="nextBtn" '+(allDone?'':'disabled')+'>'+(isLast?'إنهاء الدرس':'الجزء التالي ◂')+'</button>';
   h+='</div>';
-  h+='<div class="lock">'+(S.sub===1&&!allDone?'🔒 أجب على كل الأسئلة لفتح الجزء التالي':'')+'</div>';
+  h+='<div class="lock">'+(S.sub===1&&!allDone?'أجب على كل الأسئلة لفتح الجزء التالي':'')+'</div>';
   m.innerHTML=h;paint();window.scrollTo(0,0);
   m.querySelectorAll('[data-mq]').forEach(function(b){b.onclick=function(){
     S.done[b.dataset.mq]={picked:+b.dataset.i};save();render();
@@ -286,7 +287,7 @@ function renderLesson(){
     if(S.sub===0){S.sub=1;save();render();return;}
     var finishedSeg=S.seg;
     S.seg++;S.sub=0;save();
-    showPop('<div class="robot">🤖</div><p>'+cheerFor(finishedSeg)+'</p>',1600,function(){render();});
+    showPop('<div class="pop-h"><svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"><rect x="8" y="14" width="32" height="24" rx="6"/><line x1="24" y1="7" x2="24" y2="14"/><circle cx="24" cy="5" r="2.4" fill="#1c3d5a" stroke="none"/><circle cx="17" cy="26" r="2.6" fill="#1c3d5a" stroke="none"/><circle cx="31" cy="26" r="2.6" fill="#1c3d5a" stroke="none"/><line x1="18" y1="33" x2="30" y2="33"/></svg><span>'+cheerFor(finishedSeg)+'</span></div>',1500,function(){render();});
   };
 }
 function render(){if(S.view==='map')renderMap();else renderLesson();}
