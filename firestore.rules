@@ -41,8 +41,13 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow get, list: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      // الملف الشخصي: email/lastActive تلقائيان، وname/role/avatarId/avatarData يضبطها المستخدم بنفسه
       allow create, update: if signedIn() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['email', 'lastActive']);
+        && request.resource.data.keys().hasOnly(['email', 'lastActive', 'name', 'role', 'avatarId', 'avatarData'])
+        && (!request.resource.data.keys().hasAny(['role']) || request.resource.data.role in ['student', 'teacher'])
+        && (!request.resource.data.keys().hasAny(['name']) || (request.resource.data.name is string && request.resource.data.name.size() <= 100))
+        && (!request.resource.data.keys().hasAny(['avatarId']) || (request.resource.data.avatarId is string && request.resource.data.avatarId.size() <= 24))
+        && (!request.resource.data.keys().hasAny(['avatarData']) || (request.resource.data.avatarData is string && request.resource.data.avatarData.size() <= 120000));
       allow delete: if false;
     }
 
