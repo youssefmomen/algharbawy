@@ -76,14 +76,20 @@
       $("s-paths").innerHTML = v[0].map(function (d) { return hwCard("paths", d, best[d.id], v[1][d.id]); }).join("");
       $("s-paths-empty").hidden = v[0].length > 0;
     });
-    /* واجباتي: المنشور والمعلَّم كواجب، مع حالة الحل */
+    /* واجباتي: المنشور والمعلَّم كواجب، مع حالة الحل — إن عيّن المعلم طلابًا فتظهر لهم فقط */
+    var myEmail = (u.email || "").toLowerCase();
     Promise.all([exP, gmP, paP, ppP, rsP]).then(function (v) {
       var best = {};
       v[4].forEach(function (r) { if (!best[r.refId] || r.score > best[r.refId].score) best[r.refId] = r; });
       var hw = v[0].map(function (d) { return { kind: "exams", d: d }; })
         .concat(v[1].map(function (d) { return { kind: "games", d: d }; }))
         .concat(v[2].map(function (d) { return { kind: "paths", d: d }; }))
-        .filter(function (x) { return x.d.isHomework; });
+        .filter(function (x) {
+          if (!x.d.isHomework) return false;
+          var asg = x.d.assignedToEmails;
+          if (!asg || !asg.length) return true;
+          return asg.some(function (e) { return String(e).toLowerCase() === myEmail; });
+        });
       hw.sort(function (a, b) { return ((b.d.createdAt && b.d.createdAt.seconds) || 0) - ((a.d.createdAt && a.d.createdAt.seconds) || 0); });
       $("s-hw").innerHTML = hw.map(function (x) { return hwCard(x.kind, x.d, best[x.d.id], v[3][x.d.id]); }).join("");
       $("s-hw-empty").hidden = hw.length > 0;

@@ -63,6 +63,36 @@ window.Teach = (function () {
       .then(function (a) { a.sort(function (x, y) { return (y.createdAt && y.createdAt.seconds || 0) - (x.createdAt && x.createdAt.seconds || 0); }); return a; });
   }
 
+  /* ---------- طلاب المعلم (قائمة التعيين) ---------- */
+  /* {teacherId, email, addedAt} — المعلم يضيف بريد كل طالب يعيّن له واجبات */
+  function listStudents(uid) {
+    return col("teacherStudents").where("teacherId", "==", uid).get().then(snap)
+      .then(function (a) { a.sort(function (x, y) { return String(x.email).localeCompare(String(y.email)); }); return a; })
+      .catch(function () { return []; });
+  }
+  function addStudent(uid, email) {
+    return col("teacherStudents").add({ teacherId: uid, email: String(email || "").trim().toLowerCase(), addedAt: now() });
+  }
+  function removeStudent(id) { return col("teacherStudents").doc(id).delete(); }
+
+  /* ---------- تتبع فتح الواجبات ---------- */
+  /* مستند لكل (واجب، طالب): {kind, refId, teacherId, uid, email, openedAt} — يُنشأ عند أول فتح */
+  function markOpened(kind, refId, teacherId, user) {
+    if (!user || !user.uid) return Promise.resolve();
+    var ref = col("hwActivity").doc(refId + "_" + user.uid);
+    return ref.get().then(function (d) {
+      if (d.exists) return;
+      return ref.set({
+        kind: kind, refId: refId, teacherId: teacherId || "",
+        uid: user.uid, email: (user.email || "").toLowerCase(), openedAt: now()
+      });
+    }).catch(function () {});
+  }
+  function listActivity(refId, teacherUid) {
+    return col("hwActivity").where("refId", "==", refId).where("teacherId", "==", teacherUid).get().then(snap)
+      .catch(function () { return []; });
+  }
+
   /* ---------- النتائج ---------- */
   /* {kind:"exam"|"game", refId, teacherId, studentUid, studentEmail, title,
      score, total, durationSec, finishedAt} */
@@ -83,6 +113,8 @@ window.Teach = (function () {
     listTeachers: listTeachers, setTeacherStatus: setTeacherStatus,
     save: save, get: get, remove: remove,
     listMine: listMine, listPublished: listPublished,
-    saveResult: saveResult, listResults: listResults, myResults: myResults
+    saveResult: saveResult, listResults: listResults, myResults: myResults,
+    listStudents: listStudents, addStudent: addStudent, removeStudent: removeStudent,
+    markOpened: markOpened, listActivity: listActivity
   };
 })();

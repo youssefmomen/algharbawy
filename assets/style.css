@@ -615,6 +615,15 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 .t-hw{color:#d4af5f;font-weight:700}
 .hw-open{color:#f0b429}
 .hw-done{color:#7fd08a}
+.hw-no{color:var(--mute)}
+.hw-warn{color:#f0b429;margin-top:.35rem}
+.t-roster-add{display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem}
+.t-roster-add input{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.55rem .8rem;color:var(--text);font-family:inherit}
+.t-roster-add .btn{white-space:nowrap}
+.hw-assign{margin-top:.5rem;border-top:1px dashed var(--line);padding-top:.5rem}
+.hw-checks{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-bottom:.5rem}
+.hw-check{display:flex;align-items:center;gap:.3rem;font-size:.85rem;color:var(--mute)}
+.hw-track{margin-top:.5rem}
 
 /* ===== الوضع النهاري (فاتح) — الافتراضي داكن ويُحفظ اختيار الزائر ===== */
 html[data-theme=light]{--bg:#faf5e8;--bg2:#f1e9d4;--card:#fffdf4;--line:rgba(146,108,30,.3);--line2:rgba(146,108,30,.55);--gold:#a97e1d;--gold2:#7c5a10;--gold3:#c9a44e;--ink:#fff8e6;--text:#2c2414;--mute:#6f6250}

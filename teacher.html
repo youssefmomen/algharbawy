@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="assets/theme.js?v=2"></script>
-<link rel="stylesheet" href="assets/style.css?v=41">
+<link rel="stylesheet" href="assets/style.css?v=42">
 </head>
 <body data-page="teacher">
 <main class="wrap">
@@ -47,6 +47,7 @@
       <button type="button" data-tab="new">إنشاء جديد</button>
       <button type="button" data-tab="newpath">إنشاء مسار</button>
       <button type="button" data-tab="results">النتائج</button>
+      <button type="button" data-tab="hw">الواجبات</button>
     </div>
 
     <div id="tab-exams" class="t-panel"><div class="t-list" id="t-exams"></div><div class="adm-note" id="t-exams-empty" hidden>لا اختبارات بعد، أنشئ أول اختبار من تبويب «إنشاء جديد».</div></div>
@@ -88,6 +89,20 @@
       </div>
     </div>
 
+    <div id="tab-hw" class="t-panel" hidden>
+      <h3 class="t-qhead">طلابي</h3>
+      <div class="t-roster-add">
+        <input type="email" id="hw-email" maxlength="120" placeholder="student@example.com" dir="ltr">
+        <button class="btn fill" id="hw-add" type="button">إضافة طالب</button>
+      </div>
+      <div class="form-err" id="hw-add-err" role="alert"></div>
+      <div class="t-list" id="hw-roster"></div>
+      <div class="adm-note" id="hw-roster-empty" hidden>لا طلاب في قائمتك بعد. أضف بريد كل طالب تريد تعيين الواجبات له.</div>
+      <h3 class="t-qhead">تتبع الواجبات</h3>
+      <div id="hw-items"></div>
+      <div class="adm-note" id="hw-items-empty" hidden>لا واجبات بعد. علّم أي اختبار أو لعبة أو مسار كـ«واجب منزلي» من نموذج الإنشاء أو التعديل.</div>
+    </div>
+
     <div id="tab-results" class="t-panel" hidden>
       <div class="field"><label for="r-pick">اختر الاختبار أو اللعبة</label><select id="r-pick"></select></div>
       <div class="adm-tablewrap"><table class="adm-table"><thead><tr>
@@ -104,9 +119,9 @@
 <script src="assets/data/meta.js?v=2"></script>
 <script src="assets/firebase-config.js?v=2"></script>
 <script src="assets/store.js?v=4"></script>
-<script src="assets/teach.js?v=1"></script>
+<script src="assets/teach.js?v=2"></script>
 <script src="assets/app.js?v=38"></script>
-<script src="assets/teacher.js?v=3"></script>
+<script src="assets/teacher.js?v=4"></script>
 <script src="assets/chat-widget.js?v=6"></script>
 </body>
 </html>

@@ -27,6 +27,7 @@
       Teach.get("games", id).then(function (d) {
         if (!d || !d.published) { gate("هذه اللعبة غير متاحة.", false); return; }
         game = d;
+        if (d.isHomework) Teach.markOpened("game", id, d.teacherId, u);
         $("g-title").textContent = d.title;
         $("g-desc").textContent = d.description || "";
         $("g-info").textContent = (d.gameType === "quiz" ? "تحدي السرعة: أجب عن أكبر عدد في ٦٠ ثانية" : "السباق: كل إجابة صحيحة تقدّمك نحو الراية قبل منافسك") + " · المعلم: " + (d.teacherName || "");
