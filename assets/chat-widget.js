@@ -109,9 +109,9 @@
   var css = document.createElement("style");
   css.textContent =
     "#ghChatBtn{position:fixed;left:16px;bottom:16px;z-index:9999;width:64px;height:64px;border-radius:50%;" +
-    "border:2px solid #c9a24b;cursor:pointer;background:#141414;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 12px rgba(201,162,75,.35);" +
+    "border:2px solid #c6a34f;cursor:pointer;background:#0f0d09;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 12px rgba(198,163,79,.35);" +
     "display:flex;align-items:center;justify-content:center;padding:0;animation:ghBob 3s ease-in-out infinite;}" +
-    "#ghChatBtn:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 18px rgba(201,162,75,.55);}" +
+    "#ghChatBtn:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 18px rgba(198,163,79,.55);}" +
     "@keyframes ghBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
     ".ghEye{transform-box:fill-box;transform-origin:center;animation:ghBlink 4.2s infinite;}" +
     "@keyframes ghBlink{0%,92%,100%{transform:scaleY(1)}95%,97%{transform:scaleY(.08)}}" +
@@ -119,22 +119,29 @@
     "@keyframes ghPulse{0%,100%{opacity:.5}50%{opacity:1}}" +
     ".ghArm{transform-box:fill-box;transform-origin:top center;animation:ghWave 3s ease-in-out 1s 2;}" +
     "@keyframes ghWave{0%,100%{transform:rotate(0)}25%{transform:rotate(-28deg)}55%{transform:rotate(14deg)}80%{transform:rotate(-10deg)}}" +
-    "#ghChatHi{position:fixed;left:92px;bottom:30px;z-index:9998;background:#fff;color:#202124;border-radius:14px 14px 4px 14px;" +
-    "padding:10px 34px 10px 14px;font-family:Cairo,sans-serif;font-size:14px;line-height:1.7;max-width:230px;direction:rtl;" +
-    "box-shadow:0 6px 22px rgba(0,0,0,.3);border:1px solid #e8d9ac;display:none;animation:ghPop .35s ease-out;}" +
+    "#ghChatHi{position:fixed;left:92px;bottom:30px;z-index:9998;background:#171410;color:#ece4d2;border-radius:14px 14px 4px 14px;" +
+    "padding:10px 34px 10px 14px;font-family:Amiri,'Noto Naskh Arabic',serif;font-size:15px;line-height:1.8;max-width:230px;direction:rtl;" +
+    "box-shadow:0 6px 22px rgba(0,0,0,.5);border:1px solid rgba(198,163,79,.35);display:none;animation:ghPop .35s ease-out;}" +
+    "#ghChatHi b{color:#c6a34f;}" +
     "@keyframes ghPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}" +
-    "#ghChatHiX{position:absolute;top:4px;left:8px;border:none;background:none;font-size:16px;color:#999;cursor:pointer;padding:2px 4px;}" +
-    "#ghChatPanel{position:fixed;left:16px;bottom:82px;z-index:9999;width:330px;max-width:calc(100vw - 32px);" +
-    "height:440px;max-height:calc(100vh - 110px);background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);" +
-    "display:none;flex-direction:column;overflow:hidden;font-family:Cairo,sans-serif;direction:rtl;}" +
-    "#ghChatHead{background:#0d6b4f;color:#fff;padding:12px 14px;font-weight:700;}" +
+    "#ghChatHiX{position:absolute;top:4px;left:8px;border:none;background:none;font-size:16px;color:#9c917b;cursor:pointer;padding:2px 4px;}" +
+    "#ghChatPanel{position:fixed;left:16px;bottom:88px;z-index:9999;width:330px;max-width:calc(100vw - 32px);" +
+    "height:440px;max-height:calc(100vh - 110px);background:#171410;border:1px solid rgba(198,163,79,.35);border-radius:14px;" +
+    "box-shadow:0 8px 30px rgba(0,0,0,.6);display:none;flex-direction:column;overflow:hidden;" +
+    "font-family:Amiri,'Noto Naskh Arabic',serif;direction:rtl;}" +
+    "#ghChatHead{background:#0f0d09;color:#c6a34f;padding:12px 14px;font-weight:700;font-family:'Reem Kufi',Amiri,sans-serif;" +
+    "border-bottom:1px solid rgba(198,163,79,.35);}" +
     "#ghChatMsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}" +
-    ".ghMsg{max-width:85%;padding:8px 12px;border-radius:12px;line-height:1.7;font-size:14px;white-space:pre-wrap;}" +
-    ".ghMsg.user{align-self:flex-start;background:#0d6b4f;color:#fff;}" +
-    ".ghMsg.bot{align-self:flex-end;background:#f1f3f4;color:#202124;}" +
-    "#ghChatForm{display:flex;gap:6px;padding:10px;border-top:1px solid #eee;}" +
-    "#ghChatInput{flex:1;border:1px solid #ddd;border-radius:20px;padding:8px 14px;font-family:Cairo,sans-serif;font-size:14px;}" +
-    "#ghChatSend{border:none;background:#0d6b4f;color:#fff;border-radius:20px;padding:8px 16px;cursor:pointer;font-family:Cairo,sans-serif;}" +
+    ".ghMsg{max-width:85%;padding:8px 12px;border-radius:12px;line-height:1.9;font-size:15px;white-space:pre-wrap;}" +
+    ".ghMsg.user{align-self:flex-start;background:#c6a34f;color:#171206;}" +
+    ".ghMsg.bot{align-self:flex-end;background:#0f0d09;color:#ece4d2;border:1px solid rgba(198,163,79,.22);}" +
+    "#ghChatForm{display:flex;gap:6px;padding:10px;border-top:1px solid rgba(198,163,79,.22);}" +
+    "#ghChatInput{flex:1;border:1px solid rgba(198,163,79,.35);background:#0f0d09;color:#ece4d2;border-radius:20px;" +
+    "padding:8px 14px;font-family:Cairo,'Segoe UI',sans-serif;font-size:14px;}" +
+    "#ghChatInput::placeholder{color:#9c917b;}" +
+    "#ghChatInput:focus{outline:none;border-color:#c6a34f;}" +
+    "#ghChatSend{border:none;background:#c6a34f;color:#171206;border-radius:20px;padding:8px 16px;cursor:pointer;" +
+    "font-family:Cairo,'Segoe UI',sans-serif;font-weight:700;}" +
     "#ghChatSend:disabled{opacity:.5;cursor:default;}";
   document.head.appendChild(css);
 
@@ -144,17 +151,17 @@
   btn.setAttribute("aria-label", "فصيح مساعد الغرباوي - افتح المحادثة");
   btn.innerHTML =
     '<svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">' +
-    '<line x1="32" y1="6" x2="32" y2="14" stroke="#c9a24b" stroke-width="3" stroke-linecap="round"/>' +
+    '<line x1="32" y1="6" x2="32" y2="14" stroke="#c6a34f" stroke-width="3" stroke-linecap="round"/>' +
     '<circle class="ghTip" cx="32" cy="6" r="3.4" fill="#e9c766"/>' +
-    '<rect x="14" y="14" width="36" height="26" rx="9" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2.4"/>' +
+    '<rect x="14" y="14" width="36" height="26" rx="9" fill="#1e1e1e" stroke="#c6a34f" stroke-width="2.4"/>' +
     '<rect x="20" y="21" width="24" height="13" rx="6" fill="#0a0a0a"/>' +
     '<circle class="ghEye" cx="27" cy="27.5" r="3" fill="#e9c766"/>' +
     '<circle class="ghEye" cx="37" cy="27.5" r="3" fill="#e9c766"/>' +
-    '<path d="M27 35 q5 4 10 0" stroke="#c9a24b" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
-    '<rect x="20" y="42" width="24" height="15" rx="7" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2.4"/>' +
+    '<path d="M27 35 q5 4 10 0" stroke="#c6a34f" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+    '<rect x="20" y="42" width="24" height="15" rx="7" fill="#1e1e1e" stroke="#c6a34f" stroke-width="2.4"/>' +
     '<circle cx="32" cy="49.5" r="3" fill="#e9c766" class="ghTip"/>' +
-    '<rect x="10" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2"/>' +
-    '<rect class="ghArm" x="47" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2"/>' +
+    '<rect x="10" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c6a34f" stroke-width="2"/>' +
+    '<rect class="ghArm" x="47" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c6a34f" stroke-width="2"/>' +
     '</svg>';
 
   var panel = document.createElement("div");
@@ -230,7 +237,7 @@
     initAI()
       .then(function (chat) { return chat.sendMessage(text); })
       .then(function (res) {
-        thinking.textContent = res.response.text();
+        thinking.textContent = res.response.text().replace(/\*\*/g, "").replace(/^#+\s*/gm, "");
       })
       .catch(function () {
         thinking.textContent = "عذرًا، أنا مشغول الآن. أعِد المحاولة بعد قليل 🌿 ويمكنك تصفُّح أقسام الموقع من القائمة.";
