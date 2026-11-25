@@ -419,7 +419,7 @@
       document.getElementById("fx-lv-stars").innerHTML=fxStarsHtml(st);
       var nxt=pool[li+1];
       document.getElementById("fx-lv-b").textContent=(nxt?'فُتِحَتِ الْمَرْحَلَةُ '+ar(li+2)+' · ':'')+'+٥٠ XP';
-      o.classList.add("on");speak('أَحْسَنْتَ يَا بَطَلُ!');
+      o.classList.add("on");speak('أَحْسَنْتَ، بَارَكَ اللهُ فِيكَ');
       document.getElementById("fx-lv-n").onclick=function(){location.href='section.html?id='+encodeURIComponent(sec2.id)+courseParam2;};
     }
     function toast(txt){
@@ -477,7 +477,7 @@
       h+='</div>';
       if(si<segs.length-1)h+='<div class="seg-pass" data-s="'+si+'" hidden><i>◆</i></div>';
       return h;
-    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>'+(kidSkin?'أَحْسَنْتَ يَا بَطَلُ!':'أَحْسَنْتَ، أَتَمْمْتَ هَذَا الدَّرْسَ')+'</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div>'+(pool[li+1]?'<a class="btn fill next-les" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(pool[li+1].id)+'">الدَّرْسُ التَّالِي <span class="ar">←</span></a>':'')+'</div>':'');
+    }).join("")+((totalQ>0||tapMode)?'<div class="quiz-done" id="quiz-done" hidden><span class="mark"><i>◆</i></span><div><b>'+(kidSkin?'أَحْسَنْتَ، بَارَكَ اللهُ فِيكَ':'أَحْسَنْتَ، أَتَمْمْتَ هَذَا الدَّرْسَ')+'</b><span>يُمْكِنُكَ الِانْتِقَالُ إِلَى الدَّرْسِ التَّالِي.</span></div>'+(pool[li+1]?'<a class="btn fill next-les" href="lesson.html?section='+encodeURIComponent(sec2.id)+courseParam2+'&lesson='+encodeURIComponent(pool[li+1].id)+'">الدَّرْسُ التَّالِي <span class="ar">←</span></a>':'')+'</div>':'');
     if((totalQ>0||tapMode)&&pg&&!already)pg.classList.add("locked");
     if(totalQ===0&&!tapMode&&!already)progMark(les.id);
     if(tapMode)lb.addEventListener("click",function(e){
@@ -514,7 +514,7 @@
           var d=document.getElementById("quiz-done");if(d)d.hidden=false;
           if(pg)pg.classList.remove("locked");
           if(gameMode){sndWin();confetti(60);mascotJump();}
-          speak('أَحْسَنْتَ يَا بَطَلُ!');
+          speak('أَحْسَنْتَ، بَارَكَ اللهُ فِيكَ');
         }
       }
       w.querySelector(".wf-say").addEventListener("click",function(){speak(WL[wi]);});
