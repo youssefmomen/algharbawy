@@ -115,7 +115,11 @@
     if (first) patch.role = selRole;
     $("p-save").disabled = true;
     Store.saveProfile(user.uid, patch).then(function () {
-      try { sessionStorage.removeItem("gh_role"); sessionStorage.removeItem("gh_prof_" + user.uid); } catch (e) {}
+      try {
+        sessionStorage.removeItem("gh_role");
+        /* حدّث كاش الشريحة فورًا بالملف الكامل بدل حذفه */
+        sessionStorage.setItem("gh_prof_" + user.uid, JSON.stringify(Object.assign({}, profile, patch)));
+      } catch (e) {}
       if (first && selRole === "teacher") {
         /* طريق المعلم القائم: تسجيل الطلب ثم صفحة المعلم تعرض «قيد المراجعة» */
         return Teach.register(user, name).then(function () { location.href = "teacher.html"; });
