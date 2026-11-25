@@ -16,8 +16,9 @@
   var RECAPTCHA_SITE_KEY = "6Le4IDEuAAAAANYA2EvvnsJSnQwTKx3i5OzdPgcG";
   var MODEL_NAME = "gemini-flash-lite-latest";
   var SDK = "https://www.gstatic.com/firebasejs/11.10.0/";
-  var MAX_PER_SESSION = 12; // حد الرسائل لكل زائر في الجلسة الواحدة
+  var MAX_PER_SESSION = 30; // حد الرسائل لكل زائر في الجلسة الواحدة
   var COUNT_KEY = "gh_chat_count";
+  var isOwner = false;    // المالك المسجَّل يتجاوز حد الرسائل
 
   var ai = null;          // عميل المحادثة بعد التهيئة
   var aiReady = null;     // وعد التهيئة
@@ -78,6 +79,21 @@
         });
       } catch (e) { /* يعمل بدون App Check */ }
 
+      // تجاوز حد الرسائل للمالك المسجَّل: نقارن بصمة بريده بالبصمة المحفوظة
+      // (نفس أسلوب legacyAdmin في store.js — جلسة الدخول مشتركة لنفس appId)
+      try {
+        var auMod = await import(SDK + "firebase-auth.js");
+        auMod.getAuth(app).onAuthStateChanged(function (u) {
+          if (!u || !u.email || !window.FIREBASE_CONFIG.adminEmailHash || !window.crypto || !crypto.subtle) return;
+          crypto.subtle.digest("SHA-256", new TextEncoder().encode(u.email.trim().toLowerCase()))
+            .then(function (buf) {
+              var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+              isOwner = (hex === window.FIREBASE_CONFIG.adminEmailHash);
+            })
+            .catch(function () {});
+        });
+      } catch (e) { /* بدون تجاوز */ }
+
       var vMod = await import(SDK + "firebase-ai.js");
       var vertex = vMod.getAI(app, { backend: new vMod.GoogleAIBackend() });
       var model = vMod.getGenerativeModel(vertex, {
@@ -94,6 +110,7 @@
   }
 
   function remaining() {
+    if (isOwner) return 9999;
     var n = 0;
     try { n = parseInt(sessionStorage.getItem(COUNT_KEY) || "0", 10) || 0; } catch (e) {}
     return MAX_PER_SESSION - n;
@@ -221,7 +238,7 @@
     var text = input.value.trim();
     if (!text) return;
     if (remaining() <= 0) {
-      addMsg("لقد بلغتَ حدَّ الرسائل المسموح به في هذه الجلسة 🌿 يمكنك تصفُّح أقسام الموقع من القائمة، وستجد فيها كل الدروس والاختبارات.", "bot");
+      addMsg("ما شاء الله، ثلاثون رسالةً في جلسةٍ واحدة! 🌿 لقد بلغتَ حدَّ هذه الجلسة. تصفَّح أقسامَ الموقع ودروسَه واختباراتِه من القائمة، ثم عُد إليّ في جلسةٍ جديدةٍ متى شئتَ، وسأكون في انتظارك.", "bot");
       return;
     }
     input.value = "";
