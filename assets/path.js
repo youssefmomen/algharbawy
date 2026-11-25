@@ -68,7 +68,9 @@
   }
 
   function tag(t) { return '<span class="p-tag">' + esc(t) + "</span>"; }
-  function stepLabel(t) { return "البيت " + arNum(i + 1) + " من " + arNum(steps.length) + " · " + t; }
+  function stepOne() { return (path && path.stepOne) || "البيت"; }
+  function stepMany() { return (path && path.stepMany) || "بيتًا"; }
+  function stepLabel(t) { return stepOne() + " " + arNum(i + 1) + " من " + arNum(steps.length) + " · " + t; }
 
   function render() {
     hud();
@@ -76,10 +78,13 @@
     var st = steps[i];
     if (phase === "explain") {
       stage('<div class="p-card">' + tag(stepLabel("الشرح")) +
-        '<p class="p-verse">' + esc(st.verse) + "</p>" +
+        (st.verse ? '<p class="p-verse">' + esc(st.verse) + "</p>" : "") +
+        (st.image ? '<img class="p-verse-img" src="' + esc(st.image) + '" alt="نص القطعة">' : "") +
         (st.note ? '<p class="p-note">' + esc(st.note) + "</p>" : "") +
+        (st.vocab && st.vocab.length ? '<div class="p-vocab"><div class="p-vocab-h">المفردات</div>' +
+          st.vocab.map(function (v) { return '<p class="p-vocab-i"><b>' + esc(v[0]) + ":</b> " + esc(v[1]) + "</p>"; }).join("") + "</div>" : "") +
         "</div>");
-      $("p-check").textContent = "حفظتُه — اختبِرني";
+      $("p-check").textContent = st.noMem ? "فهمتُه — اختبِرني" : "حفظتُه — اختبِرني";
       $("p-check").disabled = false;
     } else if (phase === "memorize") {
       var mp = memorizeParts(st);
@@ -157,7 +162,7 @@
     $("p-play").hidden = true;
     $("p-done").hidden = false;
     $("p-done-xp").textContent = "نقاطك: " + arNum(prog.xp || 0) + " نقطة" + (prog.streak ? " · سلسلة " + arNum(prog.streak) + " يوم" : "");
-    $("p-done-sub").textContent = "أتممتَ " + arNum(steps.length) + " بيتًا. سُجّلت نتيجتك عند معلمك.";
+    $("p-done-sub").textContent = "أتممتَ " + arNum(steps.length) + " " + stepMany() + ". سُجّلت نتيجتك عند معلمك.";
   }
 
   $("p-check").addEventListener("click", function () {
@@ -192,7 +197,7 @@
       saveProg({ xp: (prog.xp || 0) + 10 }).then(function () {
         quizIx++;
         if (quizIx >= quizQs.length) {
-          feedback(true, "أحسنت! ✓", "+١٠ نقاط. أنهيتَ هذا البيت (+١٥ نقطة إتمام).", "البيت التالي", verseDone);
+          feedback(true, "أحسنت! ✓", "+١٠ نقاط. أنهيتَ هذه الخطوة (+١٥ نقطة إتمام).", "الخطوة التالية", verseDone);
         } else {
           feedback(true, "أحسنت! ✓", "+١٠ نقاط.", "السؤال التالي", render);
         }
@@ -201,7 +206,7 @@
       hearts--;
       hud();
       if (hearts <= 0) {
-        feedback(false, "نفدت القلوب", "الإجابة الصحيحة: " + correctT + ". ستعود إلى شرح هذا البيت ثم تعيد المحاولة.", "ارجع إلى الشرح", backToExplain);
+        feedback(false, "نفدت القلوب", "الإجابة الصحيحة: " + correctT + ". ستعود إلى شرح هذه الخطوة ثم تعيد المحاولة.", "ارجع إلى الشرح", backToExplain);
       } else {
         quizQs.push(q); /* يعاد السؤال في آخر المجموعة كما في دوولينجو */
         quizIx++;
@@ -221,7 +226,7 @@
       Teach.get("paths", id).then(function (d) {
         if (!d || !(d.published || d.teacherId === u.uid)) { gate("هذا المسار غير متاح.", false); return; }
         if (d.teacherId === u.uid && !d.published) { gate("هذا المسار مسودة غير منشورة بعد.", false); return; }
-        path = d; steps = (d.steps || []).filter(function (s) { return s && s.verse; });
+        path = d; steps = (d.steps || []).filter(function (s) { return s && (s.verse || s.image); });
         if (!steps.length) { gate("لا خطوات في هذا المسار بعد.", false); return; }
         progRef().get().then(function (doc) {
           prog = doc.exists ? doc.data() : { step: 0, wrong: 0, xp: 0, streak: 0, done: false };
@@ -234,7 +239,7 @@
           if (prog.done) { t0 = Date.now(); finish(); return; }
           $("p-title").textContent = d.title;
           $("p-desc").textContent = d.description || "";
-          $("p-info").textContent = arNum(steps.length) + " بيتًا · المعلم: " + (d.teacherName || "");
+          $("p-info").textContent = arNum(steps.length) + " " + ((d && d.stepMany) || "بيتًا") + " · المعلم: " + (d.teacherName || "");
           i = Math.min(prog.step || 0, steps.length - 1);
           $("p-map").innerHTML = steps.map(function (s, ix) {
             var cls = ix < i ? "done" : (ix === i ? "current" : "locked");
