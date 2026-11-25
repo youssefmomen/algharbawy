@@ -57,3 +57,5 @@ button.p-node.done:focus-visible,button.p-node.current:focus-visible{outline:2px
 .cg-toggle a{color:#9c917b;font-size:.85rem;text-decoration:underline}
 .cg-banner{background:#171410;border:1px solid rgba(198,163,79,.22);border-radius:12px;padding:14px 18px;margin:12px 0;color:#c9bfa8;font-size:.95rem;line-height:1.9}
 .cg-banner a{color:#c6a34f;text-decoration:underline}
+/* توسيط بطاقتي البداية والإتمام في صفحة المسار وصفحة الدورة */
+body[data-page="path"] .auth-card,#cg-wrap .auth-card{margin-inline:auto}
