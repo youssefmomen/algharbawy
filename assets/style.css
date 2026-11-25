@@ -542,7 +542,7 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 .wf-pill{background:#fff;border:3px solid #ffd166;border-radius:20px;padding:2px 14px;font-weight:800;font-size:18px;color:#b8860b}
 .wf-bar{flex:1;height:16px;background:#fff;border-radius:12px;border:3px solid #ffd166;overflow:hidden}
 .wf-fill{display:block;height:100%;width:0;background:linear-gradient(90deg,#06d6a0,#ffd166);transition:width .4s}
-.wf-card{margin:8px auto 10px;width:min(88vw,480px);min-height:220px;background:#fff;border-radius:34px;border:7px solid #ef476f;box-shadow:0 8px 0 rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-size:84px;font-weight:800;line-height:1.7;color:#2d2d46;font-family:'Amiri',serif}
+.wf-card{margin:8px auto 10px;width:min(88vw,480px);min-height:220px;background:#fff;border-radius:34px;border:7px solid #ef476f;box-shadow:0 8px 0 rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-size:84px;font-weight:800;line-height:1.7;color:#2d2d46;font-family:'Scheherazade New','Amiri',serif}
 .wf-card.pop{animation:wfPop .35s}
 @keyframes wfPop{from{transform:scale(.6) rotate(-4deg);opacity:0}}
 .wf-dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:4px 20px 8px}
@@ -552,6 +552,9 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 .wf-row{display:flex;gap:14px;justify-content:center;margin-top:8px}
 .wf-say{width:66px;height:66px;border-radius:50%;background:#118ab2;color:#fff;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 #0b5a77}
 .wf-say svg{width:30px;height:30px}
+.wf-pv{padding:0 24px;height:66px;border-radius:33px;background:#fff;color:#ef476f;border:3px solid #ef476f;cursor:pointer;font-family:inherit;font-size:24px;font-weight:800;box-shadow:0 5px 0 rgba(239,71,111,.35)}
+.wf-pv:disabled{opacity:.4;cursor:default;box-shadow:none}
+.wf-pv .ar{font-size:.85em}
 .wf-nx{padding:0 30px;height:66px;border-radius:33px;background:#06d6a0;color:#fff;border:0;cursor:pointer;font-family:inherit;font-size:26px;font-weight:800;box-shadow:0 5px 0 #049a74}
 .wf-nx .ar{font-size:.8em}
 .wf-nx:active,.wf-say:active{transform:translateY(3px)}

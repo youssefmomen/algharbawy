@@ -446,7 +446,7 @@
       if(sg.game&&kidSkin)h+='<div class="g-name rv">'+esc(sg.game)+'</div>';
       if(sg.vocab&&sg.vocab.length)h+='<div class="ex-head rv">الْمُفْرَدَاتُ</div><div class="vocab">'+sg.vocab.map(function(v){return '<div class="voc rv"><b>'+esc(v[0])+'</b><span>'+esc(v[1])+'</span></div>';}).join("")+'</div>';
       if(sg.meaning&&sg.meaning.length)h+='<div class="ex-head rv">الْمَعْنَى</div>'+sg.meaning.map(function(m){return '<div class="mean rv"><b>'+esc(m[0])+'</b><p>'+esc(m[1])+'</p></div>';}).join("");
-      if(sg.words&&sg.words.length)h+='<div class="wf" data-s="'+si+'"><div class="wf-head"><div class="wf-pill">★ <b class="wf-cnt">٠</b></div><div class="wf-bar"><i class="wf-fill"></i></div></div><div class="wf-card"></div><div class="wf-dots"></div><div class="wf-row"><button type="button" class="wf-say" aria-label="سماع">'+SPK_SVG+'</button><button type="button" class="wf-nx">التَّالِي <span class="ar">←</span></button></div></div>';
+      if(sg.words&&sg.words.length)h+='<div class="wf" data-s="'+si+'"><div class="wf-head"><div class="wf-pill">★ <b class="wf-cnt">٠</b></div><div class="wf-bar"><i class="wf-fill"></i></div></div><div class="wf-card"></div><div class="wf-dots"></div><div class="wf-row"><button type="button" class="wf-pv"><span class="ar">→</span> السَّابِق</button><button type="button" class="wf-say" aria-label="سماع">'+SPK_SVG+'</button><button type="button" class="wf-nx">التَّالِي <span class="ar">←</span></button></div></div>';
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
@@ -483,6 +483,7 @@
         wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
         if(wfill)wfill.style.width=(wi/WL.length*100)+"%";
         if(wcnt)wcnt.textContent=ar(wi);
+        var pv=w.querySelector(".wf-pv");if(pv)pv.disabled=(wi<=0);
         speak(WL[wi]);
       }
       function wfDone(){
@@ -501,6 +502,7 @@
         }
       }
       w.querySelector(".wf-say").addEventListener("click",function(){speak(WL[wi]);});
+      w.querySelector(".wf-pv").addEventListener("click",function(){if(wi<=0)return;wi--;wfShow();});
       w.querySelector(".wf-nx").addEventListener("click",function(){wi++;if(wi>=WL.length){wfDone();return;}wfShow();});
       wfShow();
     });
