@@ -79,7 +79,7 @@ window.Store = (function () {
   function getProfile(uid) {
     if (!ready || !uid) return Promise.resolve(null);
     function once() {
-      return db.collection("users").doc(uid).get()
+      return db.collection("users").doc(uid).get({ source: "server" })
         .then(function (d) { return d.exists ? d.data() : null; })
         .catch(function () { return null; });
     }
