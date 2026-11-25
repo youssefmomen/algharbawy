@@ -46,6 +46,7 @@
       Teach.get("paths", id).then(function (d) {
         if (!d || !(d.published || d.teacherId === user.uid)) { PathEngine.gate("هذا المسار غير متاح.", false); return; }
         if (d.teacherId === user.uid && !d.published) { PathEngine.gate("هذا المسار مسودة غير منشورة بعد.", false); return; }
+        if (d.isHomework) Teach.markOpened("path", id, d.teacherId, user);
         var steps = (d.steps || []).filter(function (s) { return s && (s.verse || s.image); });
         if (!steps.length) { PathEngine.gate("لا خطوات في هذا المسار بعد.", false); return; }
         var totalSteps = steps.length;

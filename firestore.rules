@@ -63,6 +63,28 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // طلاب المعلم (قائمة تعيين الواجبات): يديرها المعلم صاحبها فقط
+    match /teacherStudents/{id} {
+      allow get, list: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+      allow create: if isTeacher() && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['teacherId', 'email', 'addedAt']);
+      allow update: if false;
+      allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+    }
+
+    // فتح الواجبات: الطالب يسجّل فتحه مرة واحدة، ويقرأه هو أو المعلم صاحب الواجب أو المدير
+    match /hwActivity/{id} {
+      allow get, list: if signedIn() && (
+        resource.data.uid == request.auth.uid
+        || resource.data.teacherId == request.auth.uid
+        || isAdmin()
+      );
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['kind', 'refId', 'teacherId', 'uid', 'email', 'openedAt']);
+      allow update, delete: if false;
+    }
+
     // الاختبارات والألعاب: الطلاب يقرأون المنشور، والمعلم المقبول يدير ما أنشأه
     match /paths/{id} {
       allow get: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());

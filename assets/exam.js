@@ -22,6 +22,7 @@
       Teach.get("exams", id).then(function (d) {
         if (!d || !d.published) { gate("هذا الاختبار غير متاح.", false); return; }
         exam = d;
+        if (d.isHomework) Teach.markOpened("exam", id, d.teacherId, u);
         $("x-title").textContent = d.title;
         $("x-desc").textContent = d.description || "";
         $("x-info").textContent = arNum(d.questions.length) + " سؤال" + (d.timeLimitMin ? " · " + arNum(d.timeLimitMin) + " دقيقة" : " · بدون وقت محدد") + " · المعلم: " + (d.teacherName || "");

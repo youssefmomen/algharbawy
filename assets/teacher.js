@@ -49,8 +49,9 @@
   document.querySelectorAll(".t-tabs button").forEach(function (b) {
     b.addEventListener("click", function () {
       document.querySelectorAll(".t-tabs button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      ["exams", "games", "paths", "new", "newpath", "results"].forEach(function (t) { $("tab-" + t).hidden = t !== b.dataset.tab; });
+      ["exams", "games", "paths", "new", "newpath", "results", "hw"].forEach(function (t) { $("tab-" + t).hidden = t !== b.dataset.tab; });
       if (b.dataset.tab === "results") fillResultPicker();
+      if (b.dataset.tab === "hw") loadHw();
     });
   });
 
@@ -352,6 +353,108 @@
     }).catch(function () {
       $("pf-save").disabled = false;
       $("pf-err").textContent = "تعذّر الحفظ، حاول مرة أخرى.";
+    });
+  });
+
+  /* ---------- الواجبات: قائمة الطلاب والتتبع ---------- */
+  var roster = [];
+  function loadHw() {
+    Teach.listStudents(user.uid).then(function (a) { roster = a; renderRoster(); renderHwItems(); });
+  }
+  function renderRoster() {
+    $("hw-roster-empty").hidden = roster.length > 0;
+    $("hw-roster").innerHTML = roster.map(function (s) {
+      return '<div class="t-item"><div class="t-item-main"><b dir="ltr">' + esc(s.email) + '</b></div>' +
+        '<div class="t-item-acts"><button type="button" class="btn ghost t-del" data-rmdel="' + s.id + '">إزالة</button></div></div>';
+    }).join("");
+  }
+  $("hw-add").addEventListener("click", function () {
+    var email = $("hw-email").value.trim().toLowerCase();
+    if (!email || email.indexOf("@") < 0) { $("hw-add-err").textContent = "اكتب بريد الطالب كاملًا."; return; }
+    if (roster.some(function (s) { return s.email === email; })) { $("hw-add-err").textContent = "هذا الطالب في قائمتك بالفعل."; return; }
+    $("hw-add-err").textContent = ""; $("hw-add").disabled = true;
+    Teach.addStudent(user.uid, email).then(function () {
+      $("hw-email").value = ""; $("hw-add").disabled = false; loadHw();
+    }).catch(function () { $("hw-add").disabled = false; $("hw-add-err").textContent = "تعذّرت الإضافة، حاول مرة أخرى."; });
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-rmdel]");
+    if (!b) return;
+    Teach.removeStudent(b.dataset.rmdel).then(loadHw);
+  });
+
+  function hwStatusChip(state, res) {
+    if (state === "done") return '<span class="t-meta hw-done">حلّ الواجب ✓ · ' + arNum(res.score) + " / " + arNum(res.total) + "</span>";
+    if (state === "open") return '<span class="t-meta hw-open">فتح ولم يُكمل</span>';
+    return '<span class="t-meta hw-no">لم يفتح بعد</span>';
+  }
+  function renderHwItems() {
+    var all = myExams.map(function (d) { return { kind: "exams", d: d }; })
+      .concat(myGames.map(function (d) { return { kind: "games", d: d }; }))
+      .concat(myPaths.map(function (d) { return { kind: "paths", d: d }; }))
+      .filter(function (x) { return x.d.isHomework; });
+    $("hw-items-empty").hidden = all.length > 0;
+    $("hw-items").innerHTML = all.map(function (x, i) {
+      var asg = (x.d.assignedToEmails || []).map(function (e2) { return String(e2).toLowerCase(); });
+      var boxes = roster.map(function (s) {
+        return '<label class="hw-check"><input type="checkbox" data-hwasg="' + i + '" value="' + esc(s.email) + '"' + (asg.indexOf(s.email) >= 0 ? " checked" : "") + '> <span dir="ltr">' + esc(s.email) + '</span></label>';
+      }).join("");
+      return '<div class="t-item t-hwitem">' +
+        '<div class="t-item-main"><b>' + esc(x.d.title) + '</b>' +
+        '<span class="t-meta">' + typeLabel(x.d, x.kind) + ' · <span class="t-hw">واجب</span></span></div>' +
+        '<div class="hw-assign">' +
+        (roster.length
+          ? '<div class="hw-checks">' + boxes + '</div><button type="button" class="btn ghost" data-hwsave="' + i + '">حفظ التعيين</button> <span class="t-meta" data-hwmsg="' + i + '"></span>'
+          : '<span class="t-meta">أضف طلابك من الأعلى أولًا لتعيين هذا الواجب لهم.</span>') +
+        (asg.length ? "" : '<div class="t-meta hw-warn">لم تُعيّن طلابًا محددين، يظهر هذا الواجب لجميع الطلاب.</div>') +
+        '</div>' +
+        '<div class="hw-track" data-hwtrack="' + i + '"></div>' +
+        '</div>';
+    }).join("");
+    all.forEach(function (x, i) { fillTrack(x, i); });
+  }
+  function fillTrack(x, i) {
+    var box = document.querySelector('[data-hwtrack="' + i + '"]');
+    if (!box) return;
+    Promise.all([Teach.listResults(kindOf(x.kind), x.d.id, user.uid), Teach.listActivity(x.d.id, user.uid)]).then(function (v) {
+      var best = {};
+      v[0].forEach(function (r) {
+        var em = (r.studentEmail || "").toLowerCase();
+        if (!best[em] || r.score > best[em].score) best[em] = r;
+      });
+      var opened = {};
+      v[1].forEach(function (a) { opened[(a.email || "").toLowerCase()] = true; });
+      var asg = (x.d.assignedToEmails || []).map(function (e2) { return String(e2).toLowerCase(); });
+      /* بدون تعيين: نعرض كل من تفاعل حتى الآن */
+      var emails = asg.length ? asg : Object.keys(best).concat(Object.keys(opened)).filter(function (e2, j, arr) { return arr.indexOf(e2) === j; });
+      if (!emails.length) { box.innerHTML = '<div class="t-meta">لا تفاعل بعد.</div>'; return; }
+      box.innerHTML = '<div class="adm-tablewrap"><table class="adm-table"><thead><tr><th>الطالب</th><th>الحالة</th></tr></thead><tbody>' +
+        emails.map(function (em) {
+          var state = best[em] ? "done" : (opened[em] ? "open" : "none");
+          return '<tr><td dir="ltr">' + esc(em) + '</td><td>' + hwStatusChip(state, best[em]) + '</td></tr>';
+        }).join("") + '</tbody></table></div>';
+    });
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-hwsave]");
+    if (!b) return;
+    var i = +b.dataset.hwsave;
+    var all = myExams.map(function (d) { return { kind: "exams", d: d }; })
+      .concat(myGames.map(function (d) { return { kind: "games", d: d }; }))
+      .concat(myPaths.map(function (d) { return { kind: "paths", d: d }; }))
+      .filter(function (x) { return x.d.isHomework; });
+    var x = all[i];
+    if (!x) return;
+    var emails = Array.prototype.map.call(document.querySelectorAll('[data-hwasg="' + i + '"]:checked'), function (c) { return c.value; });
+    b.disabled = true;
+    Teach.save(x.kind, x.d.id, { assignedToEmails: emails }, user).then(function () {
+      x.d.assignedToEmails = emails;
+      b.disabled = false;
+      renderHwItems();
+    }).catch(function () {
+      b.disabled = false;
+      var msg = document.querySelector('[data-hwmsg="' + i + '"]');
+      if (msg) msg.textContent = "تعذّر الحفظ، حاول مرة أخرى.";
     });
   });
 
