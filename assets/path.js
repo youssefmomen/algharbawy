@@ -17,6 +17,7 @@
   var id = new URLSearchParams(location.search).get("id");
   var user = null, path = null, steps = [], t0 = 0;
   var prog = null;          /* {step, wrong, xp, streak, lastDay, done} */
+  var reviewing = false;    /* مراجعة خطوة مكتملة — لا تُحفَظ ولا تؤثر في التقدم */
   var i = 0, phase = "explain", quizQs = [], quizIx = 0, hearts = 3, sel = -1;
 
   if (!id) { gate("رابط غير صحيح.", false); return; }
@@ -70,11 +71,12 @@
   function tag(t) { return '<span class="p-tag">' + esc(t) + "</span>"; }
   function stepOne() { return (path && path.stepOne) || "البيت"; }
   function stepMany() { return (path && path.stepMany) || "بيتًا"; }
-  function stepLabel(t) { return stepOne() + " " + arNum(i + 1) + " من " + arNum(steps.length) + " · " + t; }
+  function stepLabel(t) { return (reviewing ? "مراجعة · " : "") + stepOne() + " " + arNum(i + 1) + " من " + arNum(steps.length) + " · " + t; }
 
   function render() {
     hud();
     $("p-feedback").hidden = true;
+    $("p-back").hidden = (phase === "explain");
     var st = steps[i];
     if (phase === "explain") {
       stage('<div class="p-card">' + tag(stepLabel("الشرح")) +
@@ -137,6 +139,7 @@
   }
 
   function verseDone() {
+    if (reviewing) { showMap("أتممتَ مراجعة هذه الخطوة، وتقدّمك محفوظ كما هو."); return; }
     var xp = (prog.xp || 0) + 15;
     saveProg({ step: i + 1, xp: xp }).then(function () {
       i++;
@@ -148,7 +151,52 @@
   function backToExplain() {
     hearts = 3;
     phase = "explain";
+    if (reviewing) { render(); return; }
     saveProg({ wrong: (prog.wrong || 0) + 1 }).then(render);
+  }
+
+  /* زر الرجوع: من الأسئلة يعود إلى شرح الخطوة نفسها دون خسارة التقدم المحفوظ */
+  function goBackExplain() {
+    hearts = 3;
+    phase = "explain";
+    render();
+  }
+
+  function startStep(ix, review) {
+    t0 = Date.now();
+    i = ix;
+    reviewing = !!review;
+    $("p-intro").hidden = true;
+    $("p-done").hidden = true;
+    $("p-play").hidden = false;
+    phase = "explain"; hearts = 3; render();
+  }
+
+  function renderMap(note) {
+    var cur = Math.min(prog.step || 0, steps.length - 1);
+    $("p-map").innerHTML = steps.map(function (s, ix) {
+      var cls = prog.done || ix < cur ? "done" : (ix === cur ? "current" : "locked");
+      var label = prog.done || ix < cur ? "✓" : arNum(ix + 1);
+      if (cls === "locked") return '<div class="p-node locked">' + label + "</div>";
+      return '<button type="button" class="p-node ' + cls + '" data-ix="' + ix + '" title="' +
+        (cls === "done" ? "راجِع " + stepOne() + " " + arNum(ix + 1) : "أكمل من هنا") + '">' + label + "</button>";
+    }).join("");
+    document.querySelectorAll("#p-map .p-node[data-ix]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var ix = +b.dataset.ix;
+        startStep(ix, prog.done || ix < cur);
+      });
+    });
+    $("p-start").textContent = (prog.step || 0) > 0 && !prog.done ? "تابع من " + stepOne() + " " + arNum(cur + 1) : "ابدأ المسار";
+    $("p-map-note").textContent = note || "اضغط أي خطوة مكتملة لمراجعتها دون أن يتغيّر تقدّمك.";
+  }
+
+  function showMap(note) {
+    reviewing = false;
+    $("p-play").hidden = true;
+    $("p-done").hidden = true;
+    renderMap(note);
+    $("p-intro").hidden = false;
   }
 
   function finish() {
@@ -175,6 +223,7 @@
     var ok = document.querySelector('.p-opt[data-v="' + sel + '"]').dataset.ok === "1";
     if (phase === "memorize") {
       if (ok) {
+        if (reviewing) { feedback(true, "أحسنت! ✓", "حفظك صحيح.", "تابع إلى الأسئلة", function () { startQuiz(st); }); return; }
         saveProg({ xp: (prog.xp || 0) + 10 }).then(function () {
           feedback(true, "أحسنت! ✓", "+١٠ نقاط. حفظك صحيح.", "تابع إلى الأسئلة", function () { startQuiz(st); });
         });
@@ -193,6 +242,15 @@
     /* quiz */
     var q = quizQs[quizIx];
     var correctT = q.opts.filter(function (o) { return o.ok; })[0].t;
+    if (ok && reviewing) {
+      quizIx++;
+      if (quizIx >= quizQs.length) {
+        feedback(true, "أحسنت! ✓", "أنهيتَ مراجعة هذه الخطوة.", "عودة إلى الخريطة", verseDone);
+      } else {
+        feedback(true, "أحسنت! ✓", "إجابة صحيحة.", "السؤال التالي", render);
+      }
+      return;
+    }
     if (ok) {
       saveProg({ xp: (prog.xp || 0) + 10 }).then(function () {
         quizIx++;
@@ -216,7 +274,11 @@
     }
   });
 
-  $("p-exit").addEventListener("click", function () { location.href = "student.html"; });
+  $("p-exit").addEventListener("click", function () {
+    if (!$("p-play").hidden) { showMap(); return; }
+    location.href = "student.html";
+  });
+  $("p-back").addEventListener("click", goBackExplain);
 
   Store.init().then(function () {
     if (!Store.isReady()) { gate("خدمة الحسابات غير متاحة حاليًا.", false); return; }
@@ -241,17 +303,10 @@
           $("p-desc").textContent = d.description || "";
           $("p-info").textContent = arNum(steps.length) + " " + ((d && d.stepMany) || "بيتًا") + " · المعلم: " + (d.teacherName || "");
           i = Math.min(prog.step || 0, steps.length - 1);
-          $("p-map").innerHTML = steps.map(function (s, ix) {
-            var cls = ix < i ? "done" : (ix === i ? "current" : "locked");
-            return '<div class="p-node ' + cls + '">' + (ix < i ? "✓" : arNum(ix + 1)) + "</div>";
-          }).join("");
-          $("p-start").textContent = i > 0 ? "تابع من البيت " + arNum(i + 1) : "ابدأ المسار";
+          renderMap();
           $("p-intro").hidden = false;
           $("p-start").onclick = function () {
-            t0 = Date.now();
-            $("p-intro").hidden = true;
-            $("p-play").hidden = false;
-            phase = "explain"; hearts = 3; render();
+            startStep(Math.min(prog.step || 0, steps.length - 1), false);
           };
         });
       }).catch(function () { gate("تعذّر تحميل المسار.", false); });

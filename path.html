@@ -50,7 +50,10 @@
 .p-node{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Cairo,Tajawal,sans-serif;font-size:1.05rem;flex:none}
 .p-node.done{background:linear-gradient(135deg,#c6a34f,#a8842f);color:#171206}
 .p-node.current{background:#221d14;color:#c6a34f;border:2px solid #c6a34f;animation:pPulse 1.6s infinite}
-.p-node.locked{background:#171410;color:#5a5342;border:1px solid rgba(198,163,79,.14)}
+.p-node.locked{background:#171410;color:#5a5342;border:1px solid rgba(198,163,79,.14);cursor:not-allowed}
+button.p-node{cursor:pointer;font:inherit}
+button.p-node.done:hover,button.p-node.current:hover{filter:brightness(1.12)}
+button.p-node.done:focus-visible,button.p-node.current:focus-visible{outline:2px solid #e0c37a;outline-offset:2px}
 .p-node:nth-child(odd){transform:translateX(26px)}
 .p-node:nth-child(even){transform:translateX(-26px)}
 @keyframes pPulse{0%,100%{box-shadow:0 0 0 0 rgba(198,163,79,.4)}50%{box-shadow:0 0 0 8px rgba(198,163,79,0)}}
@@ -73,7 +76,7 @@
     <p class="t-meta" id="p-info"></p>
     <div class="p-map" id="p-map"></div>
     <button class="btn fill block" id="p-start" type="button"></button>
-    <p class="p-hw-note">كل بيت خطوة: تقرأ الشرح، ثم تتأكد من حفظك، ثم تجيب عن أسئلة الفهم.</p>
+    <p class="p-hw-note" id="p-map-note">كل بيت خطوة: تقرأ الشرح، ثم تتأكد من حفظك، ثم تجيب عن أسئلة الفهم.</p>
   </div>
 
   <div id="p-play" hidden>
@@ -88,6 +91,7 @@
     </div>
     <div id="p-stage"></div>
     <button class="btn fill block" id="p-check" type="button" disabled>تحقّق</button>
+    <button class="btn ghost block" id="p-back" type="button" hidden style="margin-top:8px">رجوع إلى الشرح</button>
   </div>
 
   <div class="auth-card p-done" id="p-done" hidden>
@@ -119,7 +123,7 @@
 <script src="assets/store.js?v=3"></script>
 <script src="assets/teach.js?v=1"></script>
 <script src="assets/app.js?v=36"></script>
-<script src="assets/path.js?v=2"></script>
+<script src="assets/path.js?v=3"></script>
 <script src="assets/chat-widget.js?v=6"></script>
 </body>
 </html>
