@@ -159,6 +159,7 @@
       speechSynthesis.speak(u);
     }catch(e){}
   }
+  function pencilSVG(c){return '<svg viewBox="0 0 24 48" aria-hidden="true"><rect x="8" y="6" width="8" height="5" rx="2" fill="#ffb3c1"/><rect x="8" y="11" width="8" height="2.4" fill="#d9d9d9"/><rect x="8" y="13.4" width="8" height="22" rx="2.6" fill="'+c+'"/><polygon points="8,35.4 16,35.4 12,46" fill="#f0c894"/><polygon points="10.4,41 13.6,41 12,46" fill="#4a4a4a"/></svg>';}
   function speakBtn(text){
     return '<button type="button" class="speak" data-say="'+esc(text)+'" aria-label="تشغيل الصوت"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9a4.2 4.2 0 0 1 0 6"/><path d="M17.6 6.4a8 8 0 0 1 0 11.2"/></svg></button>';
   }
@@ -471,7 +472,7 @@
       if(sg.game&&kidSkin)h+='<div class="g-name rv">'+esc(sg.game)+'</div>';
       if(sg.vocab&&sg.vocab.length)h+='<div class="ex-head rv">الْمُفْرَدَاتُ</div><div class="vocab">'+sg.vocab.map(function(v){return '<div class="voc rv"><b>'+esc(v[0])+'</b><span>'+esc(v[1])+'</span></div>';}).join("")+'</div>';
       if(sg.meaning&&sg.meaning.length)h+='<div class="ex-head rv">الْمَعْنَى</div>'+sg.meaning.map(function(m){return '<div class="mean rv"><b>'+esc(m[0])+'</b><p>'+esc(m[1])+'</p></div>';}).join("");
-      if(sg.words&&sg.words.length)h+='<div class="wf" data-s="'+si+'"><div class="wf-head"><div class="wf-pill">★ <b class="wf-cnt">٠</b></div><div class="wf-bar"><i class="wf-fill"></i></div></div><div class="wf-card"></div><div class="wf-dots"></div><div class="wf-row"><button type="button" class="wf-pv"><span class="ar">→</span> السَّابِق</button><button type="button" class="wf-say" aria-label="سماع">'+SPK_SVG+'</button><button type="button" class="wf-nx">التَّالِي <span class="ar">←</span></button></div></div>';
+      if(sg.words&&sg.words.length)h+='<div class="wf" data-s="'+si+'"><div class="wf-head"><div class="wf-pill">\u2b50 <b class="wf-cnt">\u0660</b></div><div class="wf-bar"><i class="wf-fill"></i><span class="wf-camel">\ud83d\udc2a</span></div></div><div class="wf-card"><span class="cst a">\u2726</span><span class="cst b">\u2726</span><span class="cst c">\u2726</span><span class="cst d">\u2726</span></div><div class="wf-stks"></div><div class="wf-row"><button type="button" class="wf-pv">\ud83d\udc49 \u0627\u0644\u0633\u0651\u064e\u0627\u0628\u0650\u0642</button><button type="button" class="wf-say" aria-label="\u0633\u0645\u0627\u0639">'+SPK_SVG+'</button><button type="button" class="wf-nx">\ud83d\udc48 \u0627\u0644\u062a\u0651\u064e\u0627\u0644\u0650\u064a</button></div></div>';
       if(counters[si]){
         var laterQ=segs.slice(si+1).some(function(s2){return s2.questions&&s2.questions.length;});
         h+='<div class="ex-head rv">الأسئلة</div><div class="quiz-note rv">'+(laterQ?'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الْجُزْءِ التَّالِي.':'أَجِبْ عَلَى كُلِّ الْأَسْئِلَةِ إِجَابَةً صَحِيحَةً لِفَتْحِ الدَّرْسِ التَّالِي.')+'</div>'+sg.questions.map(function(q,qi){
@@ -502,18 +503,31 @@
     lb.querySelectorAll(".wf").forEach(function(w){
       var wsi=+w.getAttribute("data-s"),WL=segs[wsi].words,wi=0;
       var wcard=w.querySelector(".wf-card"),wdots=w.querySelector(".wf-dots"),wfill=w.querySelector(".wf-fill"),wcnt=w.querySelector(".wf-cnt");
+      function wfBubble(){
+        var bb=document.getElementById("wf-bub");
+        if(!bb){bb=document.createElement("div");bb.id="wf-bub";bb.className="wf-bubble";bb.textContent="\u0623\u062d\u0633\u0646\u062a \ud83c\udf1f";document.body.appendChild(bb);}
+        bb.classList.remove("on");void bb.offsetWidth;bb.classList.add("on");
+        clearTimeout(bb._t);bb._t=setTimeout(function(){bb.classList.remove("on");},1200);
+      }
       function wfShow(){
         wcard.classList.remove("pop");void wcard.offsetWidth;wcard.classList.add("pop");
         wcard.textContent=WL[wi];
         wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
-        if(wfill)wfill.style.width=((wi+1)/WL.length*100)+"%";
+        var pc=(wi+1)/WL.length*100;
+        if(wfill)wfill.style.width=pc+"%";
+        var cml=w.querySelector(".wf-camel");if(cml)cml.style.left="calc("+pc+"% - 16px)";
         if(wcnt)wcnt.textContent=ar(wi+1)+"/"+ar(WL.length);
+        var stks=w.querySelector(".wf-stks");
+        if(stks){var cols=["#ff5d8f","#06d6a0","#118ab2","#f4a261","#9b5de5"],slots=Math.ceil(WL.length/5),earned=Math.floor(wi/5);stks.innerHTML="";for(var q2=0;q2<slots;q2++)stks.innerHTML+='<span class="stk'+(q2<earned?'':' lock')+'">'+pencilSVG(cols[q2%cols.length])+'</span>';}
         if((wi+1)%5===0){try{mascotJump();}catch(e){}}
+        if(wi>0)wfBubble();
         var pv=w.querySelector(".wf-pv");if(pv)pv.disabled=(wi<=0);
         speak(WL[wi]);
       }
       function wfDone(){
         if(wfill)wfill.style.width="100%";
+        var cml=w.querySelector(".wf-camel");if(cml)cml.style.left="calc(100% - 16px)";
+        var stks=w.querySelector(".wf-stks");if(stks)[].forEach.call(stks.children,function(c){c.classList.remove("lock");});
         if(wcnt)wcnt.textContent=ar(WL.length)+"/"+ar(WL.length);
         var nx=wsi+1;
         var dEl=lb.querySelector('.seg-pass[data-s="'+wsi+'"]');if(dEl)dEl.hidden=false;
