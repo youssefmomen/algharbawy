@@ -1,5 +1,5 @@
 /*
- * مساعد الغرباوي — شات بوت الزوار (المرحلة ١)
+ * فصيح — روبوت إرشاد الزوار في موقع مؤسسة الغرباوي (المرحلة ١)
  * ------------------------------------------------------------
  * فقاعة محادثة عائمة تظهر في كل الصفحات العامة، تجيب عن أسئلة الزوار
  * وترشدهم إلى أقسام الموقع ودروسه واختباراته.
@@ -36,9 +36,9 @@
 
   function systemPrompt() {
     return [
-      "أنت «مساعد الغرباوي»، مساعد ودود داخل موقع مؤسسة الغرباوي لتعليم اللغة العربية لكل الأعمار.",
+      "أنت «فصيح»، روبوت ودود داخل موقع مؤسسة الغرباوي لتعليم اللغة العربية لكل الأعمار. إذا سألك أحد عن اسمك فأخبره أنك «فصيح».",
       "مهمتك: الترحيب بالزائر، وشرح ما يقدمه الموقع، وإرشاده إلى القسم أو الدرس أو الاختبار أو اللعبة المناسبة له.",
-      "أجب دائمًا باللغة العربية البسيطة، وبجمل قصيرة واضحة.",
+      "تحدث دائمًا باللغة العربية الفصحى الحديثة فقط، ولا تستخدم أي عامية أو لهجة، وبجمل قصيرة واضحة ونبرة ودودة مرحة تليق بروبوت صديق.",
       "لا تخترع روابط أبدًا. إذا أردت توجيه الزائر لصفحة فاذكر اسم القسم فقط، مثل: «افتح قسم النحو من القائمة».",
       "الموقع يحتوي على: دروس مرتبة في أقسام، واختبارات تفاعلية، وألعاب تعليمية، وصفحة للطلاب وأخرى للمعلم.",
       "هذه أقسام الموقع المتاحة حاليًا:",
@@ -108,8 +108,22 @@
   /* ---------- الواجهة ---------- */
   var css = document.createElement("style");
   css.textContent =
-    "#ghChatBtn{position:fixed;left:16px;bottom:16px;z-index:9999;width:56px;height:56px;border-radius:50%;" +
-    "border:none;cursor:pointer;background:#0d6b4f;color:#fff;font-size:26px;box-shadow:0 4px 14px rgba(0,0,0,.25);}" +
+    "#ghChatBtn{position:fixed;left:16px;bottom:16px;z-index:9999;width:64px;height:64px;border-radius:50%;" +
+    "border:2px solid #c9a24b;cursor:pointer;background:#141414;box-shadow:0 4px 16px rgba(0,0,0,.45),0 0 12px rgba(201,162,75,.35);" +
+    "display:flex;align-items:center;justify-content:center;padding:0;animation:ghBob 3s ease-in-out infinite;}" +
+    "#ghChatBtn:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 18px rgba(201,162,75,.55);}" +
+    "@keyframes ghBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
+    ".ghEye{transform-box:fill-box;transform-origin:center;animation:ghBlink 4.2s infinite;}" +
+    "@keyframes ghBlink{0%,92%,100%{transform:scaleY(1)}95%,97%{transform:scaleY(.08)}}" +
+    ".ghTip{animation:ghPulse 2s ease-in-out infinite;}" +
+    "@keyframes ghPulse{0%,100%{opacity:.5}50%{opacity:1}}" +
+    ".ghArm{transform-box:fill-box;transform-origin:top center;animation:ghWave 3s ease-in-out 1s 2;}" +
+    "@keyframes ghWave{0%,100%{transform:rotate(0)}25%{transform:rotate(-28deg)}55%{transform:rotate(14deg)}80%{transform:rotate(-10deg)}}" +
+    "#ghChatHi{position:fixed;left:92px;bottom:30px;z-index:9998;background:#fff;color:#202124;border-radius:14px 14px 4px 14px;" +
+    "padding:10px 34px 10px 14px;font-family:Cairo,sans-serif;font-size:14px;line-height:1.7;max-width:230px;direction:rtl;" +
+    "box-shadow:0 6px 22px rgba(0,0,0,.3);border:1px solid #e8d9ac;display:none;animation:ghPop .35s ease-out;}" +
+    "@keyframes ghPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}" +
+    "#ghChatHiX{position:absolute;top:4px;left:8px;border:none;background:none;font-size:16px;color:#999;cursor:pointer;padding:2px 4px;}" +
     "#ghChatPanel{position:fixed;left:16px;bottom:82px;z-index:9999;width:330px;max-width:calc(100vw - 32px);" +
     "height:440px;max-height:calc(100vh - 110px);background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);" +
     "display:none;flex-direction:column;overflow:hidden;font-family:Cairo,sans-serif;direction:rtl;}" +
@@ -126,13 +140,27 @@
 
   var btn = document.createElement("button");
   btn.id = "ghChatBtn";
-  btn.title = "مساعد الغرباوي";
-  btn.textContent = "💬";
+  btn.title = "فصيح - مساعد الغرباوي";
+  btn.setAttribute("aria-label", "فصيح مساعد الغرباوي - افتح المحادثة");
+  btn.innerHTML =
+    '<svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">' +
+    '<line x1="32" y1="6" x2="32" y2="14" stroke="#c9a24b" stroke-width="3" stroke-linecap="round"/>' +
+    '<circle class="ghTip" cx="32" cy="6" r="3.4" fill="#e9c766"/>' +
+    '<rect x="14" y="14" width="36" height="26" rx="9" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2.4"/>' +
+    '<rect x="20" y="21" width="24" height="13" rx="6" fill="#0a0a0a"/>' +
+    '<circle class="ghEye" cx="27" cy="27.5" r="3" fill="#e9c766"/>' +
+    '<circle class="ghEye" cx="37" cy="27.5" r="3" fill="#e9c766"/>' +
+    '<path d="M27 35 q5 4 10 0" stroke="#c9a24b" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+    '<rect x="20" y="42" width="24" height="15" rx="7" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2.4"/>' +
+    '<circle cx="32" cy="49.5" r="3" fill="#e9c766" class="ghTip"/>' +
+    '<rect x="10" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2"/>' +
+    '<rect class="ghArm" x="47" y="43" width="7" height="11" rx="3.5" fill="#1e1e1e" stroke="#c9a24b" stroke-width="2"/>' +
+    '</svg>';
 
   var panel = document.createElement("div");
   panel.id = "ghChatPanel";
   panel.innerHTML =
-    '<div id="ghChatHead">مساعد الغرباوي 🌿</div>' +
+    '<div id="ghChatHead">فصيح 🤖 مساعد الغرباوي</div>' +
     '<div id="ghChatMsgs"></div>' +
     '<form id="ghChatForm"><input id="ghChatInput" placeholder="اكتب سؤالك هنا…" autocomplete="off">' +
     '<button id="ghChatSend" type="submit">أرسل</button></form>';
@@ -154,12 +182,28 @@
     msgs.scrollTop = msgs.scrollHeight;
   }
 
+  var hi = document.createElement("div");
+  hi.id = "ghChatHi";
+  hi.innerHTML = '<button id="ghChatHiX" title="إخفاء">✕</button>أهلًا 👋 أنا <b>فصيح</b>، روبوت مساعد الغرباوي! اسألني عن الأقسام أو الدروس أو الاختبارات.';
+  document.body.appendChild(hi);
+  function hideHi() { hi.style.display = "none"; try { sessionStorage.setItem("ghRobotHi", "1"); } catch (e) {} }
+  hi.querySelector("#ghChatHiX").addEventListener("click", hideHi);
+  var hiShown = false;
+  try { hiShown = !!sessionStorage.getItem("ghRobotHi"); } catch (e) {}
+  if (!hiShown) {
+    setTimeout(function () {
+      if (panel.style.display !== "flex") { hi.style.display = "block"; }
+    }, 2500);
+    setTimeout(hideHi, 14000);
+  }
+
   btn.addEventListener("click", function () {
+    hideHi();
     var open = panel.style.display === "flex";
     panel.style.display = open ? "none" : "flex";
     if (!open && !greeted) {
       greeted = true;
-      addMsg("أهلًا بك في مؤسسة الغرباوي! 🌿 أنا مساعدك هنا. اسألني عن أقسام الموقع أو الدروس أو الاختبارات، وسأرشدك.", "bot");
+      addMsg("أهلًا بك في مؤسسة الغرباوي! 🌿 أنا فصيح، مساعدك هنا. اسألني عن أقسام الموقع أو الدروس أو الاختبارات، وسأرشدك إلى ما تبحث عنه.", "bot");
       initAI().catch(function () {});
       input.focus();
     }
@@ -170,7 +214,7 @@
     var text = input.value.trim();
     if (!text) return;
     if (remaining() <= 0) {
-      addMsg("وصلتَ لحد الرسائل المسموح به في هذه الجلسة 🌿 تصفّح أقسام الموقع من القائمة، وستجد كل الدروس والاختبارات.", "bot");
+      addMsg("لقد بلغتَ حدَّ الرسائل المسموح به في هذه الجلسة 🌿 يمكنك تصفُّح أقسام الموقع من القائمة، وستجد فيها كل الدروس والاختبارات.", "bot");
       return;
     }
     input.value = "";
@@ -189,7 +233,7 @@
         thinking.textContent = res.response.text();
       })
       .catch(function () {
-        thinking.textContent = "عذرًا، المساعد مشغول الآن. جرّب بعد قليل 🌿 ويمكنك تصفّح أقسام الموقع من القائمة.";
+        thinking.textContent = "عذرًا، أنا مشغول الآن. أعِد المحاولة بعد قليل 🌿 ويمكنك تصفُّح أقسام الموقع من القائمة.";
       })
       .then(function () {
         sendBtn.disabled = false;
