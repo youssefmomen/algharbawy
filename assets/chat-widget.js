@@ -149,7 +149,7 @@
   function addMsg(text, who) {
     var d = document.createElement("div");
     d.className = "ghMsg " + who;
-    d.textContent = text;
+    d.textContent = text.replace(/\*\*/g, "").replace(/^#+\s*/gm, "");
     msgs.appendChild(d);
     msgs.scrollTop = msgs.scrollHeight;
   }
