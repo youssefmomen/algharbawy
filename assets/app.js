@@ -191,7 +191,7 @@
     }).join("");
     var tk=document.getElementById("tracks");
     if(tk&&data.tracks){tk.innerHTML=data.tracks.map(function(s,i){
-      var live=data.sections&&data.sections.some(function(x){return x.id===s.id&&(x.live||(x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));});
+      var live=s.live||(data.sections&&data.sections.some(function(x){return x.id===s.id&&(x.live||(x.courses&&x.courses.length)||(x.lessons&&x.lessons.length));}));
       return '<a class="tile side rv" style="--d:'+((i%2)*.1)+'s" href="'+(s.href||('section.html?id='+encodeURIComponent(s.id)))+'">'+
       markOf(s)+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.description)+'</p>'+
       '<div class="meta">'+(live?'':'<span>قَرِيبًا</span>')+'<span class="go">←</span></div></a>';
