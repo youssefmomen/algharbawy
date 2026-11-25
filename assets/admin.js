@@ -24,6 +24,7 @@
         gate("جارٍ التحميل…", false);
         loadDash();
         loadTeachers();
+        loadTicker();
       });
     });
   });
@@ -42,6 +43,28 @@
       '• حقل (Field) اسمه <b dir="ltr">email</b> نوعه string وقيمته بريدك أعلاه بحروف صغيرة بدون مسافات<br>' +
       "بعد التصحيح أعد تحميل الصفحة." +
       "</div>";
+  }
+
+
+  /* شريط الإعلانات: تحميل وحفظ (صلاحية المدير) */
+  function loadTicker() {
+    firebase.firestore().collection("announcements").doc("main").get()
+      .then(function (d) {
+        var v = d.exists ? d.data() : {};
+        $("ticker-text").value = v.text || "";
+        $("ticker-active").checked = !!v.active;
+      })
+      .catch(function () {});
+    $("ticker-save").addEventListener("click", function () {
+      var msg = $("ticker-msg");
+      msg.textContent = "جارٍ الحفظ…";
+      firebase.firestore().collection("announcements").doc("main").set({
+        text: $("ticker-text").value.trim(),
+        active: $("ticker-active").checked,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function () { msg.textContent = "تم الحفظ ✓"; })
+        .catch(function (e) { msg.textContent = "تعذر الحفظ: " + (e && e.code ? e.code : "خطأ"); });
+    });
   }
 
   function loadDash() {

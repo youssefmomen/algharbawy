@@ -571,3 +571,31 @@
   document.querySelectorAll(".rv").forEach(function(el){io.observe(el);});
   setTimeout(function(){document.querySelectorAll(".hero .rv").forEach(function(e){e.classList.add("in");});},60);
 })();
+
+/* شريط الإعلانات: قراءة عامة عبر REST بدون تسجيل دخول (الرئيسية فقط) */
+(function () {
+  function run() {
+    if (!document.body || document.body.getAttribute("data-page") !== "home") return;
+    var cfg = window.FIREBASE_CONFIG;
+    if (!cfg || !cfg.apiKey || !cfg.projectId) return;
+    var url = "https://firestore.googleapis.com/v1/projects/" + cfg.projectId + "/databases/(default)/documents/announcements/main?key=" + cfg.apiKey;
+    fetch(url).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || !d.fields) return;
+      var f = d.fields;
+      var text = f.text && f.text.stringValue ? f.text.stringValue.trim() : "";
+      var active = !!(f.active && f.active.booleanValue === true);
+      if (!text || !active) return;
+      var t = document.createElement("div");
+      t.className = "ticker"; t.setAttribute("role", "note");
+      var track = document.createElement("div");
+      track.className = "ticker-track";
+      var a = document.createElement("span"); a.textContent = text;
+      var b = document.createElement("span"); b.textContent = text; b.setAttribute("aria-hidden", "true");
+      track.appendChild(a); track.appendChild(b);
+      t.appendChild(track);
+      document.body.appendChild(t);
+      document.body.classList.add("has-ticker");
+    }).catch(function () {});
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+})();
