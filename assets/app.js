@@ -34,7 +34,7 @@
     try{
       var raw=sessionStorage.getItem("gh_prof_"+user.uid);
       /* نتجاهل نسخة مخزّنة فارغة (من صفحة أقدم) ونعيد الجلب */
-      if(raw){var c=JSON.parse(raw);if(c&&(c.name||c.role)){profCache=c;return Promise.resolve(profCache);}}
+      if(raw){var c=JSON.parse(raw);if(c&&c.name&&c.role&&(c.avatarId||c.avatarData)){profCache=c;return Promise.resolve(profCache);}}
     }catch(e){}
     return Store.getProfile(user.uid).then(function(p){
       profCache=p||{};
