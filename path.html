@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://*.googleusercontent.com; media-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://www.google.com https://www.recaptcha.net https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://www.google.com https://www.recaptcha.net https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com https://apis.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<meta name="robots" content="noindex">
+<title>مسار التعلّم | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=37">
+<style>
+/* مسار التعلّم — أسلوب دوولينجو بألوان الموقع */
+.p-hud{display:flex;align-items:center;gap:10px;margin:14px 0 18px}
+#p-exit{background:none;border:0;color:#9c917b;font-size:1.3rem;cursor:pointer;padding:4px 8px}
+.p-bar{flex:1;height:12px;background:#221d14;border-radius:99px;overflow:hidden}
+.p-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#c6a34f,#e0c37a);border-radius:99px;transition:width .45s ease}
+.p-stats{display:flex;align-items:center;gap:10px;font-size:.95rem;color:#ece4d2;white-space:nowrap}
+.p-stat{display:inline-flex;align-items:center;gap:4px}
+.p-stat svg{width:18px;height:18px}
+.p-stat b{color:#c6a34f;font-weight:700}
+.p-tag{display:inline-block;background:#221d14;color:#c6a34f;border:1px solid rgba(198,163,79,.22);border-radius:99px;padding:3px 12px;font-size:.8rem;margin-bottom:12px}
+.p-card{background:#171410;border:1px solid rgba(198,163,79,.22);border-radius:16px;padding:22px;margin-bottom:16px}
+.p-verse{font-family:Amiri,serif;font-size:1.7rem;line-height:2.1;color:#f2e9d4;text-align:center;margin:8px 0}
+.p-note{font-family:Cairo,Tajawal,sans-serif;font-size:1.02rem;line-height:1.9;color:#c9bfa8;background:#12100c;border-right:3px solid #c6a34f;border-radius:8px;padding:12px 14px;margin-top:14px}
+.p-q{font-family:Cairo,Tajawal,sans-serif;font-size:1.2rem;font-weight:700;color:#ece4d2;margin:4px 0 6px;line-height:1.8}
+.p-opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.p-opt{display:block;width:100%;text-align:right;background:#171410;border:2px solid rgba(198,163,79,.22);border-radius:14px;padding:14px 16px;font-family:Amiri,serif;font-size:1.15rem;color:#ece4d2;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+.p-opt:hover{border-color:rgba(198,163,79,.5)}
+.p-opt:active{transform:scale(.99)}
+.p-opt.on{border-color:#c6a34f;background:#221d14;box-shadow:0 0 0 3px rgba(198,163,79,.15)}
+.p-feedback{position:fixed;bottom:0;right:0;left:0;z-index:60;padding:16px;border-top:1px solid rgba(198,163,79,.22);animation:pSlide .25s ease}
+.p-feedback.good{background:#16281a;border-top-color:#3f7a44}
+.p-feedback.bad{background:#2b1518;border-top-color:#8a3d42}
+.p-feedback .p-fb-in{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:6px}
+.p-feedback b{font-family:Cairo,Tajawal,sans-serif;font-size:1.05rem}
+.p-feedback.good b{color:#9ed09a}
+.p-feedback.bad b{color:#e5a3a6}
+.p-feedback p{margin:0;font-size:.95rem;color:#c9bfa8;line-height:1.7}
+.p-feedback .btn{margin-top:8px}
+@keyframes pSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.p-map{display:flex;flex-direction:column;align-items:center;gap:6px;margin:18px 0;max-height:340px;overflow-y:auto;padding:10px 4px}
+.p-node{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Cairo,Tajawal,sans-serif;font-size:1.05rem;flex:none}
+.p-node.done{background:linear-gradient(135deg,#c6a34f,#a8842f);color:#171206}
+.p-node.current{background:#221d14;color:#c6a34f;border:2px solid #c6a34f;animation:pPulse 1.6s infinite}
+.p-node.locked{background:#171410;color:#5a5342;border:1px solid rgba(198,163,79,.14)}
+.p-node:nth-child(odd){transform:translateX(26px)}
+.p-node:nth-child(even){transform:translateX(-26px)}
+@keyframes pPulse{0%,100%{box-shadow:0 0 0 0 rgba(198,163,79,.4)}50%{box-shadow:0 0 0 8px rgba(198,163,79,0)}}
+.p-done{text-align:center;position:relative;overflow:hidden}
+.p-done h2{color:#c6a34f}
+.p-trophy{width:92px;height:92px;margin:6px auto 10px;display:block;animation:pPop .6s ease}
+.p-sparkle{position:absolute;color:#c6a34f;font-size:1.1rem;opacity:0;animation:pSpark 2.4s infinite}
+@keyframes pPop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes pSpark{0%,100%{opacity:0;transform:translateY(0) scale(.6)}50%{opacity:1;transform:translateY(-10px) scale(1)}}
+.p-hw-note{font-size:.85rem;color:#9c917b;margin-top:10px}
+</style>
+</head>
+<body data-page="path">
+<main class="wrap">
+  <div class="adm-note" id="p-gate" hidden></div>
+
+  <div class="auth-card" id="p-intro" hidden>
+    <h2 id="p-title"></h2>
+    <p class="sub" id="p-desc"></p>
+    <p class="t-meta" id="p-info"></p>
+    <div class="p-map" id="p-map"></div>
+    <button class="btn fill block" id="p-start" type="button"></button>
+    <p class="p-hw-note">كل بيت خطوة: تقرأ الشرح، ثم تتأكد من حفظك، ثم تجيب عن أسئلة الفهم.</p>
+  </div>
+
+  <div id="p-play" hidden>
+    <div class="p-hud">
+      <button id="p-exit" type="button" title="خروج">✕</button>
+      <div class="p-bar"><div class="p-bar-fill" id="p-bar"></div></div>
+      <div class="p-stats">
+        <span class="p-stat" id="p-hearts"></span>
+        <span class="p-stat" id="p-xp"></span>
+        <span class="p-stat" id="p-streak"></span>
+      </div>
+    </div>
+    <div id="p-stage"></div>
+    <button class="btn fill block" id="p-check" type="button" disabled>تحقّق</button>
+  </div>
+
+  <div class="auth-card p-done" id="p-done" hidden>
+    <span class="p-sparkle" style="top:12%;right:14%">✦</span>
+    <span class="p-sparkle" style="top:20%;left:12%;animation-delay:.8s">✦</span>
+    <span class="p-sparkle" style="top:38%;right:20%;animation-delay:1.4s">✦</span>
+    <span class="p-sparkle" style="top:30%;left:22%;animation-delay:.4s">✦</span>
+    <svg class="p-trophy" viewBox="0 0 64 64" fill="none"><path d="M18 8h28v10a14 14 0 01-28 0V8z" fill="#c6a34f"/><path d="M18 12h-6a8 8 0 008 8M46 12h6a8 8 0 01-8 8" stroke="#c6a34f" stroke-width="3"/><rect x="28" y="32" width="8" height="10" fill="#c6a34f"/><rect x="20" y="42" width="24" height="6" rx="2" fill="#c6a34f"/><rect x="16" y="50" width="32" height="6" rx="2" fill="#8a6f2a"/><text x="32" y="24" font-size="14" text-anchor="middle" fill="#171206" font-family="serif">✦</text></svg>
+    <h2>ما شاء الله، أتممتَ المسار!</h2>
+    <p class="x-score" id="p-done-xp"></p>
+    <p class="sub" id="p-done-sub"></p>
+    <a class="btn fill block" href="student.html">عودة إلى واجباتي</a>
+  </div>
+
+  <div class="p-feedback" id="p-feedback" hidden>
+    <div class="p-fb-in">
+      <b id="p-fb-title"></b>
+      <p id="p-fb-msg"></p>
+      <button class="btn fill block" id="p-fb-next" type="button">تابع</button>
+    </div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/data/meta.js?v=1"></script>
+<script src="assets/firebase-config.js?v=2"></script>
+<script src="assets/store.js?v=3"></script>
+<script src="assets/teach.js?v=1"></script>
+<script src="assets/app.js?v=36"></script>
+<script src="assets/path.js?v=1"></script>
+<script src="assets/chat-widget.js?v=4"></script>
+</body>
+</html>
