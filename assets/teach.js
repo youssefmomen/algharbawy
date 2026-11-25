@@ -79,13 +79,10 @@ window.Teach = (function () {
   /* مستند لكل (واجب، طالب): {kind, refId, teacherId, uid, email, openedAt} — يُنشأ عند أول فتح */
   function markOpened(kind, refId, teacherId, user) {
     if (!user || !user.uid) return Promise.resolve();
-    var ref = col("hwActivity").doc(refId + "_" + user.uid);
-    return ref.get().then(function (d) {
-      if (d.exists) return;
-      return ref.set({
-        kind: kind, refId: refId, teacherId: teacherId || "",
-        uid: user.uid, email: (user.email || "").toLowerCase(), openedAt: now()
-      });
+    /* محاولة إنشاء مباشرة: أول فتح = create يُقبل، وما بعده = update يُرفض بالقواعد فيُحفظ وقت أول فتح */
+    return col("hwActivity").doc(refId + "_" + user.uid).set({
+      kind: kind, refId: refId, teacherId: teacherId || "",
+      uid: user.uid, email: (user.email || "").toLowerCase(), openedAt: now()
     }).catch(function () {});
   }
   function listActivity(refId, teacherUid) {
