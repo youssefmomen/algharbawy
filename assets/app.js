@@ -301,6 +301,14 @@
 
   if(page==="lesson"){
     var lbw=document.getElementById("lesson-body");if(lbw)lbw.innerHTML='<div class="load-pulse" aria-hidden="true">◆</div>';
+    if(!param("lesson")&&param("id")){
+      var want=param("id"),fix=null;
+      (data.sections||[]).forEach(function(sc){
+        (sc.lessons||[]).forEach(function(l){if(l.id===want)fix={sec:sc.id,course:""};});
+        (sc.courses||[]).forEach(function(co){(co.lessons||[]).forEach(function(l){if(l.id===want)fix={sec:sc.id,course:co.id};});});
+      });
+      if(fix)location.replace("lesson.html?section="+encodeURIComponent(fix.sec)+(fix.course?"&course="+encodeURIComponent(fix.course):"")+"&lesson="+encodeURIComponent(want));
+    }
     var sec2=find(allSections,param("section"))||data.sections[0];
     var crs2pre=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
     loadLessons(crs2pre||sec2,function(){
