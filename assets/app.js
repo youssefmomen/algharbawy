@@ -335,12 +335,13 @@
     for(var u=1;u<segs.length;u++)segDone[u]=counters[u]===0&&segDone[u-1];
     var totalQ=counters.reduce(function(a,b){return a+b;},0);
     var already=progDone(les.id);
-    if(already)segDone=segDone.map(function(){return true;});
+    var freshRestart=(totalQ===0&&segs.length>1)&&!(crs2&&crs2.flow==="poem");
+    if(already&&!freshRestart)segDone=segDone.map(function(){return true;});
     var poemMode=!!(crs2&&crs2.flow==="poem");
     function shufQ(q){var idx=q.options.map(function(_,i){return i});for(var i=idx.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=idx[i];idx[i]=idx[j];idx[j]=t;}var o2={question:q.question,audio:q.audio,options:idx.map(function(k){return q.options[k];}),answer:idx.indexOf(q.answer),explanation:q.explanation||""};if(q.optionImages)o2.optionImages=idx.map(function(k){return q.optionImages[k];});if(q.questionImage)o2.questionImage=q.questionImage;return o2;}
     var ordDep=/كل ما سبق|جميع ما سبق|كل ما ذكر|الإجابتان|الخياران|جميع الخيارات|كل الخيارات|أ و ب معًا|بالترتيب نفسه|نفس الترتيب/;segs=segs.map(function(sg){if(!sg.questions||!sg.questions.length)return sg;var c={};for(var k2 in sg)c[k2]=sg[k2];c.questions=sg.questions.map(function(q){var tx=q.question+" "+(q.options||[]).join(" ");return ordDep.test(tx)?q:shufQ(q)});return c;});
     var tapMode=(totalQ===0&&segs.length>1)||poemMode;
-    var unlocked=segs.map(function(_,i){return i===0||already;});
+    var unlocked=segs.map(function(_,i){return i===0||(already&&!freshRestart);});
     if(!tapMode)for(var k=1;k<segs.length;k++)unlocked[k]=unlocked[k-1]&&segDone[k-1];
     // إعداد اللعب: نجوم، أصوات، سلّم
     var starCfg=(les.stars)||{perCorrectAnswer:1,perfectSegmentBonus:2};
