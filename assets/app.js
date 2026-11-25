@@ -301,6 +301,14 @@
 
   if(page==="lesson"){
     var lbw=document.getElementById("lesson-body");if(lbw)lbw.innerHTML='<div class="load-pulse" aria-hidden="true">◆</div>';
+    if(!param("lesson")&&param("id")){
+      var want=param("id"),fix=null;
+      (data.sections||[]).forEach(function(sc){
+        (sc.lessons||[]).forEach(function(l){if(l.id===want)fix={sec:sc.id,course:""};});
+        (sc.courses||[]).forEach(function(co){(co.lessons||[]).forEach(function(l){if(l.id===want)fix={sec:sc.id,course:co.id};});});
+      });
+      if(fix)location.replace("lesson.html?section="+encodeURIComponent(fix.sec)+(fix.course?"&course="+encodeURIComponent(fix.course):"")+"&lesson="+encodeURIComponent(want));
+    }
     var sec2=find(allSections,param("section"))||data.sections[0];
     var crs2pre=param("course")&&sec2.courses?find(sec2.courses,param("course")):null;
     loadLessons(crs2pre||sec2,function(){
@@ -498,14 +506,15 @@
         wcard.classList.remove("pop");void wcard.offsetWidth;wcard.classList.add("pop");
         wcard.textContent=WL[wi];
         wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
-        if(wfill)wfill.style.width=(wi/WL.length*100)+"%";
-        if(wcnt)wcnt.textContent=ar(wi);
+        if(wfill)wfill.style.width=((wi+1)/WL.length*100)+"%";
+        if(wcnt)wcnt.textContent=ar(wi+1)+"/"+ar(WL.length);
+        if((wi+1)%5===0){try{mascotJump();}catch(e){}}
         var pv=w.querySelector(".wf-pv");if(pv)pv.disabled=(wi<=0);
         speak(WL[wi]);
       }
       function wfDone(){
         if(wfill)wfill.style.width="100%";
-        if(wcnt)wcnt.textContent=ar(WL.length);
+        if(wcnt)wcnt.textContent=ar(WL.length)+"/"+ar(WL.length);
         var nx=wsi+1;
         var dEl=lb.querySelector('.seg-pass[data-s="'+wsi+'"]');if(dEl)dEl.hidden=false;
         var nEl=lb.querySelector('.seg[data-s="'+nx+'"]');
