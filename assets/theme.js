@@ -8,16 +8,14 @@
   function meta(t){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==="light"?"#faf5e8":"#0a0907"}
   function paint(b){b.innerHTML=document.documentElement.dataset.theme==="light"?MOON:SUN}
   function mount(){
-    if(!document.body||document.getElementById("ghThemeBtn"))return;
-    var b=document.createElement("button");
-    b.id="ghThemeBtn";b.className="theme-toggle";b.type="button";
-    b.title="الوضع الليلي / النهاري";b.setAttribute("aria-label","تبديل الوضع الليلي والنهاري");
+    var b=document.getElementById("ghThemeBtn");
+    if(!b||b.dataset.wired)return;
+    b.dataset.wired="1";
     paint(b);
     b.addEventListener("click",function(){
       var n=document.documentElement.dataset.theme==="light"?"dark":"light";
       document.documentElement.dataset.theme=n;set(n);meta(n);paint(b);
     });
-    document.body.appendChild(b);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount);else mount();
   meta(get());
