@@ -1,0 +1,199 @@
+/*
+ * مساعد الغرباوي — شات بوت الزوار (المرحلة ١)
+ * ------------------------------------------------------------
+ * فقاعة محادثة عائمة تظهر في كل الصفحات العامة، تجيب عن أسئلة الزوار
+ * وترشدهم إلى أقسام الموقع ودروسه واختباراته.
+ *
+ * التقنية: Firebase AI Logic (واجهة Gemini Developer API المجانية) عبر
+ * الحزمة الموديولار من CDN — لا تتعارض مع نسخة compat التي يحمّلها الموقع.
+ * الحماية: App Check (reCAPTCHA Enterprise) إن توفّر، وحد أقصى للرسائل
+ * في الجلسة الواحدة حتى لا يُستهلك الرصيد المجاني.
+ * كل شيء يعمل على الخطة المجانية (Spark) بدون أي بطاقة.
+ */
+(function () {
+  "use strict";
+
+  var RECAPTCHA_SITE_KEY = "6Le4IDEuAAAAANYA2EvvnsJSnQwTKx3i5OzdPgcG";
+  var MODEL_NAME = "gemini-flash-lite-latest";
+  var SDK = "https://www.gstatic.com/firebasejs/11.10.0/";
+  var MAX_PER_SESSION = 12; // حد الرسائل لكل زائر في الجلسة الواحدة
+  var COUNT_KEY = "gh_chat_count";
+
+  var ai = null;          // عميل المحادثة بعد التهيئة
+  var aiReady = null;     // وعد التهيئة
+  var aiError = null;
+
+  function sectionsSummary() {
+    try {
+      var meta = window.SITE_META;
+      if (!meta || !meta.sections) return "";
+      var live = meta.sections.filter(function (s) { return s.live !== false; });
+      return live.map(function (s) {
+        return "- " + s.title + (s.description ? ": " + s.description : "");
+      }).join("\n");
+    } catch (e) { return ""; }
+  }
+
+  function systemPrompt() {
+    return [
+      "أنت «مساعد الغرباوي»، مساعد ودود داخل موقع مؤسسة الغرباوي لتعليم اللغة العربية لكل الأعمار.",
+      "مهمتك: الترحيب بالزائر، وشرح ما يقدمه الموقع، وإرشاده إلى القسم أو الدرس أو الاختبار أو اللعبة المناسبة له.",
+      "أجب دائمًا باللغة العربية البسيطة، وبجمل قصيرة واضحة.",
+      "لا تخترع روابط أبدًا. إذا أردت توجيه الزائر لصفحة فاذكر اسم القسم فقط، مثل: «افتح قسم النحو من القائمة».",
+      "الموقع يحتوي على: دروس مرتبة في أقسام، واختبارات تفاعلية، وألعاب تعليمية، وصفحة للطلاب وأخرى للمعلم.",
+      "هذه أقسام الموقع المتاحة حاليًا:",
+      sectionsSummary(),
+      "إذا سألك الزائر سؤالًا في اللغة العربية أو النحو فأجب إجابة تعليمية قصيرة ومفيدة.",
+      "إذا سُئلت عن شيء لا تعرفه أو خارج نطاق الموقع، فاعتذر بلطف واقترح على الزائر تصفّح الأقسام.",
+      "لا تتحدث عن أسعار أو اشتراكات؛ الموقع مجاني بالكامل."
+    ].join("\n");
+  }
+
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.onload = res;
+      s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  function initAI() {
+    if (aiReady) return aiReady;
+    aiReady = (async function () {
+      // إعدادات Firebase: محمّلة مسبقًا في صفحات الدخول، ونحمّلها هنا إن لزم
+      if (!window.FIREBASE_CONFIG) {
+        await loadScript("assets/firebase-config.js?v=2");
+      }
+      var appMod = await import(SDK + "firebase-app.js");
+      var app = appMod.initializeApp(window.FIREBASE_CONFIG, "chat-widget");
+
+      // App Check للحماية من إساءة الاستخدام — اختياري: إن فشل يعمل البوت بدونه
+      try {
+        var acMod = await import(SDK + "firebase-app-check.js");
+        acMod.initializeAppCheck(app, {
+          provider: new acMod.ReCaptchaEnterpriseProvider(RECAPTCHA_SITE_KEY),
+          isTokenAutoRefreshEnabled: true
+        });
+      } catch (e) { /* يعمل بدون App Check */ }
+
+      var vMod = await import(SDK + "firebase-ai.js");
+      var vertex = vMod.getAI(app, { backend: new vMod.GoogleAIBackend() });
+      var model = vMod.getGenerativeModel(vertex, {
+        model: MODEL_NAME,
+        systemInstruction: systemPrompt()
+      });
+      ai = model.startChat();
+      return ai;
+    })().catch(function (e) {
+      aiError = e;
+      throw e;
+    });
+    return aiReady;
+  }
+
+  function remaining() {
+    var n = 0;
+    try { n = parseInt(sessionStorage.getItem(COUNT_KEY) || "0", 10) || 0; } catch (e) {}
+    return MAX_PER_SESSION - n;
+  }
+  function bump() {
+    try {
+      var n = parseInt(sessionStorage.getItem(COUNT_KEY) || "0", 10) || 0;
+      sessionStorage.setItem(COUNT_KEY, String(n + 1));
+    } catch (e) {}
+  }
+
+  /* ---------- الواجهة ---------- */
+  var css = document.createElement("style");
+  css.textContent =
+    "#ghChatBtn{position:fixed;left:16px;bottom:16px;z-index:9999;width:56px;height:56px;border-radius:50%;" +
+    "border:none;cursor:pointer;background:#0d6b4f;color:#fff;font-size:26px;box-shadow:0 4px 14px rgba(0,0,0,.25);}" +
+    "#ghChatPanel{position:fixed;left:16px;bottom:82px;z-index:9999;width:330px;max-width:calc(100vw - 32px);" +
+    "height:440px;max-height:calc(100vh - 110px);background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);" +
+    "display:none;flex-direction:column;overflow:hidden;font-family:Cairo,sans-serif;direction:rtl;}" +
+    "#ghChatHead{background:#0d6b4f;color:#fff;padding:12px 14px;font-weight:700;}" +
+    "#ghChatMsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}" +
+    ".ghMsg{max-width:85%;padding:8px 12px;border-radius:12px;line-height:1.7;font-size:14px;white-space:pre-wrap;}" +
+    ".ghMsg.user{align-self:flex-start;background:#0d6b4f;color:#fff;}" +
+    ".ghMsg.bot{align-self:flex-end;background:#f1f3f4;color:#202124;}" +
+    "#ghChatForm{display:flex;gap:6px;padding:10px;border-top:1px solid #eee;}" +
+    "#ghChatInput{flex:1;border:1px solid #ddd;border-radius:20px;padding:8px 14px;font-family:Cairo,sans-serif;font-size:14px;}" +
+    "#ghChatSend{border:none;background:#0d6b4f;color:#fff;border-radius:20px;padding:8px 16px;cursor:pointer;font-family:Cairo,sans-serif;}" +
+    "#ghChatSend:disabled{opacity:.5;cursor:default;}";
+  document.head.appendChild(css);
+
+  var btn = document.createElement("button");
+  btn.id = "ghChatBtn";
+  btn.title = "مساعد الغرباوي";
+  btn.textContent = "💬";
+
+  var panel = document.createElement("div");
+  panel.id = "ghChatPanel";
+  panel.innerHTML =
+    '<div id="ghChatHead">مساعد الغرباوي 🌿</div>' +
+    '<div id="ghChatMsgs"></div>' +
+    '<form id="ghChatForm"><input id="ghChatInput" placeholder="اكتب سؤالك هنا…" autocomplete="off">' +
+    '<button id="ghChatSend" type="submit">أرسل</button></form>';
+
+  document.body.appendChild(btn);
+  document.body.appendChild(panel);
+
+  var msgs = panel.querySelector("#ghChatMsgs");
+  var form = panel.querySelector("#ghChatForm");
+  var input = panel.querySelector("#ghChatInput");
+  var sendBtn = panel.querySelector("#ghChatSend");
+  var greeted = false;
+
+  function addMsg(text, who) {
+    var d = document.createElement("div");
+    d.className = "ghMsg " + who;
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  btn.addEventListener("click", function () {
+    var open = panel.style.display === "flex";
+    panel.style.display = open ? "none" : "flex";
+    if (!open && !greeted) {
+      greeted = true;
+      addMsg("أهلًا بك في مؤسسة الغرباوي! 🌿 أنا مساعدك هنا. اسألني عن أقسام الموقع أو الدروس أو الاختبارات، وسأرشدك.", "bot");
+      initAI().catch(function () {});
+      input.focus();
+    }
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var text = input.value.trim();
+    if (!text) return;
+    if (remaining() <= 0) {
+      addMsg("وصلتَ لحد الرسائل المسموح به في هذه الجلسة 🌿 تصفّح أقسام الموقع من القائمة، وستجد كل الدروس والاختبارات.", "bot");
+      return;
+    }
+    input.value = "";
+    addMsg(text, "user");
+    bump();
+    sendBtn.disabled = true;
+    var thinking = document.createElement("div");
+    thinking.className = "ghMsg bot";
+    thinking.textContent = "…";
+    msgs.appendChild(thinking);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    initAI()
+      .then(function (chat) { return chat.sendMessage(text); })
+      .then(function (res) {
+        thinking.textContent = res.response.text();
+      })
+      .catch(function () {
+        thinking.textContent = "عذرًا، المساعد مشغول الآن. جرّب بعد قليل 🌿 ويمكنك تصفّح أقسام الموقع من القائمة.";
+      })
+      .then(function () {
+        sendBtn.disabled = false;
+        msgs.scrollTop = msgs.scrollHeight;
+      });
+  });
+})();
