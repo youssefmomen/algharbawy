@@ -14,8 +14,10 @@
     g.innerHTML = esc(msg) + (withLink ? ' <a href="auth.html">سجّل الدخول أولًا</a>' : "");
   }
 
+  var currentUser = null;
   Store.init().then(function () {
     Store.onAuth(function (user) {
+      currentUser = user;
       if (!user) { gate("هذه الصفحة خاصة بإدارة الموقع.", true); return; }
       Store.isAdmin(user).then(function (ok) {
         if (!ok) { gate("غير مصرح لك بعرض هذه الصفحة.", false); return; }
@@ -26,12 +28,25 @@
     });
   });
 
+  function gateSetupHint() {
+    var email = (currentUser && currentUser.email) || "";
+    gate("", false);
+    var g = document.getElementById("adm-gate");
+    g.innerHTML =
+      '<div style="text-align:right;line-height:2">' +
+      "<b>صلاحية المدير غير مفعّلة بعد في قاعدة البيانات.</b><br>" +
+      'بريدك المسجّل دخولك: <b dir="ltr">' + esc(email) + "</b><br>" +
+      "راجع خطوة «صلاحية المدير»: في Firestore Database ← تبويب «البيانات» تأكد أن لديك بالضبط:<br>" +
+      '• مجموعة (Collection) اسمها <b dir="ltr">config</b> بحروف صغيرة<br>' +
+      '• مستند (Document) اسمه <b dir="ltr">admin</b> بحروف صغيرة<br>' +
+      '• حقل (Field) اسمه <b dir="ltr">email</b> نوعه string وقيمته بريدك أعلاه بحروف صغيرة بدون مسافات<br>' +
+      "بعد التصحيح أعد تحميل الصفحة." +
+      "</div>";
+  }
+
   function loadDash() {
     Store.adminListAll().then(function (r) {
-      if (!r.users || !r.progress) {
-        gate("تعذّر تحميل البيانات. راجع قواعد Firestore أو الاتصال.", false);
-        return;
-      }
+      if (!r.users || !r.progress) { gateSetupHint(); return; }
       var progByUid = {};
       r.progress.forEach(function (p) { progByUid[p.uid] = p; });
       var rows = r.users.map(function (u) {
@@ -70,7 +85,7 @@
   function loadTeachers() {
     if (!window.Teach) return;
     Teach.listTeachers().then(function (rows) {
-      if (!rows) return;
+      if (!rows) { if (!document.getElementById("adm-gate").hidden) return; gateSetupHint(); return; }
       var pend = rows.filter(function (t) { return t.status === "pending"; });
       var others = rows.filter(function (t) { return t.status !== "pending"; });
       $("adm-teachers-empty").hidden = pend.length > 0;
