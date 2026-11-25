@@ -75,6 +75,18 @@ window.Store = (function () {
       return { users: users, progress: progress };
     });
   }
+  /* الملف الشخصي: الاسم والدور والصورة الرمزية في وثيقة users/{uid} */
+  function getProfile(uid) {
+    if (!ready || !uid) return Promise.resolve(null);
+    return db.collection("users").doc(uid).get()
+      .then(function (d) { return d.exists ? d.data() : null; })
+      .catch(function () { return null; });
+  }
+  function saveProfile(uid, patch) {
+    if (!ready || !uid) return Promise.reject(new Error("not-ready"));
+    return db.collection("users").doc(uid).set(patch, { merge: true });
+  }
+
   function signInEmail(email, pass) { return auth.signInWithEmailAndPassword(email, pass); }
   function signUpEmail(email, pass) { return auth.createUserWithEmailAndPassword(email, pass); }
   function signInGoogle() {
@@ -127,6 +139,8 @@ window.Store = (function () {
     init: init,
     isReady: isReady,
     onAuth: onAuth,
+    getProfile: getProfile,
+    saveProfile: saveProfile,
     signInEmail: signInEmail,
     signUpEmail: signUpEmail,
     signInGoogle: signInGoogle,

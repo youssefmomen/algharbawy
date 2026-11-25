@@ -28,19 +28,40 @@
   var authUser=null;
 
   // ---------- الحساب: شريحة الدخول ومزامنة التقدّم ----------
-  function paintChip(user){
+  var profCache=null; /* ملف المستخدم لهذه الجلسة */
+  function profileCached(user){
+    if(profCache)return Promise.resolve(profCache);
+    try{
+      var raw=sessionStorage.getItem("gh_prof_"+user.uid);
+      if(raw){profCache=JSON.parse(raw);return Promise.resolve(profCache);}
+    }catch(e){}
+    return Store.getProfile(user.uid).then(function(p){
+      profCache=p||{};
+      try{sessionStorage.setItem("gh_prof_"+user.uid,JSON.stringify(profCache));}catch(e){}
+      return profCache;
+    });
+  }
+  function chipAvatar(prof,user){
+    var src="";
+    if(prof){src=prof.avatarData||(prof.avatarId&&window.Avatars?Avatars.url(prof.avatarId):"");}
+    if(src)return '<img class="chip-ava" src="'+src+'" alt="">';
+    var letter=((prof&&prof.name)||user.email||"؟").trim().charAt(0).toUpperCase();
+    return miniMark(letter);
+  }
+  function paintChip(user,prof){
     var chip=document.getElementById("auth-chip");
     if(!chip||!window.Store||!Store.isReady())return;
     chip.classList.add("show");
     var old=document.getElementById("chip-menu");if(old)old.remove();
     if(!user){
+      chip.classList.remove("ava");
       chip.textContent="دخول";
       chip.setAttribute("href","auth.html");
       chip.onclick=null;
       return;
     }
-    var letter=(user.email||"؟").charAt(0).toUpperCase();
-    chip.innerHTML=miniMark(letter);
+    chip.innerHTML=chipAvatar(prof,user);
+    chip.classList.toggle("ava",!!(prof&&(prof.avatarData||prof.avatarId)));
     chip.removeAttribute("href");
     chip.onclick=function(e){
       e.preventDefault();
@@ -48,7 +69,9 @@
       if(m){m.remove();return;}
       Store.isAdmin(user).then(function(isAdm){
         var old2=document.getElementById("chip-menu");if(old2)old2.remove();
-        var html='<div class="chip-menu open" id="chip-menu"><div class="who">'+esc(user.email||"")+'</div>'+
+        var who=(prof&&prof.name)?'<div class="who"><b class="who-name">'+esc(prof.name)+'</b>'+esc(user.email||"")+'</div>':'<div class="who">'+esc(user.email||"")+'</div>';
+        var html='<div class="chip-menu open" id="chip-menu">'+who+
+          '<a class="chip-admin" href="profile.html">الملف الشخصي</a>'+
           '<a class="chip-admin" href="student.html">الاختبارات والألعاب</a>'+
           '<a class="chip-admin" href="teacher.html">لوحة المعلم</a>'+
           (isAdm?'<a class="chip-admin" href="admin.html">لوحة التحكم</a>':'')+
@@ -86,8 +109,12 @@
       paintChip(null);
       Store.onAuth(function(user){
         authUser=user;
-        paintChip(user);
-        if(user)syncRemoteProgress(user);
+        profCache=null;
+        paintChip(user,null);
+        if(user){
+          syncRemoteProgress(user);
+          profileCached(user).then(function(p){if(authUser===user)paintChip(user,p);});
+        }
       });
     });
   }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://*.googleusercontent.com; media-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com https://apis.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0907">
+<meta name="robots" content="noindex">
+<meta name="description" content="ملفك الشخصي في مؤسسة الغرباوي: اسمك وصورتك ونقاطك وتقدمك وواجباتك.">
+<title>ملفي الشخصي | مؤسسة الغرباوي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="assets/theme.js?v=2"></script>
+<link rel="stylesheet" href="assets/style.css?v=43">
+</head>
+<body data-page="profile">
+<main class="wrap">
+  <div class="adm-head rv">
+    <div class="page-mark"><span class="mark"><i>غ</i></span></div>
+    <h1>ملفي الشخصي</h1>
+    <p class="sub">اسمك وصورتك ونقاطك وتقدمك في مكان واحد</p>
+  </div>
+
+  <div class="adm-note" id="p-gate" hidden></div>
+
+  <!-- إعداد أول مرة / تعديل -->
+  <div class="auth-card" id="p-setup" hidden>
+    <h2 id="p-setup-title">أكمل ملفك</h2>
+    <p class="sub" id="p-setup-sub">مرة واحدة فقط: اسمك ونوع حسابك وصورتك الرمزية.</p>
+    <div class="field"><label for="p-name">الاسم (يظهر لمعلمك)</label><input type="text" id="p-name" maxlength="60" autocomplete="name"></div>
+
+    <div class="field" id="p-role-row"><label>نوع الحساب</label>
+      <div class="pf-roles" id="p-roles">
+        <button type="button" class="pf-role on" data-role="student"><b>طالب</b><span>أتعلم وأحل الواجبات</span></button>
+        <button type="button" class="pf-role" data-role="teacher"><b>معلم</b><span>أنشئ الاختبارات والواجبات — يحتاج موافقة الإدارة</span></button>
+      </div>
+    </div>
+
+    <div class="field"><label>صورتك الرمزية</label>
+      <div class="pf-avas" id="p-avas"></div>
+      <div class="pf-up-row">
+        <button type="button" class="btn ghost" id="p-up-btn">أو ارفع صورتك من الجهاز</button>
+        <input type="file" id="p-up-file" accept="image/*" hidden>
+        <img id="p-up-preview" class="pf-up-preview" alt="" hidden>
+      </div>
+      <div class="form-err" id="p-up-err" role="alert"></div>
+    </div>
+
+    <div class="form-err" id="p-err" role="alert"></div>
+    <div class="form-ok" id="p-ok" role="status"></div>
+    <button class="btn fill block" id="p-save" type="button">حفظ</button>
+    <button class="btn ghost block" id="p-cancel" type="button" hidden>إلغاء</button>
+  </div>
+
+  <!-- العرض -->
+  <div id="p-view" hidden>
+    <div class="pf-card rv">
+      <img id="p-avatar" class="pf-avatar" alt="">
+      <div class="pf-id">
+        <b id="p-vname"></b>
+        <span class="pf-badge" id="p-vrole"></span>
+        <span class="pf-mail" id="p-vemail" dir="ltr"></span>
+      </div>
+      <button class="btn ghost" id="p-edit" type="button">تعديل</button>
+    </div>
+
+    <div class="pf-stats rv" id="p-stats">
+      <div class="pf-stat"><b id="ps-xp">٠</b><span>نقطة خبرة</span></div>
+      <div class="pf-stat"><b id="ps-streak">٠</b><span>يوم متتابع</span></div>
+      <div class="pf-stat"><b id="ps-lessons">٠</b><span>درسًا مكتملًا</span></div>
+      <div class="pf-stat"><b id="ps-stars">٠</b><span>نجمة</span></div>
+    </div>
+
+    <div class="pf-card rv" id="p-teacher-card" hidden>
+      <div class="pf-id"><b>حساب المعلم</b><span class="t-meta" id="p-teacher-status"></span></div>
+      <a class="btn fill" href="teacher.html" id="p-teacher-link">لوحة المعلم</a>
+    </div>
+
+    <h2 class="t-sect">مساراتي</h2>
+    <div class="t-list" id="p-paths"></div>
+    <div class="adm-note" id="p-paths-empty" hidden>لم تبدأ أي مسار بعد. <a href="student.html">استكشف مسارات التعلّم</a>.</div>
+
+    <h2 class="t-sect">واجباتي</h2>
+    <div class="t-list" id="p-hw"></div>
+    <div class="adm-note" id="p-hw-empty" hidden>لا واجبات حاليًا.</div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/data/meta.js?v=2"></script>
+<script src="assets/firebase-config.js?v=2"></script>
+<script src="assets/store.js?v=5"></script>
+<script src="assets/teach.js?v=3"></script>
+<script src="assets/avatars.js?v=1"></script>
+<script src="assets/app.js?v=39"></script>
+<script src="assets/profile.js?v=1"></script>
+<script src="assets/chat-widget.js?v=6"></script>
+</body>
+</html>

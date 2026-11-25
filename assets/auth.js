@@ -25,10 +25,17 @@
   function showErr(code) {
     el("auth-err").textContent = errMsg(code);
   }
+  var role = "student";
+  function setRole(r) {
+    role = r;
+    el("role-student").classList.toggle("on", r === "student");
+    el("role-teacher").classList.toggle("on", r === "teacher");
+  }
   function setMode(m) {
     mode = m;
     el("tab-in").classList.toggle("on", m === "in");
     el("tab-up").classList.toggle("on", m === "up");
+    el("f-role-row").hidden = m !== "up";
     el("auth-title").textContent = m === "in" ? "تسجيل الدخول" : "إنشاء حساب جديد";
     el("auth-sub").textContent = m === "in"
       ? "سجّل دخولك ليُحفَظ تقدّمك في الدروس على حسابك."
@@ -43,9 +50,16 @@
       el("auth-err").textContent = "خدمة الحسابات غير متاحة حاليًا.";
       return;
     }
+    /* بعد الدخول: من بلا دور في ملفه (حساب جديد أو قديم) يكمل ملفه أولًا */
     Store.onAuth(function (u) {
-      if (u) location.href = next();
+      if (!u) return;
+      Store.getProfile(u.uid).then(function (p) {
+        if (!p || !p.role || !p.name) { location.href = "profile.html?setup=1"; return; }
+        location.href = next();
+      });
     });
+    el("role-student").addEventListener("click", function () { setRole("student"); });
+    el("role-teacher").addEventListener("click", function () { setRole("teacher"); });
     el("tab-in").addEventListener("click", function () { setMode("in"); });
     el("tab-up").addEventListener("click", function () { setMode("up"); });
     el("auth-form").addEventListener("submit", function (e) {
@@ -53,6 +67,7 @@
       var email = el("f-email").value.trim(), pass = el("f-pass").value;
       if (!email || !pass) { el("auth-err").textContent = "املأ البريد الإلكتروني وكلمة المرور."; return; }
       el("auth-go").disabled = true;
+      if (mode === "up") { try { sessionStorage.setItem("gh_role", role); } catch (e) {} }
       var p = mode === "in" ? Store.signInEmail(email, pass) : Store.signUpEmail(email, pass);
       p.catch(function (err) {
         el("auth-go").disabled = false;
