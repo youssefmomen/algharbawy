@@ -13,7 +13,7 @@
     "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
     "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
     "assets/firebase-config.js?v=2",
-    "assets/store.js?v=5",
+    "assets/store.js?v=6",
     "assets/avatars.js?v=1"
   ];
   function one(src) {
