@@ -512,7 +512,7 @@
       function wfShow(){
         wcard.classList.remove("pop");void wcard.offsetWidth;wcard.classList.add("pop");
         wcard.textContent=WL[wi];
-        wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
+        if(wdots)wdots.innerHTML=WL.map(function(_,k){return '<span class="wf-d'+(k<wi?' on':'')+(k===wi?' c':'')+'"></span>';}).join("");
         var pc=(wi+1)/WL.length*100;
         if(wfill)wfill.style.width=pc+"%";
         var cml=w.querySelector(".wf-camel");if(cml)cml.style.left="calc("+pc+"% - 16px)";
