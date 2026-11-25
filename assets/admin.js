@@ -90,14 +90,14 @@
       var others = rows.filter(function (t) { return t.status !== "pending"; });
       $("adm-teachers-empty").hidden = pend.length > 0;
       $("adm-teachers").innerHTML = pend.map(function (t) {
-        return '<div class="t-item"><div class="t-item-main"><b>' + esc(t.name || t.email || t.uid) + '</b>' +
+        return '<div class="t-item"><div class="t-item-main"><b>' + esc(t.name || t.email || t.id) + '</b>' +
           '<span class="t-meta" dir="ltr">' + esc(t.email || "") + '</span></div>' +
           '<div class="t-item-acts">' +
-          '<button type="button" class="btn fill" data-t="' + t.uid + '" data-s="approved">قبول</button>' +
-          '<button type="button" class="btn ghost t-del" data-t="' + t.uid + '" data-s="rejected">رفض</button>' +
+          '<button type="button" class="btn fill" data-t="' + t.id + '" data-s="approved">قبول</button>' +
+          '<button type="button" class="btn ghost t-del" data-t="' + t.id + '" data-s="rejected">رفض</button>' +
           '</div></div>';
       }).join("") + (others.length ? '<div class="t-meta t-sect-sm">المعلمون الحاليون: ' + others.map(function (t) {
-        return esc(t.name || t.email || t.uid) + " (" + (t.status === "approved" ? "مقبول" : "مرفوض") + ")";
+        return esc(t.name || t.email || t.id) + " (" + (t.status === "approved" ? "مقبول" : "مرفوض") + ")";
       }).join("، ") + "</div>" : "");
     });
   }
@@ -105,7 +105,10 @@
     var b = e.target.closest("button[data-t]");
     if (!b) return;
     b.disabled = true;
-    Teach.setTeacherStatus(b.dataset.t, b.dataset.s).then(loadTeachers);
+    Teach.setTeacherStatus(b.dataset.t, b.dataset.s).then(loadTeachers).catch(function () {
+      b.disabled = false;
+      alert("تعذّر حفظ القرار. تحقّق من اتصالك بالإنترنت ثم حاول مرة أخرى.");
+    });
   });
 
   function card(num, label) {
