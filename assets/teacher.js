@@ -75,8 +75,10 @@
       return '<div class="t-item">' +
         '<div class="t-item-main"><b>' + esc(d.title) + '</b>' +
         '<span class="t-meta">' + typeLabel(d, kind) + ' · ' + arNum((d.questions || []).length) + ' سؤال · ' +
-        (d.published ? '<span class="t-live">منشور</span>' : 'مسودة') + '</span></div>' +
+        (d.published ? '<span class="t-live">منشور</span>' : 'مسودة') +
+        (d.isHomework ? ' · <span class="t-hw">واجب</span>' : '') + '</span></div>' +
         '<div class="t-item-acts">' +
+        '<button type="button" class="btn ghost" data-act="link" data-kind="' + kind + '" data-id="' + d.id + '">نسخ الرابط</button>' +
         '<button type="button" class="btn ghost" data-act="edit" data-kind="' + kind + '" data-id="' + d.id + '">تعديل</button>' +
         '<button type="button" class="btn ghost" data-act="pub" data-kind="' + kind + '" data-id="' + d.id + '">' + (d.published ? "إخفاء" : "نشر") + '</button>' +
         '<button type="button" class="btn ghost t-del" data-act="del" data-kind="' + kind + '" data-id="' + d.id + '">حذف</button>' +
@@ -89,6 +91,17 @@
     var kind = b.dataset.kind, id = b.dataset.id;
     var d = (kind === "exams" ? myExams : myGames).find(function (x) { return x.id === id; });
     if (!d) return;
+    if (b.dataset.act === "link") {
+      var page = kind === "exams" ? "exam.html?id=" : "game.html?id=";
+      var url = location.href.slice(0, location.href.lastIndexOf("/") + 1) + page + encodeURIComponent(id);
+      var done = function () { b.textContent = "تم النسخ ✓"; setTimeout(function () { b.textContent = "نسخ الرابط"; }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(url).then(done, done); }
+      else {
+        var ta = document.createElement("textarea"); ta.value = url; document.body.appendChild(ta);
+        ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove(); done();
+      }
+      return;
+    }
     if (b.dataset.act === "pub") {
       Teach.save(kind, id, { published: !d.published }, user).then(loadLists);
     } else if (b.dataset.act === "del") {
@@ -139,7 +152,7 @@
     editing = { kind: null, id: null };
     $("f-kind").value = "exam"; $("f-kind").dispatchEvent(new Event("change"));
     $("f-title").value = ""; $("f-desc").value = ""; $("f-time").value = "10";
-    $("f-pub").checked = true; $("f-err").textContent = "";
+    $("f-pub").checked = true; $("f-hw").checked = false; $("f-err").textContent = "";
     $("f-questions").innerHTML = ""; addQ();
     $("f-save").textContent = "حفظ";
   }
@@ -151,6 +164,7 @@
     $("f-title").value = d.title || ""; $("f-desc").value = d.description || "";
     $("f-time").value = d.timeLimitMin || 0;
     $("f-pub").checked = !!d.published;
+    $("f-hw").checked = !!d.isHomework;
     $("f-questions").innerHTML = "";
     (d.questions || []).forEach(function (q) { addQ(q); });
     if (!$("f-questions").children.length) addQ();
@@ -178,7 +192,8 @@
       title: $("f-title").value.trim(),
       description: $("f-desc").value.trim(),
       questions: qs,
-      published: $("f-pub").checked
+      published: $("f-pub").checked,
+      isHomework: $("f-hw").checked
     };
     var kind;
     if (kindV === "exam") { kind = "exams"; data.timeLimitMin = Math.max(0, +$("f-time").value || 0); }

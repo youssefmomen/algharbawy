@@ -610,3 +610,8 @@ body.cartoon-skin .ct-note{text-align:center;color:#8a7a52;font-weight:600;margi
 .race-name{position:absolute;inset-inline-start:0;top:-6px;font-size:.8rem;opacity:.7}
 .race-runner{position:absolute;inset-inline-start:calc(0% - 20px);font-size:2rem;transition:inset-inline-start .6s ease;transform:scaleX(-1)}
 .race-flag{position:absolute;top:0;inset-inline-end:2px;font-size:2.2rem}
+
+/* الواجبات */
+.t-hw{color:#d4af5f;font-weight:700}
+.hw-open{color:#f0b429}
+.hw-done{color:#7fd08a}
