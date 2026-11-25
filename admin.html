@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23d4af5f' font-family='serif'%3Eغ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;500;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="assets/theme.js?v=1"></script>
-<link rel="stylesheet" href="assets/style.css?v=39">
+<link rel="stylesheet" href="assets/style.css?v=40">
 </head>
 <body data-page="admin">
 <main class="wrap">
@@ -27,6 +27,12 @@
     <div class="t-sect-wrap"><h2 class="t-sect">طلبات المعلمين</h2>
     <div class="t-list" id="adm-teachers"></div>
     <div class="adm-note" id="adm-teachers-empty" hidden>لا طلبات معلمين معلّقة.</div></div>
+    <div class="t-sect-wrap"><h2 class="t-sect">شريط الإعلانات</h2>
+    <div class="t-form">
+      <input type="text" id="ticker-text" maxlength="200" placeholder="نص الإعلان الذي يظهر أعلى الصفحة الرئيسية (اتركه فارغًا مع إيقاف التفعيل لإخفائه)" style="width:100%;padding:10px 12px;border:1px solid rgba(212,175,95,.25);border-radius:10px;background:rgba(0,0,0,.25);color:inherit;font-family:inherit">
+      <div class="t-pub" style="margin-top:10px"><label><input type="checkbox" id="ticker-active"> مفعّل: يظهر الشريط لكل الزوار</label></div>
+      <div class="t-acts-col"><button class="btn fill" id="ticker-save" type="button">حفظ الإعلان</button><span class="t-hint" id="ticker-msg"></span></div>
+    </div></div>
     <div class="adm-cards" id="adm-cards"></div>
     <div class="adm-tablewrap">
       <table class="adm-table">
@@ -46,6 +52,6 @@
 <script src="assets/firebase-config.js?v=2"></script>
 <script src="assets/store.js?v=4"></script>
 <script src="assets/teach.js?v=1"></script>
-<script src="assets/admin.js?v=4"></script>
+<script src="assets/admin.js?v=5"></script>
 </body>
 </html>

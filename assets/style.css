@@ -630,3 +630,13 @@ html[data-theme=light] .badge{color:#2c2414}
 .theme-toggle:hover{transform:scale(1.08);border-color:var(--gold)}
 .theme-toggle svg{width:24px;height:24px;display:block}
 @media (max-width:640px){.theme-toggle{width:46px;height:46px;right:12px;bottom:12px}}
+
+/* ===== شريط الإعلانات (يُدار من لوحة التحكم) ===== */
+.ticker{position:fixed;top:0;inset-inline:0;z-index:70;height:34px;display:none;align-items:center;overflow:hidden;background:var(--gold);color:var(--ink)}
+body.has-ticker .ticker{display:flex}
+body.has-ticker .nav{top:34px}
+body.has-ticker .hero{padding-top:190px}
+.ticker-track{display:flex;width:max-content;white-space:nowrap;animation:ghTick 28s linear infinite}
+.ticker-track span{padding-inline:48px;font-weight:700;font-size:.92rem;line-height:34px}
+@keyframes ghTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none;white-space:normal}}
