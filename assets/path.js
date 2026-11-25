@@ -76,7 +76,7 @@
   function render() {
     hud();
     $("p-feedback").hidden = true;
-    $("p-back").hidden = (phase === "explain");
+    $("p-back").style.display = (phase === "explain") ? "none" : ""; /* [hidden] يخسر أمام display في .btn */
     var st = steps[i];
     if (phase === "explain") {
       stage('<div class="p-card">' + tag(stepLabel("الشرح")) +
