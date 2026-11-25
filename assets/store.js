@@ -16,6 +16,7 @@ window.Store = (function () {
   }
 
   function init() {
+    if (ready) return Promise.resolve(true);
     if (!configured()) return Promise.resolve(false);
     try {
       firebase.initializeApp(cfg);
