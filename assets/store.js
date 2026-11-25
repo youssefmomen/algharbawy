@@ -78,9 +78,16 @@ window.Store = (function () {
   /* الملف الشخصي: الاسم والدور والصورة الرمزية في وثيقة users/{uid} */
   function getProfile(uid) {
     if (!ready || !uid) return Promise.resolve(null);
-    return db.collection("users").doc(uid).get()
-      .then(function (d) { return d.exists ? d.data() : null; })
-      .catch(function () { return null; });
+    function once() {
+      return db.collection("users").doc(uid).get()
+        .then(function (d) { return d.exists ? d.data() : null; })
+        .catch(function () { return null; });
+    }
+    /* عند فتح الصفحة قد تسبق القراءة وصول رمز الدخول إلى Firestore فيُرفض الاستعلام — إعادة واحدة بعد لحظة */
+    return once().then(function (p) {
+      if (p || !auth.currentUser) return p;
+      return new Promise(function (res) { setTimeout(function () { once().then(res); }, 700); });
+    });
   }
   function saveProfile(uid, patch) {
     if (!ready || !uid) return Promise.reject(new Error("not-ready"));
