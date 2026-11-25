@@ -124,7 +124,7 @@
   '<nav class="nav" id="nav"><div class="wrap"><a class="brand" href="index.html"><i><b>غ</b></i><span>'+esc(data.siteTitle)+'</span></a>'+
   '<div class="links" id="links"><a href="index.html">الرئيسة</a>'+
   topSections.map(function(s){return '<a href="section.html?id='+encodeURIComponent(s.id)+'">'+esc(s.title)+'</a>';}).join("")+
-  '</div><a class="chip" id="auth-chip" href="auth.html">دخول</a><button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
+  '</div><div class="nav-side"><a class="chip" id="auth-chip" href="auth.html">دخول</a><button class="theme-toggle" id="ghThemeBtn" type="button" aria-label="تبديل الوضع الليلي والنهاري" title="الوضع الليلي / النهاري"></button><button class="burger" id="burger" aria-label="القائمة"><span class="bl"></span><span class="bl"></span><span class="bl"></span></button></div></div></nav>';
   document.body.insertAdjacentHTML("afterbegin",navHTML);
   var chip0=document.getElementById("auth-chip");if(chip0)chip0.classList.add("show");
   var year=ar(new Date().getFullYear());
