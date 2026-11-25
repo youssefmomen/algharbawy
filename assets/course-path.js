@@ -98,8 +98,10 @@
       var db = firebase.firestore();
       var pid = "course_" + cid; /* يبقى doc id = uid + "_" + pathId */
       var ref = db.collection("pathProgress").doc(user.uid + "_" + pid);
-      ref.get().then(function (doc) {
-        var prog = doc.exists ? doc.data() : { step: 0, wrong: 0, xp: 0, streak: 0, done: false };
+      var fresh = { step: 0, wrong: 0, xp: 0, streak: 0, done: false };
+      /* القواعد تمنع قراءة مستند غير موجود — عند الرفض نبدأ بتقدم جديد */
+      ref.get().then(function (doc) { mountWith(doc.exists ? doc.data() : fresh); }, function () { mountWith(fresh); });
+      function mountWith(prog) {
         var today = dayStr(new Date());
         if (prog.lastDay !== today) {
           var y = dayStr(new Date(Date.now() - 864e5));
@@ -126,7 +128,7 @@
           doneLabel: "عودة إلى دورات القسم",
           exitHref: "section.html?id=" + encodeURIComponent(secId)
         });
-      }).catch(function () { cgGate("تعذّر تحميل تقدّمك."); });
+      }
     });
   }
 })();

@@ -28,8 +28,10 @@
         var steps = (d.steps || []).filter(function (s) { return s && (s.verse || s.image); });
         if (!steps.length) { PathEngine.gate("لا خطوات في هذا المسار بعد.", false); return; }
         var totalSteps = steps.length;
-        progRef(user.uid).get().then(function (doc) {
-          var prog = doc.exists ? doc.data() : { step: 0, wrong: 0, xp: 0, streak: 0, done: false };
+        var fresh = { step: 0, wrong: 0, xp: 0, streak: 0, done: false };
+        /* القواعد تمنع قراءة مستند غير موجود — عند الرفض نبدأ بتقدم جديد */
+        progRef(user.uid).get().then(function (doc) { mountWith(doc.exists ? doc.data() : fresh); }, function () { mountWith(fresh); });
+        function mountWith(prog) {
           /* سلسلة الأيام */
           var today = dayStr(new Date());
           if (prog.lastDay !== today) {
@@ -62,7 +64,7 @@
             doneLabel: "عودة إلى واجباتي",
             exitHref: "student.html"
           });
-        });
+        }
       }).catch(function () { PathEngine.gate("تعذّر تحميل المسار.", false); });
     });
   });
