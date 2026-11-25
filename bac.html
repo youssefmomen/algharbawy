@@ -14,6 +14,10 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
 .halftone{position:fixed;top:-40px;left:-40px;width:190px;height:190px;pointer-events:none;transform:rotate(15deg);opacity:.5;
  background-image:radial-gradient(circle,rgba(34,48,60,.28) 1.4px,transparent 1.6px);background-size:9px 9px;z-index:0}
 header{background:var(--green);color:#f6efdd;padding:16px 16px 20px;border-radius:0 0 4px 4px;position:relative;border-bottom:5px solid var(--yellow);z-index:1}
+.brand-link{display:inline-flex;align-items:center;gap:10px;color:#f6efdd;text-decoration:none;margin-bottom:10px;position:relative;z-index:2}
+.brand-link .dm{width:30px;height:30px;display:grid;place-items:center;border:2px solid var(--yellow);border-radius:5px;transform:rotate(45deg);background:rgba(0,0,0,.12)}
+.brand-link .dm b{transform:rotate(-45deg);font-family:Amiri,serif;font-weight:700;font-size:16px;color:var(--yellow)}
+.brand-link .bt{font-weight:800;font-size:15px}
 .crumbs{font-size:10.5px;opacity:.8;margin-bottom:8px;line-height:1.9}
 h1{font-family:'Lalezar',sans-serif;font-size:26px;font-weight:400;line-height:1.6;position:relative;z-index:1}
 .stage{display:inline-block;border:2px dashed rgba(246,239,221,.7);font-size:11px;font-weight:700;border-radius:999px;padding:3px 12px;margin-top:10px}
@@ -110,7 +114,6 @@ footer{height:30px}
 
 main{padding-bottom:76px}
 .exit{position:fixed;bottom:14px;left:14px;z-index:40;display:none;align-items:center;gap:7px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:4px 5px 0 rgba(34,48,60,.25)}
-.exit.home{left:auto;right:14px;background:var(--bg);color:var(--ink);text-decoration:none}
 .exit svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .lcard{display:flex;gap:12px;align-items:center;background:var(--paper);border:2px solid var(--ink);border-radius:16px 14px 18px 14px/14px 18px 14px 16px;margin:0 14px 12px;padding:12px 14px;box-shadow:4px 5px 0 rgba(34,48,60,.15);cursor:pointer}
 .lc-n{min-width:46px;height:46px;border-radius:52% 48% 55% 45%/48% 55% 45% 52%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;font-family:'Lalezar',sans-serif;font-size:21px;color:var(--ink)}
@@ -120,6 +123,7 @@ main{padding-bottom:76px}
 </style></head><body>
 <div class="halftone"></div>
 <header>
+  <a class="brand-link" href="index.html" aria-label="العودة إلى الموقع الرئيسي"><span class="dm"><b>غ</b></span><span class="bt">مؤسسة الغرباوي</span></a>
   <span id="hd-dood"></span>
   <div class="crumbs">المناهج الدراسية المصرية ◂ البكالوريا المصرية ◂ تانية ثانوي ◂ الجزء الأول ◂ التاريخ الوطني</div>
   <h1 id="L-title"></h1>
@@ -130,7 +134,6 @@ main{padding-bottom:76px}
 <footer></footer>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 <button class="exit" id="exitBtn"></button>
-<a class="exit home" id="homeBtn" href="index.html"><svg viewBox="0 0 24 24"><path d="M4 11 L12 4 L20 11"/><path d="M7 10 V20 H17 V10"/></svg><span>الموقع الرئيسي</span></a>
 <script src="assets/data/25-bac-tarikh-g2p1.js?v=7"></script>
 <script>
 var DOOD={
@@ -614,8 +617,6 @@ function renderList(){
 }
 function exitBtn(){
   var b=document.getElementById('exitBtn');
-  var h=document.getElementById('homeBtn');
-  if(h)h.style.display=(!LES||S.view==='map')?'flex':'none';
   if(!LES){b.style.display='none';return;}
   b.style.display='flex';
   if(S.view==='map'){
