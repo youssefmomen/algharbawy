@@ -152,11 +152,10 @@ window.PathEngine = (function () {
     function verseDone() {
       if (reviewing) { showMap("أتممتَ مراجعة هذه الخطوة، وتقدّمك محفوظ كما هو."); return; }
       var xp = (prog.xp || 0) + 15;
-      commit({ step: i + 1, xp: xp }).then(function () {
-        i++;
-        if (i >= steps.length) return finish();
-        phase = "explain"; hearts = 3; render();
-      });
+      commit({ step: i + 1, xp: xp }); /* الحفظ في الخلفية */
+      i++;
+      if (i >= steps.length) return finish();
+      phase = "explain"; hearts = 3; render();
     }
 
     function backToExplain() {
@@ -236,9 +235,8 @@ window.PathEngine = (function () {
       if (phase === "memorize") {
         if (ok) {
           if (reviewing) { feedback(true, "أحسنت! ✓", "حفظك صحيح.", "تابع إلى الأسئلة", function () { startQuiz(st); }); return; }
-          commit({ xp: (prog.xp || 0) + 10 }).then(function () {
-            feedback(true, "أحسنت! ✓", "+١٠ نقاط. حفظك صحيح.", "تابع إلى الأسئلة", function () { startQuiz(st); });
-          });
+          commit({ xp: (prog.xp || 0) + 10 }); /* الحفظ في الخلفية — القناة بطيئة أول مرة */
+          feedback(true, "أحسنت! ✓", "+١٠ نقاط. حفظك صحيح.", "تابع إلى الأسئلة", function () { startQuiz(st); });
         } else {
           hearts--;
           hud();
@@ -264,14 +262,13 @@ window.PathEngine = (function () {
         return;
       }
       if (ok) {
-        commit({ xp: (prog.xp || 0) + 10 }).then(function () {
-          quizIx++;
-          if (quizIx >= quizQs.length) {
-            feedback(true, "أحسنت! ✓", "+١٠ نقاط. أنهيتَ هذه الخطوة (+١٥ نقطة إتمام).", "الخطوة التالية", verseDone);
-          } else {
-            feedback(true, "أحسنت! ✓", "+١٠ نقاط.", "السؤال التالي", render);
-          }
-        });
+        commit({ xp: (prog.xp || 0) + 10 }); /* الحفظ في الخلفية */
+        quizIx++;
+        if (quizIx >= quizQs.length) {
+          feedback(true, "أحسنت! ✓", "+١٠ نقاط. أنهيتَ هذه الخطوة (+١٥ نقطة إتمام).", "الخطوة التالية", verseDone);
+        } else {
+          feedback(true, "أحسنت! ✓", "+١٠ نقاط.", "السؤال التالي", render);
+        }
       } else {
         hearts--;
         hud();
