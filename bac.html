@@ -14,7 +14,12 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
 .halftone{position:fixed;top:-40px;left:-40px;width:190px;height:190px;pointer-events:none;transform:rotate(15deg);opacity:.5;
  background-image:radial-gradient(circle,rgba(34,48,60,.28) 1.4px,transparent 1.6px);background-size:9px 9px;z-index:0}
 header{background:var(--green);color:#f6efdd;padding:16px 16px 20px;border-radius:0 0 4px 4px;position:relative;border-bottom:5px solid var(--yellow);z-index:1}
-.brand-link{display:inline-flex;align-items:center;gap:10px;color:#f6efdd;text-decoration:none;margin-bottom:10px;position:relative;z-index:2}
+.hd-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.hd-exit{display:none;align-items:center;gap:7px;background:rgba(0,0,0,.18);color:#f6efdd;border:2px solid rgba(246,239,221,.8);border-radius:999px;padding:8px 14px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.18)}
+.hd-exit:active{transform:translate(1px,1px);box-shadow:none}
+.hd-exit svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.brand-link{display:inline-flex;align-items:center;gap:10px;color:#f6efdd;text-decoration:none}
+.hd-top{margin-bottom:10px}
 .brand-link .dm{width:30px;height:30px;display:grid;place-items:center;border:2px solid var(--yellow);border-radius:5px;transform:rotate(45deg);background:rgba(0,0,0,.12)}
 .brand-link .dm b{transform:rotate(-45deg);font-family:Amiri,serif;font-weight:700;font-size:16px;color:var(--yellow)}
 .brand-link .bt{font-weight:800;font-size:15px}
@@ -112,7 +117,7 @@ footer{height:30px}
 .pop p{padding:4px 16px 12px;font-size:15px;font-weight:600;line-height:2}
 .pop .pop-btn{display:block;width:calc(100% - 32px);margin:6px 16px 12px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer}
 
-main{padding-bottom:76px}
+main{padding-bottom:26px}
 .exit{position:fixed;bottom:14px;left:14px;z-index:40;display:none;align-items:center;gap:7px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:4px 5px 0 rgba(34,48,60,.25)}
 .exit svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .lcard{display:flex;gap:12px;align-items:center;background:var(--paper);border:2px solid var(--ink);border-radius:16px 14px 18px 14px/14px 18px 14px 16px;margin:0 14px 12px;padding:12px 14px;box-shadow:4px 5px 0 rgba(34,48,60,.15);cursor:pointer}
@@ -123,7 +128,7 @@ main{padding-bottom:76px}
 </style></head><body>
 <div class="halftone"></div>
 <header>
-  <a class="brand-link" href="index.html" aria-label="العودة إلى الموقع الرئيسي"><span class="dm"><b>غ</b></span><span class="bt">مؤسسة الغرباوي</span></a>
+  <div class="hd-top"><a class="brand-link" href="index.html" aria-label="العودة إلى الموقع الرئيسي"><span class="dm"><b>غ</b></span><span class="bt">مؤسسة الغرباوي</span></a><button class="hd-exit" id="exitBtn" type="button"></button></div>
   <span id="hd-dood"></span>
   <div class="crumbs">المناهج الدراسية المصرية ◂ البكالوريا المصرية ◂ تانية ثانوي ◂ الجزء الأول ◂ التاريخ الوطني</div>
   <h1 id="L-title"></h1>
@@ -133,7 +138,7 @@ main{padding-bottom:76px}
 <main id="main"></main>
 <footer></footer>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
-<button class="exit" id="exitBtn"></button>
+
 <script src="assets/data/25-bac-tarikh-g2p1.js?v=7"></script>
 <script>
 var DOOD={
