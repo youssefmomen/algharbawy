@@ -71,6 +71,24 @@ footer{height:30px}
 .bk ul.dash li{margin:6px 0}
 .bk .num{color:#1e6fb8;font-weight:800}
 .ans .bk{padding:10px 14px;font-size:15.5px}
+.sec-h{margin:4px 14px 10px;font-size:15px;font-weight:900;color:#0e5fa8}
+.navrow{display:flex;gap:10px;margin:6px 12px 10px}
+.navrow .next{width:auto;flex:2;margin:0}
+.prev{flex:1;background:#fff;color:#0e5fa8;border:2px solid #0e5fa8;border-radius:14px;padding:14px;font-family:inherit;font-size:16px;font-weight:800;box-shadow:0 4px 0 #b8ccd8;cursor:pointer}
+.prev:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.map{padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.node{display:flex;flex-direction:column;align-items:center;gap:6px}
+.circle{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:900;color:#fff;border:0;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18);font-family:inherit}
+.circle.done{background:#2e9e4f}
+.circle.cur{background:linear-gradient(135deg,#ffb703,#ff9f1c);animation:pulse 1.6s infinite}
+.circle.lock{background:#b8ccd8;cursor:not-allowed;font-size:20px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.linkline{width:4px;height:14px;background:#cfe0ea;border-radius:2px}
+.nlabel{font-size:11.5px;font-weight:800;color:#456;max-width:130px;text-align:center;line-height:1.6}
+.overlay{position:fixed;inset:0;background:rgba(0,30,50,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
+.pop{background:#fff;border-radius:20px;padding:22px 20px;max-width:340px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.pop .robot{font-size:44px;margin-bottom:8px}
+.pop p{font-size:15.5px;font-weight:700;line-height:2;color:#123}
 </style></head><body>
 <header>
   <div class="crumbs">المناهج الدراسية المصرية ◂ البكالوريا المصرية ◂ تانية ثانوي ◂ الجزء الأول ◂ التاريخ الوطني</div>
@@ -81,24 +99,81 @@ footer{height:30px}
 <main id="main"></main>
 <footer></footer>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
-<script src="assets/data/25-bac-tarikh-g2p1.js?v=2"></script>
+<script src="assets/data/25-bac-tarikh-g2p1.js?v=3"></script>
 <script>
 var D=window.BAC_G2P1,LES=D.lessons[0],STG=D.stages.filter(function(s){return s.id===LES.stage;})[0];
 var IMG='assets/book/taw-g2p1/L1/',KEY='bac-g2p1-l1';
-var S={seg:0,done:{}};
-try{var sv=JSON.parse(localStorage.getItem(KEY));if(sv&&typeof sv.seg==='number')S=sv;}catch(e){}
+var S={view:'map',seg:0,sub:0,done:{},seenIntro:false};
+try{var sv=JSON.parse(localStorage.getItem(KEY));if(sv&&sv.done){for(var k in sv)S[k]=sv[k];}}catch(e){}
+if(typeof S.seg!=='number')S.seg=0;if(typeof S.sub!=='number')S.sub=0;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function ar(n){return (''+n).replace(/\d/g,function(c){return '٠١٢٣٤٥٦٧٨٩'[c];});}
 document.getElementById('L-title').textContent=LES.title;
 document.getElementById('L-stage').textContent='المرحلة '+ar(STG.n)+': '+STG.title;
-function totalQ(){return LES.segments.reduce(function(a,s){return a+s.questions.length;},0);}
-function doneQ(){var n=0;for(var k in S.done)n++;return n;}
+function totals(){var b=0,c=0;LES.segments.forEach(function(s){b+=s.questions.length;c+=(s.check||[]).length;});return {b:b,c:c};}
 function paint(){
-  var pc=Math.round(doneQ()/totalQ()*100);
+  var t=totals(),pc=Math.round(Object.keys(S.done).length/(t.b+t.c)*100);
   document.getElementById('fill').style.width=pc+'%';
   document.getElementById('pct').textContent=ar(pc)+'٪';
 }
 function zoom(src){var z=document.getElementById('zoom');document.getElementById('zoom-img').src=src;z.classList.add('on');}
+function chime(){
+  try{
+    var C=window.AudioContext||window.webkitAudioContext;
+    var ctx=chime.ctx||(chime.ctx=new C());
+    if(ctx.state==='suspended')ctx.resume();
+    var t=ctx.currentTime;
+    [523.25,659.25,783.99,1046.5].forEach(function(f,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t+i*0.12);
+      g.gain.linearRampToValueAtTime(0.16,t+i*0.12+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,t+i*0.12+0.4);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(t+i*0.12);o.stop(t+i*0.12+0.45);
+    });
+  }catch(e){}
+}
+function showPop(html,ms,cb){
+  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop">'+html+'</div>';
+  document.body.appendChild(o);
+  chime();
+  if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
+  return o;
+}
+function segDone(i){
+  var sg=LES.segments[i],base=0;
+  for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
+  var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
+  ids=ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
+  return ids.every(function(id){return S.done[id];});
+}
+function renderMap(){
+  var m=document.getElementById('main');
+  var firstOpen=LES.segments.findIndex(function(_,i){return !segDone(i);});
+  var h='<div class="map">';
+  var offs=[0,-34,0,34];
+  LES.segments.forEach(function(sg,i){
+    var done=segDone(i),unlocked=(i===0)||segDone(i-1);
+    var cls=done?'done':(unlocked?'cur':'lock');
+    var inner=done?'✓':(unlocked?ar(i+1):'🔒');
+    h+='<div class="node" style="transform:translateX('+offs[i%4]+'px)">';
+    h+='<button class="circle '+cls+'" data-node="'+i+'" '+(unlocked?'':'disabled')+'>'+inner+'</button>';
+    h+='<div class="nlabel">'+sg.label.split(':')[0]+'</div>';
+    h+='</div>';
+    if(i<LES.segments.length-1)h+='<div class="linkline"></div>';
+  });
+  h+='</div>';
+  m.innerHTML=h;paint();
+  m.querySelectorAll('[data-node]').forEach(function(b){b.onclick=function(){
+    S.view='lesson';S.seg=+b.dataset.node;S.sub=0;save();render();
+  };});
+  if(!S.seenIntro){
+    var o=showPop('<div class="robot">🤖</div><p>تنبيه مهم يا بطل:<br>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة 💪</p><button class="btn btn-done" id="introOk">يلا نبدأ 🚀</button>');
+    S.seenIntro=true;save();
+    o.querySelector('#introOk').onclick=function(){o.remove();};
+  }
+}
 function explainHTML(list){
   return list.map(function(e){
     if(e.b)return '<div class="card bk">'+D.B[e.b]+'</div>';
@@ -110,66 +185,111 @@ function refHTML(ref){
   var arr=Array.isArray(ref)?ref:[ref];
   return '<div class="bk">'+arr.map(function(k){return D.B[k];}).join('')+'</div>';
 }
-function qHTML(q,idx){
-  var id='q'+idx,done=S.done[id];
-  var h='<div class="q" id="'+id+'"><span class="src">'+q.src+'</span><h3>'+q.q+'</h3>';
-  if(q.t==='mcq'){
-    var letters=['أ','ب','ج','د'];
-    h+=q.options.map(function(o,i){
-      var cls='opt';
-      if(done&&i===q.a)cls+=' ok';
-      if(done&&done.picked===i&&i!==q.a)cls+=' no';
-      return '<button class="'+cls+'" data-q="'+idx+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
-    }).join('');
-    if(done){
-      h+='<div class="feed ok">أحسنت! إجابة صحيحة ✓</div>';
-      h+='<details class="why"><summary>📖 المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
-    }
-  }else{
-    if(!done){
-      h+='<textarea id="ta'+idx+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
-      h+='<button class="btn btn-reveal" data-rev="'+idx+'">🔍 اعرض الإجابة من الكتاب</button>';
-      h+='<div class="ans" id="ans'+idx+'" hidden><div class="h">📖 الإجابة من الكتاب — قارنها بما كتبت</div>'+refHTML(q.ans)+'</div>';
-      h+='<button class="btn btn-done" data-ok="'+idx+'" hidden id="ok'+idx+'">✓ راجعت إجابتي</button>';
-    }else{
-      h+='<div class="feed ok">تمت المراجعة ✓</div>';
-      h+='<details class="why"><summary>📖 الإجابة من الكتاب</summary>'+refHTML(q.ans)+'</details>';
-    }
+function mcqHTML(q,id,letters){
+  var done=S.done[id];
+  var h='<div class="q"><h3>'+q.q+'</h3>';
+  h+=q.options.map(function(o,i){
+    var cls='opt';
+    if(done&&i===q.a)cls+=' ok';
+    if(done&&done.picked===i&&i!==q.a)cls+=' no';
+    return '<button class="'+cls+'" data-mq="'+id+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
+  }).join('');
+  if(done){
+    if(done.picked===q.a)h+='<div class="feed ok">أحسنت! إجابة صحيحة ✓</div>';
+    else h+='<div class="feed no">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
+    if(q.why)h+='<details class="why"><summary>📖 المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
 }
-function render(){
+function openHTML(q,id){
+  var done=S.done[id];
+  var h='<div class="q" id="'+id+'"><span class="src">'+q.src+'</span><h3>'+q.q+'</h3>';
+  if(!done){
+    h+='<textarea id="ta-'+id+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
+    h+='<button class="btn btn-reveal" data-rev="'+id+'">🔍 اعرض الإجابة من الكتاب</button>';
+    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h">📖 الإجابة من الكتاب — قارنها بما كتبت</div>'+refHTML(q.ans)+'</div>';
+    h+='<button class="btn btn-done" data-ok="'+id+'" hidden id="ok-'+id+'">✓ راجعت إجابتي</button>';
+  }else{
+    h+='<div class="feed ok">تمت المراجعة ✓</div>';
+    h+='<details class="why"><summary>📖 الإجابة من الكتاب</summary>'+refHTML(q.ans)+'</details>';
+  }
+  return h+'</div>';
+}
+function segIds(i){
+  var sg=LES.segments[i],base=0;
+  for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
+  var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
+  return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
+}
+function cheerFor(seg){
+  if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس 🏁';
+  if(seg>=5)return 'كمل يا بطل! 🔥 عديت النص';
+  if(seg>=2)return 'كمل، شغلك حلو! 💪';
+  return 'عاش يا بطل! 💪 بداية جامدة';
+}
+function renderLesson(){
   var m=document.getElementById('main');
   if(S.seg>=LES.segments.length){
-    m.innerHTML='<div class="done-screen"><div class="big">🏆</div><h2>أحسنت! أنهيت الدرس الأول</h2><p>راجعت كل شرح الكتاب وأجبت على '+ar(totalQ())+' سؤالًا — كل أسئلة الدرس بدون استثناء.<br>الدرس التالي يُفتح بعد اعتماد المعلم.</p></div>';
-    paint();window.scrollTo(0,0);return;
+    m.innerHTML='<div class="done-screen"><div class="big">🏆</div><h2>أحسنت! أنهيت الدرس الأول</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>الدرس التالي يُفتح بعد اعتماد المعلم.</p></div><button class="next" id="toMap">العودة للخريطة ◂</button>';
+    paint();chime();window.scrollTo(0,0);
+    document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
+    return;
   }
   var sg=LES.segments[S.seg];
   var base=0;for(var i=0;i<S.seg;i++)base+=LES.segments[i].questions.length;
-  var h='<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span> '+sg.label+'</div>';
-  h+=explainHTML(sg.explain);
-  h+=sg.questions.map(function(q,i){return qHTML(q,base+i);}).join('');
-  var allDone=sg.questions.every(function(_,i){return S.done['q'+(base+i)];});
-  h+='<button class="next" id="nextBtn" '+(allDone?'':'disabled')+'>التالي ◂</button>';
-  h+='<div class="lock">'+(allDone?'':'🔒 أجب على كل الأسئلة لفتح الجزء التالي')+'</div>';
-  m.innerHTML=h;paint();
-  m.querySelectorAll('.opt').forEach(function(b){b.onclick=function(){
-    var qi=+b.dataset.q,oi=+b.dataset.i,q=null,bb=0;
-    LES.segments.forEach(function(s){s.questions.forEach(function(x,j){if(bb+j===qi)q=x;});bb+=s.questions.length;});
-    S.done['q'+qi]={picked:oi};save();render();
-    if(oi!==q.a){var el=document.getElementById('q'+qi);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}
+  var h='<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span> '+sg.label+' — '+(S.sub===0?'📖 الشرح':'✏️ الأسئلة')+'</div>';
+  if(S.sub===0){
+    h+=explainHTML(sg.explain);
+  }else{
+    var letters=['أ','ب','ج','د'];
+    if(sg.check&&sg.check.length){
+      h+='<div class="sec-h">⚡ أسئلة سريعة على اللي قرأته</div>';
+      h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
+    }
+    if(sg.questions.length){
+      h+='<div class="sec-h">📖 أسئلة الكتاب</div>';
+      h+=sg.questions.map(function(q,i){
+        var id='q'+(base+i);
+        return q.t==='mcq'?mcqHTML(q,id,letters):openHTML(q,id);
+      }).join('');
+    }
+  }
+  var allDone=segIds(S.seg).every(function(id){return S.done[id];});
+  var isLast=(S.seg===LES.segments.length-1&&S.sub===1);
+  h+='<div class="navrow">';
+  h+='<button class="prev" id="prevBtn">رجوع ▸</button>';
+  if(S.sub===0)h+='<button class="next" id="nextBtn">انتقل للأسئلة ◂</button>';
+  else h+='<button class="next" id="nextBtn" '+(allDone?'':'disabled')+'>'+(isLast?'إنهاء الدرس 🏆':'الجزء التالي ◂')+'</button>';
+  h+='</div>';
+  h+='<div class="lock">'+(S.sub===1&&!allDone?'🔒 أجب على كل الأسئلة لفتح الجزء التالي':'')+'</div>';
+  m.innerHTML=h;paint();window.scrollTo(0,0);
+  m.querySelectorAll('[data-mq]').forEach(function(b){b.onclick=function(){
+    S.done[b.dataset.mq]={picked:+b.dataset.i};save();render();
+    var el=b.closest('.q');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
   };});
   m.querySelectorAll('[data-rev]').forEach(function(b){b.onclick=function(){
-    var i=b.dataset.rev;
-    document.getElementById('ans'+i).hidden=false;
-    document.getElementById('ok'+i).hidden=false;
+    var id=b.dataset.rev;
+    document.getElementById('ans-'+id).hidden=false;
+    document.getElementById('ok-'+id).hidden=false;
     b.hidden=true;
   };});
   m.querySelectorAll('[data-ok]').forEach(function(b){b.onclick=function(){
-    var i=+b.dataset.ok;S.done['q'+i]={open:true};save();render();
+    S.done[b.dataset.ok]={open:true};save();render();
   };});
-  var nb=document.getElementById('nextBtn');
-  if(nb)nb.onclick=function(){if(nb.disabled)return;S.seg++;save();render();window.scrollTo(0,0);};
+  document.getElementById('prevBtn').onclick=function(){
+    if(S.sub===1){S.sub=0;}
+    else{S.view='map';}
+    save();render();
+  };
+  document.getElementById('nextBtn').onclick=function(){
+    var nb=this;if(nb.disabled)return;
+    if(S.sub===0){S.sub=1;save();render();return;}
+    var finishedSeg=S.seg;
+    S.seg++;S.sub=0;save();
+    showPop('<div class="robot">🤖</div><p>'+cheerFor(finishedSeg)+'</p>',1600,function(){render();});
+  };
 }
+function render(){if(S.view==='map')renderMap();else renderLesson();}
 render();
+
 </script></body></html>
