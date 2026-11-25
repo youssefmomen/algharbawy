@@ -58,6 +58,26 @@ service cloud.firestore {
     }
 
     // الاختبارات والألعاب: الطلاب يقرأون المنشور، والمعلم المقبول يدير ما أنشأه
+    match /paths/{id} {
+      allow get: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow list: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
+      allow create: if isTeacher() && request.resource.data.teacherId == request.auth.uid;
+      allow update: if isTeacher() && resource.data.teacherId == request.auth.uid
+        && request.resource.data.teacherId == resource.data.teacherId;
+      allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
+    }
+    match /pathProgress/{id} {
+      allow get, list: if signedIn() && (
+        resource.data.uid == request.auth.uid
+        || isTeacher()
+        || isAdmin()
+      );
+      allow create, update: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'pathId', 'step', 'totalSteps', 'wrong', 'done', 'xp', 'streak', 'lastDay', 'updatedAt']);
+      allow delete: if false;
+    }
+
     match /exams/{id} {
       allow get: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());
       allow list: if signedIn() && (resource.data.published == true || resource.data.teacherId == request.auth.uid || isAdmin());

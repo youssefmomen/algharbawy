@@ -42,12 +42,15 @@
     <div class="tabs t-tabs">
       <button type="button" class="on" data-tab="exams">اختباراتي</button>
       <button type="button" data-tab="games">ألعابي</button>
+      <button type="button" data-tab="paths">مساراتي</button>
       <button type="button" data-tab="new">إنشاء جديد</button>
+      <button type="button" data-tab="newpath">إنشاء مسار</button>
       <button type="button" data-tab="results">النتائج</button>
     </div>
 
     <div id="tab-exams" class="t-panel"><div class="t-list" id="t-exams"></div><div class="adm-note" id="t-exams-empty" hidden>لا اختبارات بعد، أنشئ أول اختبار من تبويب «إنشاء جديد».</div></div>
     <div id="tab-games" class="t-panel" hidden><div class="t-list" id="t-games"></div><div class="adm-note" id="t-games-empty" hidden>لا ألعاب بعد، أنشئ أول لعبة من تبويب «إنشاء جديد».</div></div>
+    <div id="tab-paths" class="t-panel" hidden><div class="t-list" id="t-paths"></div><div class="adm-note" id="t-paths-empty" hidden>لا مسارات بعد، أنشئ أول مسار من تبويب «إنشاء مسار».</div></div>
 
     <div id="tab-new" class="t-panel" hidden>
       <div class="auth-card t-form">
@@ -70,6 +73,20 @@
       </div>
     </div>
 
+    <div id="tab-newpath" class="t-panel" hidden>
+      <div class="auth-card t-form">
+        <div class="field"><label for="pf-title">عنوان المسار</label><input type="text" id="pf-title" maxlength="120" placeholder="مثال: نظم النحو الصغير — الأبيات ١–٣٠"></div>
+        <div class="field"><label for="pf-desc">وصف قصير (اختياري)</label><input type="text" id="pf-desc" maxlength="200"></div>
+        <h3 class="t-qhead">الأبيات (خطوات المسار)</h3>
+        <div id="pf-steps"></div>
+        <button class="btn ghost block" id="pf-addstep" type="button">+ إضافة بيت</button>
+        <div class="field t-pub"><label for="pf-pub"><input type="checkbox" id="pf-pub" checked> منشور للطلاب فورًا</label></div>
+        <div class="field t-pub"><label for="pf-hw"><input type="checkbox" id="pf-hw"> واجب منزلي (يظهر في قسم «واجباتي» عند الطلاب)</label></div>
+        <div class="form-err" id="pf-err" role="alert"></div>
+        <button class="btn fill block" id="pf-save" type="button">حفظ المسار</button>
+      </div>
+    </div>
+
     <div id="tab-results" class="t-panel" hidden>
       <div class="field"><label for="r-pick">اختر الاختبار أو اللعبة</label><select id="r-pick"></select></div>
       <div class="adm-tablewrap"><table class="adm-table"><thead><tr>
@@ -88,7 +105,7 @@
 <script src="assets/store.js?v=3"></script>
 <script src="assets/teach.js?v=1"></script>
 <script src="assets/app.js?v=36"></script>
-<script src="assets/teacher.js?v=2"></script>
+<script src="assets/teacher.js?v=3"></script>
 <script src="assets/chat-widget.js?v=4"></script>
 </body>
 </html>
