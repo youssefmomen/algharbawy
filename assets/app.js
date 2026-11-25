@@ -133,7 +133,23 @@
              vs.find(function(v){return /^ar([-_]|$)/i.test(v.lang);})||null;
   }
   if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+  var curAudio=null;
   function speak(text){
+    if(!text)return;
+    if(window.NOUR_AUDIO&&window.NOUR_AUDIO[text]){
+      try{
+        speechSynthesis&&speechSynthesis.cancel();
+        if(curAudio){curAudio.pause();curAudio=null;}
+        var a=new Audio(window.NOUR_AUDIO[text]);
+        curAudio=a;window.__lastAudioSrc=window.NOUR_AUDIO[text];
+        a.addEventListener("error",function(){ttsSpeak(text);});
+        a.play().catch(function(){ttsSpeak(text);});
+        return;
+      }catch(e){}
+    }
+    ttsSpeak(text);
+  }
+  function ttsSpeak(text){
     if(!("speechSynthesis" in window)||!ttsUnlocked||!text)return;
     try{
       speechSynthesis.cancel();
