@@ -88,3 +88,23 @@ function init(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+
+/* Mr. Moamen reacts to the pointer: gentle lean toward the cursor, happy bounce on hover, click/tap swaps smiling pose + bubble */
+(function(){
+var SEL='#heroPose,#trackPose,.auth-char img,.pop-ch',POSES=['waving','thumbsup','pointing','celebrating','trophy','tablet','magnifier','book'],
+ rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,raf=0,mx=0,my=0,pre=false;
+function imgs(){return document.querySelectorAll(SEL);}
+function preload(){if(pre)return;pre=true;POSES.forEach(function(p){var i=new Image();i.src='assets/img/mr-moamen-'+p+'.png';});}
+function lean(){raf=0;imgs().forEach(function(im){var r=im.getBoundingClientRect();if(r.width<10||r.bottom<0||r.top>innerHeight)return;
+ var dx=(mx-(r.left+r.width/2))/innerWidth,dy=(my-(r.top+r.height/3))/innerHeight;dx=Math.max(-1,Math.min(1,dx*2));dy=Math.max(-1,Math.min(1,dy*2));
+ im.style.transition='translate .25s ease-out,rotate .25s ease-out';im.style.translate=(dx*8).toFixed(1)+'px '+(dy*4).toFixed(1)+'px';im.style.rotate=(dx*3).toFixed(1)+'deg';});}
+if(!rm){document.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse')return;mx=e.clientX;my=e.clientY;if(!raf)raf=requestAnimationFrame(lean);},{passive:true});
+ document.addEventListener('mouseleave',function(){imgs().forEach(function(im){im.style.translate='';im.style.rotate='';});});}
+function hop(im){if(rm||!im.animate)return;im.animate([{scale:'1'},{scale:'1.05'},{scale:'.99'},{scale:'1'}],{duration:420,easing:'ease-out'});}
+document.addEventListener('mouseover',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(im&&!im._h){im._h=1;preload();hop(im);setTimeout(function(){im._h=0;},900);}});
+function say(im,pose){var b=im.parentNode&&im.parentNode.querySelector('.bubble');if(!b)return;var k=['greet','start','correct'][Math.floor(Math.random()*3)],t='';try{t=window.mmBubble?window.mmBubble(pose,k,'char'):'';}catch(x){}if(t)b.textContent=t;}
+document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(!im)return;preload();
+ var m=/mr-moamen-([a-z]+)\.png/.exec(im.getAttribute('src')||''),cur=m?m[1]:'',pool=POSES.filter(function(p){return p!==cur;}),p=pool[Math.floor(Math.random()*pool.length)];
+ var n=new Image();n.onload=function(){im.src=n.src;hop(im);say(im,p);if(window.mmSound)mmSound('pop');};n.src='assets/img/mr-moamen-'+p+'.png';});
+document.querySelectorAll('#heroPose,#trackPose,.auth-char img').forEach(function(im){im.style.cursor='pointer';im.setAttribute('role','button');im.setAttribute('aria-label','مستر مؤمن');});
+})();
