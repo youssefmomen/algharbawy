@@ -114,8 +114,9 @@ footer{height:30px}
 .linkline{width:0;height:22px;border-right:3px dashed rgba(34,48,60,.4)}
 .nlabel{font-size:13px;font-weight:700;font-family:'Amiri',serif;max-width:140px;text-align:center;line-height:1.6}
 .overlay{position:fixed;inset:0;background:rgba(20,30,25,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
-.pop{background:var(--paper);border:2px solid var(--ink);border-radius:6px 16px 6px 16px;padding:0 0 4px;max-width:340px;text-align:right;overflow:hidden;box-shadow:6px 8px 0 rgba(34,48,60,.25);border-top:6px solid var(--yellow)}
-.pop .pop-h{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;font-size:17px;font-weight:900;line-height:1.8;font-family:'Lalezar',sans-serif;font-weight:400;font-size:19px}
+.pop{position:relative;margin-top:96px;background:var(--paper);border:2px solid var(--ink);border-radius:6px 16px 6px 16px;padding:0 0 4px;max-width:340px;text-align:right;box-shadow:6px 8px 0 rgba(34,48,60,.25);border-top:6px solid var(--yellow)}
+.pop-ch{position:absolute;right:14px;bottom:100%;margin-bottom:2px;height:112px;width:auto;filter:drop-shadow(3px 3px 0 rgba(34,48,60,.22));transform-origin:50% 100%;pointer-events:none}
+.pop .pop-h{display:flex;align-items:center;gap:10px;padding:16px 16px 6px;font-size:17px;font-weight:900;line-height:1.8;font-family:'Lalezar',sans-serif;font-weight:400;font-size:19px}
 .pop p{padding:4px 16px 12px;font-size:15px;font-weight:600;line-height:2}
 .pop .pop-btn{display:block;width:calc(100% - 32px);margin:6px 16px 12px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer}
 
@@ -693,13 +694,14 @@ function chime(){
   }catch(e){}
 }
 function showPop(html,ms,cb){
-  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop">'+html+'</div>';
+  var pose=ms?'thumbsup':'waving';
+  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="../assets/img/mr-moamen-'+pose+'.png" alt="مستر مؤمن">'+html+'</div>';
   document.body.appendChild(o);
   chime();
   if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
   return o;
 }
-var ROBOT='<img src="../assets/img/mr-moamen-avatar.png" alt="مستر مؤمن" width="52" height="52" style="flex:none;width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:var(--mint)">';
+var ROBOT='';
 function segDone(i){
   var sg=LES.segments[i],base=0;
   for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
@@ -792,8 +794,8 @@ function segIds(i){
   var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
-var SIMP_AV='<img src="../assets/img/mr-moamen-avatar.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
-var SIMP_AV_SM='<img src="../assets/img/mr-moamen-avatar.png" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:-3px">';
+var SIMP_AV='<img src="../assets/img/mr-moamen-thumbsup.png" alt="" style="width:100%;height:100%;object-fit:contain">';
+var SIMP_AV_SM='<img src="../assets/img/mr-moamen-thumbsup.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
 function simpOff(){try{return localStorage.getItem('bac-simp-off')==='1';}catch(e){return false;}}
 function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
 var POSES={pointing:'../assets/img/mr-moamen-pointing.png',waving:'../assets/img/mr-moamen-waving.png'};
