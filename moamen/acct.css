@@ -109,3 +109,9 @@ small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;bor
 
 .tabs[hidden],.demo[hidden],.subj[hidden],.lnk[hidden],button.lnk[hidden]{display:none!important}
 #heroPose,#trackPose,.auth-char img{will-change:translate,rotate}
+
+.mm-chip svg.avs{width:28px;height:28px;flex:none;margin-right:-4px}
+.nhd .mm-chip svg.avs{width:24px;height:24px}
+.av button svg.avs{width:100%;max-width:68px;height:auto;display:block;margin:0 auto}
+.av button{padding:6px;min-height:64px}.av button.on{background:#f5b301}
+.pho .cur svg.avs{width:100%;height:100%;display:block}
