@@ -187,10 +187,10 @@ main{max-width:720px;margin:0 auto}
 </header>
 <div class="nprog"><i id="fill"></i></div>
 <main id="main"></main>
-<footer></footer>
+<div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">موقع مؤمن الغرباوي التعليمي · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي · تعليم العربية</a></div><footer></footer>
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
 <div class="char-wrap" id="charWrap" hidden>
-<img class="ch-fig" id="chFig" src="../assets/img/mr-moamen-pointing.png" alt="مستر مؤمن">
+<img class="ch-fig" id="chFig" src="assets/img/mr-moamen-pointing.png" alt="مستر مؤمن">
 <div class="simp-bub" id="simpBub">
 <button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
 <span class="sb-txt" id="sbTxt"></span>
@@ -199,8 +199,8 @@ main{max-width:720px;margin:0 auto}
 </div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script>document.write('<script src="../assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
-<script>document.write('<script src="../assets/data/25-bac-simplify.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>document.write('<script src="assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>document.write('<script src="assets/data/25-bac-simplify.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
@@ -219,6 +219,195 @@ function dood(name,style,color,size){
 var ST='<svg viewBox="0 0 100 100"><path d="M50 8 L57 39 L88 40 L63 58 L71 89 L50 69 L29 89 L37 58 L12 40 L43 39 Z"/></svg>';
 var T='fill="none" stroke-linecap="round" stroke-linejoin="round"';
 var ILLUST={
+"l6-1":{cap:"كسر العزلة المعرفية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="58" y="34" width="104" height="88" rx="6" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M72 52 h76 M72 66 h76 M72 80 h52" stroke="var(--ink)"/>'+
+'<circle cx="72" cy="104" r="9" stroke="var(--green)"/><path d="M66 104 l5 5 9 -10" stroke="var(--green)"/>'+
+'<path d="M110 20 v-8 M88 24 l-6 -7 M132 24 l6 -7" stroke="var(--yellow)"/>'+
+'<path d="M168 60 q20 4 26 18 M168 76 q14 4 18 14" stroke="var(--blue)"/>'+
+'<path d="M52 60 q-20 4 -26 18 M52 76 q-14 4 -18 14" stroke="var(--blue)"/>'+
+'<path d="M46 130 H174" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">المجمع العلمي والمطابع</text></g></svg>'},
+"l6-3":{cap:"الترجمة بين التحديث والتراث",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 44 q-34 -14 -64 -6 v76 q30 -8 64 6 q34 -14 64 -6 v-76 q-30 -8 -64 6 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M110 44 v76" stroke="var(--ink)"/>'+
+'<g font-family="Amiri,serif" font-size="26" font-weight="700" text-anchor="middle">'+
+'<text x="78" y="92" fill="var(--green)" stroke="none">ع</text>'+
+'<text x="142" y="92" fill="var(--blue)" stroke="none">A</text></g>'+
+'<path d="M96 128 q14 10 28 0" stroke="var(--red)"/>'+
+'<path d="M40 30 q10 -12 24 -10 M180 30 q-10 -12 -24 -10" stroke="var(--yellow)"/>'+
+'</g></svg>'},
+"l6-5":{cap:"مصر للمصريين",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M56 130 V30" stroke="var(--ink)"/>'+
+'<path d="M56 34 q26 -12 52 0 q26 12 52 0 v44 q-26 12 -52 0 q-26 -12 -52 0 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<circle cx="112" cy="56" r="12" stroke="var(--red)"/>'+
+'<path d="M30 130 h64 M170 130 h24" stroke="var(--ink)"/>'+
+'<path d="M96 118 q6 -14 16 -16 q10 2 16 16" stroke="var(--green)"/>'+
+'<circle cx="112" cy="96" r="5" stroke="var(--green)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="112" y="146">تلاحم الجيش والشعب</text></g></svg>'},
+"l6-6":{cap:"الصحافة والخطاب الجماهيري",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M64 96 L132 62 v58 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M64 96 v14 q0 8 10 8 h10" stroke="var(--ink)"/>'+
+'<rect x="58" y="88" width="14" height="18" rx="4" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M148 68 q14 4 18 16 M148 84 q8 2 10 10" stroke="var(--blue)"/>'+
+'<rect x="150" y="98" width="48" height="34" rx="4" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M158 108 h32 M158 116 h32 M158 124 h20" stroke="var(--ink)"/>'+
+'<path d="M40 130 H200" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">جريدة اللواء والحزب الوطني</text></g></svg>'},
+"l6-7":{cap:"الهلال مع الصليب",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M96 40 a38 38 0 1 0 0 76 a30 30 0 1 1 0 -76 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M140 62 v44 M122 76 h36" stroke="var(--red)"/>'+
+'<path d="M46 130 H190" stroke="var(--ink)"/>'+
+'<path d="M70 122 q8 -10 16 0 M150 122 q8 -10 16 0" stroke="var(--green)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">الوحدة الوطنية في ثورة ١٩١٩</text></g></svg>'},
+"l6-9":{cap:"الوعي سلاح حقيقي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 30 a30 30 0 0 1 18 54 q-8 6 -8 16 h-20 q0 -10 -8 -16 a30 30 0 0 1 18 -54 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M102 106 h16 M104 114 h12" stroke="var(--ink)"/>'+
+'<path d="M110 12 v-6 M74 26 l-7 -6 M146 26 l7 -6 M66 60 h-10 M154 60 h10" stroke="var(--blue)"/>'+
+'<path d="M46 134 H174" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">من الاستيعاب إلى التبلور</text></g></svg>'},
+
+"l7-1":{cap:"تزوير الانتخابات شوَّه الحياة السياسية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="70" y="46" width="80" height="66" rx="6" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M96 46 v-8 h28 v8" stroke="var(--ink)"/>'+
+'<rect x="118" y="18" width="34" height="46" rx="3" stroke="var(--red)" fill="var(--peach)" transform="rotate(14 135 41)"/>'+
+'<path d="M124 30 l16 4 M122 40 l16 4" stroke="var(--red)" transform="rotate(14 135 41)"/>'+
+'<path d="M84 74 h24 M84 86 h24 M84 98 h14" stroke="var(--ink)"/>'+
+'<path d="M40 122 H180" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="140">عجز المؤسسات عن دورها</text></g></svg>'},
+"l7-3":{cap:"النكبة صحّت الوعي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 22 l34 12 v22 q0 30 -34 44 q-34 -14 -34 -44 v-22 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M96 46 l28 28 M124 46 l-28 28" stroke="var(--red)"/>'+
+'<path d="M54 118 q56 -20 112 0" stroke="var(--blue)"/>'+
+'<path d="M74 130 h72" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">من الإحباط إلى الوعي</text></g></svg>'},
+"l7-4":{cap:"النصف في المئة",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="72" r="44" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M110 72 L110 28 M110 72 L145 97" stroke="var(--ink)"/>'+
+'<path d="M110 28 a44 44 0 0 1 35 69 Z" stroke="var(--ink)" fill="var(--red)"/>'+
+'<circle cx="46" cy="118" r="7" stroke="var(--ink)"/><circle cx="68" cy="118" r="7" stroke="var(--ink)"/><circle cx="90" cy="118" r="7" stroke="var(--ink)"/><circle cx="112" cy="118" r="7" stroke="var(--ink)"/><circle cx="134" cy="118" r="7" stroke="var(--ink)"/><circle cx="156" cy="118" r="7" stroke="var(--ink)"/><circle cx="178" cy="118" r="7" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="140">الثروة في يد قلة قليلة</text></g></svg>'},
+"l7-5":{cap:"مقدمات متتالية أشعلت الثورة",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="30" y="70" width="22" height="52" rx="4" stroke="var(--ink)" fill="#fff"/>'+
+'<rect x="66" y="64" width="22" height="52" rx="4" stroke="var(--ink)" fill="var(--peach)" transform="rotate(-10 77 90)"/>'+
+'<rect x="104" y="56" width="22" height="52" rx="4" stroke="var(--ink)" fill="var(--yellow)" transform="rotate(-22 115 82)"/>'+
+'<path d="M150 116 q14 -34 44 -44" stroke="var(--red)"/>'+
+'<path d="M186 66 l10 4 -2 11" stroke="var(--red)"/>'+
+'<path d="M26 130 H198" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">من المعاهدة إلى حريق القاهرة</text></g></svg>'},
+"l7-6":{cap:"بيان الثورة الأول",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="92" y="34" width="36" height="56" rx="16" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M110 90 v26 M92 116 h36" stroke="var(--ink)"/>'+
+'<path d="M64 50 q-12 12 -12 30 M52 38 q-20 20 -20 42" stroke="var(--blue)"/>'+
+'<path d="M156 50 q12 12 12 30 M168 38 q20 20 20 42" stroke="var(--blue)"/>'+
+'<path d="M40 130 H180" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">٢٣ يوليو ١٩٥٢</text></g></svg>'},
+"l7-9":{cap:"تحولات كبرى",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M36 122 q40 -70 74 -84 q40 -16 74 20" stroke="var(--green)"/>'+
+'<path d="M176 44 l12 14 -18 4" stroke="var(--green)"/>'+
+'<path d="M36 122 h160" stroke="var(--ink)"/>'+
+'<path d="M60 122 v-14 M110 122 v-26 M160 122 v-38" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">مصر ما قبل يوليو وما بعدها</text></g></svg>'},
+
+
+"l8-1":{cap:"من احتلال الأرض إلى احتلال العقول",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="72" cy="72" r="34" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M72 44 a28 28 0 0 1 0 56 M72 44 a28 28 0 0 0 0 56" stroke="var(--ink)"/>'+
+'<path d="M40 72 h64 M46 54 h52 M46 90 h52" stroke="var(--ink)"/>'+
+'<rect x="140" y="44" width="44" height="58" rx="7" stroke="var(--ink)" fill="#fff"/>'+
+'<circle cx="162" cy="66" r="9" stroke="var(--red)" fill="var(--peach)"/>'+
+'<path d="M150 88 h24" stroke="var(--ink)"/>'+
+'<path d="M112 66 h20 M112 82 h20" stroke="var(--blue)"/>'+
+'<path d="M30 124 H190" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">السيطرة على القرار من الخارج</text></g></svg>'},
+"l8-2":{cap:"حرب تستهدف العقول لا الأرض",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="60" r="26" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M110 86 v18" stroke="var(--ink)"/>'+
+'<path d="M88 104 h44 l-6 22 h-32 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M52 34 q14 -18 36 -22 M132 12 q22 4 36 22" stroke="var(--red)"/>'+
+'<path d="M84 60 h52 M84 70 h52" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">إعادة تشكيل الوعي الجماعي</text></g></svg>'},
+"l8-3":{cap:"الشباب في مرمى الاستقطاب",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="66" r="30" stroke="var(--red)"/>'+
+'<circle cx="110" cy="66" r="14" stroke="var(--red)"/>'+
+'<path d="M110 22 v14 M110 96 v14 M66 66 h14 M140 66 h14" stroke="var(--red)"/>'+
+'<circle cx="110" cy="60" r="8" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M96 84 q14 10 28 0" stroke="var(--ink)"/>'+
+'<path d="M36 126 H184" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">من الإحباط إلى الصراع الداخلي</text></g></svg>'},
+"l8-4":{cap:"الإرهاب يستنزف الدول من الداخل",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 26 l36 13 v24 q0 32 -36 46 q-36 -14 -36 -46 v-24 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M110 40 v34 M110 82 v4" stroke="var(--red)"/>'+
+'<path d="M52 122 h116" stroke="var(--ink)"/>'+
+'<path d="M52 130 h116" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">تقويض الثقة في المؤسسات</text></g></svg>'},
+"l8-5":{cap:"الإعلام الوطني درع الوعي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M70 46 h80 l14 60 h-108 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M62 46 l48 -18 48 18" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<circle cx="110" cy="78" r="12" stroke="var(--blue)" fill="var(--peach)"/>'+
+'<path d="M92 100 h36" stroke="var(--ink)"/>'+
+'<path d="M30 126 H190" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">رواية موضوعية ضد الشائعات</text></g></svg>'},
+"l8-6":{cap:"الأسرة خط الدفاع الأول",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M56 126 v-40 l54 -34 54 34 v40 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M46 92 l64 -40 64 40" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<circle cx="96" cy="98" r="9" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<circle cx="126" cy="98" r="9" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M84 120 q26 -14 52 0" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">غرس القيم وتعزيز الانتماء</text></g></svg>'},
+
 seg0:{cap:"أركان الدولة الأربعة",svg:
 '<svg viewBox="0 0 220 160"><g '+T+' stroke-width="2.6">'+
 '<path d="M104 14 L26 44 H194 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
@@ -660,7 +849,7 @@ var D=window.BAC_G2P1;
 var qL=parseInt(new URLSearchParams(location.search).get('lesson')||'',10);
 var LES=(qL>=1&&qL<=D.lessons.length)?D.lessons[qL-1]:null;
 var STG=LES?D.stages.filter(function(s){return s.id===LES.stage;})[0]:null;
-var IMG='../assets/book/taw-g2p1/L'+(qL||1)+'/',KEY=LES?('bac-g2p1-'+LES.id):'bac-g2p1-none';
+var IMG='assets/book/taw-g2p1/L'+(qL||1)+'/',KEY=LES?('bac-g2p1-'+LES.id):'bac-g2p1-none';
 var S={view:'map',seg:0,sub:0,done:{},seenIntro:false};
 if(LES){try{var sv=JSON.parse(localStorage.getItem(KEY));if(sv&&sv.done){for(var k in sv)S[k]=sv[k];}}catch(e){}}
 if(typeof S.seg!=='number')S.seg=0;if(typeof S.sub!=='number')S.sub=0;
@@ -695,7 +884,7 @@ function chime(){
 }
 function showPop(html,ms,cb){
   var pose=ms?'thumbsup':'waving';
-  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="../assets/img/mr-moamen-'+pose+'.png" alt="مستر مؤمن">'+html+'</div>';
+  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="assets/img/mr-moamen-'+pose+'.png" alt="مستر مؤمن">'+html+'</div>';
   document.body.appendChild(o);
   chime();
   if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
@@ -767,8 +956,8 @@ function mcqHTML(q,id,letters){
     return '<button class="'+cls+'" data-mq="'+id+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
   }).join('');
   if(done){
-    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="../assets/img/mr-moamen-thumbsup.png" alt="">أحسنت! إجابة صحيحة ✓</div>';
-    else h+='<div class="feed no"><img class="feed-ch" src="../assets/img/mr-moamen-waving.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
+    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">أحسنت! إجابة صحيحة ✓</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-waving.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
     if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
@@ -794,11 +983,11 @@ function segIds(i){
   var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
-var SIMP_AV='<img src="../assets/img/mr-moamen-thumbsup.png" alt="" style="width:100%;height:100%;object-fit:contain">';
-var SIMP_AV_SM='<img src="../assets/img/mr-moamen-thumbsup.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
+var SIMP_AV='<img src="assets/img/mr-moamen-thumbsup.png" alt="" style="width:100%;height:100%;object-fit:contain">';
+var SIMP_AV_SM='<img src="assets/img/mr-moamen-thumbsup.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
 function simpOff(){try{return localStorage.getItem('bac-simp-off')==='1';}catch(e){return false;}}
 function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
-var POSES={pointing:'../assets/img/mr-moamen-pointing.png',waving:'../assets/img/mr-moamen-waving.png'};
+var POSES={pointing:'assets/img/mr-moamen-pointing.png',waving:'assets/img/mr-moamen-waving.png'};
 function simpPose(){var k=localStorage.getItem('bac-simp-met')?'pointing':'waving';localStorage.setItem('bac-simp-met','1');return POSES[k];}
 function showSimp(id,manual){
   var txt=(window.BAC_SIMPLIFY||{})[id];if(!txt)return;
@@ -844,7 +1033,7 @@ function renderLesson(){
   document.getElementById('mbar').hidden=true;
   var m=document.getElementById('main');
   if(S.seg>=LES.segments.length){
-    m.innerHTML='<div class="done-screen"><img class="done-ch" src="../assets/img/mr-moamen-celebrating.png" alt="مستر مؤمن"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت '+LES.title.split(':')[0]+'</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
+    m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-moamen-celebrating.png" alt="مستر مؤمن"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت '+LES.title.split(':')[0]+'</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
     paint();chime();window.scrollTo(0,0);
     document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
     return;
