@@ -100,3 +100,9 @@ small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;bor
 .crop canvas{width:260px;height:260px;max-width:100%;border-radius:50%;border:3px solid #22303c;touch-action:none;cursor:grab;background:#eee}
 .crop input[type=range]{width:100%;margin:12px 0}
 .crop .bt{display:flex;gap:10px}.crop .pbtn{margin:0;padding:11px;font-size:15px}
+
+.trk{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.trk button{flex:1;min-width:140px;min-height:48px;background:#fffdf6;border:2.5px solid #22303c;border-radius:14px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;padding:8px 12px}
+.trk button.on{background:#f5b301;box-shadow:3px 3px 0 #22303c}
+.trk small{font-weight:600;opacity:.75}
+.fld select{width:100%;border:2.5px solid #22303c;border-radius:12px;padding:12px 14px;font-family:inherit;font-size:16px;background:#fff;min-height:48px}
