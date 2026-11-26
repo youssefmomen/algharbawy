@@ -7,7 +7,8 @@ try{history.scrollRestoration='manual';}catch(e){}
 function top(){if(!location.hash)window.scrollTo(0,0);}
 top();window.addEventListener('DOMContentLoaded',top);window.addEventListener('load',function(){top();setTimeout(top,60);});window.addEventListener('pageshow',function(e){if(e.persisted)top();});
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
-var PFX='ar-g1-',DOM='@phone.mryoussef.app',FLAG='my-account';
+var DOM='@phone.mryoussef.app',FLAG='my-account';
+var PROGKEY=/^ar-([a-z0-9]+)-([A-Za-z0-9_]+)$/;
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',tablet:'تابلت',magnifier:'مُدقّق'};
 var TRACKS={g1:{name:'أولى ابتدائي',live:true},g2:{name:'تانية ابتدائي'},g3:{name:'تالتة ابتدائي'},g4:{name:'رابعة ابتدائي'},g5:{name:'خامسة ابتدائي'},g6:{name:'سادسة ابتدائي'},g7:{name:'أولى إعدادي'},g8:{name:'تانية إعدادي'},g9:{name:'تالتة إعدادي'}},auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
 
@@ -107,30 +108,32 @@ function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.a
 /* ---- progress lives in the account only. In this tab it sits in sessionStorage (cleared when the tab closes),
    never in localStorage; the lesson page's localStorage calls for progress keys are redirected here. ---- */
 var rawGet=Storage.prototype.getItem,rawSet=Storage.prototype.setItem,rawDel=Storage.prototype.removeItem;
-function isProg(k){return typeof k==='string'&&(k.indexOf(PFX)===0||k==='my-days');}
+function isProg(k){return typeof k==='string'&&(PROGKEY.test(k)||k==='my-days');}
 Storage.prototype.getItem=function(k){return rawGet.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
 Storage.prototype.removeItem=function(k){return rawDel.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
 Storage.prototype.setItem=function(k,v){
  if(this===localStorage&&isProg(k)){rawSet.call(sessionStorage,k,v);
-  if(/^ar-g1-l\d+$/.test(k)){try{var S=JSON.parse(v);if(S&&S.done&&Object.keys(S.done).length){var ds=days(),t=today();if(ds.indexOf(t)<0){ds.push(t);rawSet.call(sessionStorage,'my-days',JSON.stringify(ds));}}}catch(e){}push();}
+  if(PROGKEY.test(k)){try{var S=JSON.parse(v);if(S&&S.done&&Object.keys(S.done).length){var ds=days(),t=today();if(ds.indexOf(t)<0){ds.push(t);rawSet.call(sessionStorage,'my-days',JSON.stringify(ds));}}}catch(e){}push();}
   return;}
  return rawSet.call(this,k,v);};
-(function purge(){try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){rawDel.call(localStorage,n);});}catch(e){}})();
+(function purge(){try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){try{var v=rawGet.call(localStorage,n);if(v!=null&&rawGet.call(sessionStorage,n)==null)rawSet.call(sessionStorage,n,v);}catch(e){}rawDel.call(localStorage,n);});}catch(e){}})();
 function clearProg(){try{var del=[];for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(isProg(n)||n==='my-h'||n==='my-track')del.push(n);}del.forEach(function(n){rawDel.call(sessionStorage,n);});}catch(e){}}
 function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
-function localKeys(){var k=[];try{for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(n&&/^ar-g1-l\d+$/.test(n))k.push(n);}}catch(e){}return k;}
+function localKeys(){var k=[];try{for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(n&&PROGKEY.test(n))k.push(n);}}catch(e){}return k;}
 function days(){try{return JSON.parse(rawGet.call(sessionStorage,'my-days')||'[]');}catch(e){return [];}}
 function localItems(){
- var out=[];localKeys().forEach(function(n){var L=n.slice(PFX.length),S;try{S=JSON.parse(rawGet.call(sessionStorage,n));}catch(e){return;}
-  if(!S||!S.done)return;Object.keys(S.done).forEach(function(id){var v=S.done[id];out.push('g1:'+L+':'+id+':'+(v&&v.open?'o':'p'+(v&&v.picked!=null?v.picked:0)));});});
+ var out=[];localKeys().forEach(function(n){var mk=PROGKEY.exec(n);if(!mk)return;var S;try{S=JSON.parse(rawGet.call(sessionStorage,n));}catch(e){return;}
+  if(!S||!S.done)return;Object.keys(S.done).forEach(function(id){var v=S.done[id];out.push(mk[1]+':'+mk[2]+':'+id+':'+(v&&v.open?'o':'p'+(v&&v.picked!=null?v.picked:0)));});});
  days().forEach(function(d){out.push('g1:day:'+d);});return out;}
 function merge(list){
  var byL={},ds=days(),dch=false;
- list.forEach(function(s){var m=s.split(':');if(m[0]!=='g1')return;if(m[1]==='day'){if(ds.indexOf(m[2])<0){ds.push(m[2]);dch=true;}return;}
-  (byL[m[1]]=byL[m[1]]||[]).push({id:m[2],v:m[3]});});
+ list.forEach(function(s){var m=s.split(':');if(m[0]==='mm'||!/^[a-z0-9]+$/.test(m[0]))return;
+  if(m.length===3&&m[1]==='day'){if(ds.indexOf(m[2])<0){ds.push(m[2]);dch=true;}return;}
+  if(m.length!==4||!/^[A-Za-z0-9_]+$/.test(m[1]))return;
+  (byL[m[0]+'-'+m[1]]=byL[m[0]+'-'+m[1]]||[]).push({id:m[2],v:m[3]});});
  if(dch)rawSet.call(sessionStorage,'my-days',JSON.stringify(ds));
- Object.keys(byL).forEach(function(L){var key=PFX+L,S;try{S=JSON.parse(rawGet.call(sessionStorage,key));}catch(e){}
-  if(!S||typeof S!=='object')S={view:'map',seg:0,sub:0,done:{},seenIntro:true};S.done=S.done||{};
+ Object.keys(byL).forEach(function(L){var key='ar-'+L,S;try{S=JSON.parse(rawGet.call(sessionStorage,key));}catch(e){}
+  if(!S||typeof S!=='object')S={view:'map',seg:0,sub:0,step:0,done:{},seenIntro:true};S.done=S.done||{};
   byL[L].forEach(function(x){if(!S.done[x.id])S.done[x.id]=x.v==='o'?{open:true}:{picked:+x.v.slice(1)};});
   S.seenIntro=true;rawSet.call(sessionStorage,key,JSON.stringify(S));});}
 /* load this account's progress from the cloud into the tab (once per tab and account) */
@@ -139,7 +142,7 @@ function hydrate(){
  if(!user)return Promise.resolve(false);
  if(rawGet.call(sessionStorage,'my-h')===user.uid)return Promise.resolve(false);
  if(hydrating)return hydrating;
- hydrating=db.collection('progress').doc(user.uid).get().then(function(d){clearProg();var L=(d.exists&&d.data().completed)||[];L.forEach(function(x){if(typeof x==='string'&&x.indexOf('mm:track:')===0&&TRACKS[x.slice(9)])rawSet.call(sessionStorage,'my-track',x.slice(9));});merge(L);rawSet.call(sessionStorage,'my-h',user.uid);hydrating=null;return true;}).catch(function(){hydrating=null;return false;});
+ hydrating=db.collection('progress').doc(user.uid).get().then(function(d){var keep=localItems();clearProg();var L=(d.exists&&d.data().completed)||[];L.forEach(function(x){if(typeof x==='string'&&x.indexOf('mm:track:')===0&&TRACKS[x.slice(9)])rawSet.call(sessionStorage,'my-track',x.slice(9));});merge(keep.concat(L));rawSet.call(sessionStorage,'my-h',user.uid);hydrating=null;push();return true;}).catch(function(){hydrating=null;return false;});
  return hydrating;}
 var tm=null;
 function flush(){clearTimeout(tm);if(!user)return;var add=localItems();if(!add.length)return;
@@ -147,7 +150,7 @@ function flush(){clearTimeout(tm);if(!user)return;var add=localItems();if(!add.l
 function push(){clearTimeout(tm);tm=setTimeout(flush,500);}
 window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',function(){if(document.hidden)flush();});
 function stats(){
- var items=localItems().filter(function(x){return x.indexOf('g1:day:')!==0;}).length,ds=days().slice().sort(),set={};ds.forEach(function(d){set[d]=1;});
+ var items=localItems().filter(function(x){return x.split(':')[1]!=='day';}).length,ds=days().slice().sort(),set={};ds.forEach(function(d){set[d]=1;});
  var streak=0,d=new Date();if(!set[today()])d.setDate(d.getDate()-1);
  for(;;){var s=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);if(set[s]){streak++;d.setDate(d.getDate()-1);}else break;}
  return {points:items*10,streak:streak,items:items,days:ds.length};}
