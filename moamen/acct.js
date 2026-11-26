@@ -9,7 +9,7 @@ top();window.addEventListener('DOMContentLoaded',top);window.addEventListener('l
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',tablet:'تابلت',magnifier:'مُدقّق'};
-var auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
+var TRACKS={bac2:{name:'تانية بكالوريا',live:true},bac1:{name:'أولى بكالوريا',live:false}},auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
 function img(p){return 'assets/img/mr-moamen-'+p+'.png';}
 function one(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 function load(){
@@ -28,7 +28,19 @@ function activate(u){
  loadProfile().then(function(){return hydrate();}).then(function(h){fire();paintChip();gateOK(h);});}
 function recheck(){return load().then(function(){if(!pending)return !!user;return pending.reload().then(function(){if(pending&&pending.emailVerified){var u=pending;pending=null;activate(u);return true;}return false;});});}
 function resend(){return load().then(function(){if(!pending)throw{code:'auth/user-not-found'};return pending.sendEmailVerification();});}
-function fire(){listeners.forEach(function(f){try{f(user,profile);}catch(e){}});}
+function track(){var t=rawGet.call(sessionStorage,'mm-track');return TRACKS[t]?t:'bac2';}
+function setTrack(id){if(!TRACKS[id])return Promise.reject();var u=auth&&auth.currentUser;rawSet.call(sessionStorage,'mm-track',id);
+ if(!u){fire();return Promise.resolve();}
+ var ref=db.collection('progress').doc(u.uid),FV=firebase.firestore.FieldValue,others=Object.keys(TRACKS).filter(function(k){return k!==id;}).map(function(k){return 'mm:track:'+k;});
+ return ref.set({completed:FV.arrayRemove.apply(null,others)},{merge:true}).then(function(){return ref.set({completed:FV.arrayUnion('mm:track:'+id)},{merge:true});}).then(function(){fire();});}
+function links(){var t=track(),n=TRACKS[t].name;
+ document.querySelectorAll('nav .btn[href^="track.html"],.cta .btn[href^="track.html"],.teach .btn[href^="track.html"]').forEach(function(a){a.setAttribute('href','track.html?t='+t);});
+ var h=document.querySelector('.cta .btn[href^="track.html"]');if(h&&/^ابدأ من /.test(h.textContent))h.textContent='ابدأ من '+n;}
+function trackPage(){if(!/\/track\.html$/.test(location.pathname))return;var t=new URLSearchParams(location.search).get('t')||'bac2';if(t==='bac2'||!TRACKS[t])return;
+ var c=document.querySelector('.crumbs'),h=document.querySelector('.hero h1'),u=document.getElementById('units'),tb=document.querySelector('.tabs'),dm=document.querySelector('.demo'),sj=document.querySelector('.hero .subj');
+ if(c)c.textContent='الرئيسية ‹ المسارات ‹ '+TRACKS[t].name;if(h)h.innerHTML=TRACKS[t].name+'<br><em style="font-style:normal;color:var(--yellow)">قريبًا</em>';if(sj)sj.hidden=true;if(tb)tb.hidden=true;if(dm)dm.hidden=true;
+ if(u)u.innerHTML='<div class="hint">المسار ده لسه قيد التجهيز. أول ما ينزل هتلاقيه هنا وتقدمك محفوظ في حسابك.<br><a class="pbtn" href="track.html?t=bac2" style="display:inline-block;width:auto;margin-top:10px;text-decoration:none">روح لتانية بكالوريا</a></div>';}
+function fire(){links();listeners.forEach(function(f){try{f(user,profile);}catch(e){}});}
 function arDigits(s){return String(s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);});}
 function toEmail(id){var s=arDigits(id).trim().replace(/\s/g,'').toLowerCase();return /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(s)?s:null;}
 function errMsg(e){var c=(e&&e.code)||'';
@@ -56,7 +68,7 @@ Storage.prototype.setItem=function(k,v){
   return;}
  return rawSet.call(this,k,v);};
 (function purge(){try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){rawDel.call(localStorage,n);});}catch(e){}})();
-function clearProg(){try{var del=[];for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(isProg(n)||n==='mm-h')del.push(n);}del.forEach(function(n){rawDel.call(sessionStorage,n);});}catch(e){}}
+function clearProg(){try{var del=[];for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(isProg(n)||n==='mm-h'||n==='mm-track')del.push(n);}del.forEach(function(n){rawDel.call(sessionStorage,n);});}catch(e){}}
 function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function localKeys(){var k=[];try{for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(n&&/^bac-g2p1-l\d+$/.test(n))k.push(n);}}catch(e){}return k;}
 function days(){try{return JSON.parse(rawGet.call(sessionStorage,'mm-days')||'[]');}catch(e){return [];}}
@@ -79,7 +91,7 @@ function hydrate(){
  if(!user)return Promise.resolve(false);
  if(rawGet.call(sessionStorage,'mm-h')===user.uid)return Promise.resolve(false);
  if(hydrating)return hydrating;
- hydrating=db.collection('progress').doc(user.uid).get().then(function(d){clearProg();merge((d.exists&&d.data().completed)||[]);rawSet.call(sessionStorage,'mm-h',user.uid);hydrating=null;return true;}).catch(function(){hydrating=null;return false;});
+ hydrating=db.collection('progress').doc(user.uid).get().then(function(d){clearProg();var L=(d.exists&&d.data().completed)||[];L.forEach(function(x){if(typeof x==='string'&&x.indexOf('mm:track:')===0&&TRACKS[x.slice(9)])rawSet.call(sessionStorage,'mm-track',x.slice(9));});merge(L);rawSet.call(sessionStorage,'mm-h',user.uid);hydrating=null;return true;}).catch(function(){hydrating=null;return false;});
  return hydrating;}
 var tm=null;
 function flush(){clearTimeout(tm);if(!user)return;var add=localItems();if(!add.length)return;
@@ -109,11 +121,11 @@ function loginUrl(){return 'login.html?need=1&next='+encodeURIComponent('bac.htm
 function show(){document.documentElement.style.visibility='';}
 function gateNo(){if(GATED)location.replace(loginUrl());}
 function gateOK(h){if(!GATED)return;if(h){location.reload();return;}show();}
-function wa(){var f=document.querySelector('footer .fl');if(!f||f.querySelector('.wa'))return;var x=document.createElement('a');x.className='wa';x.href='https://wa.me/201063272601';x.target='_blank';x.rel='noopener';x.textContent='تواصل مع مستر مؤمن على واتساب';f.appendChild(x);}
+function wa(){links();trackPage();var f=document.querySelector('footer .fl');if(!f||f.querySelector('.wa'))return;var x=document.createElement('a');x.className='wa';x.href='https://wa.me/201063272601';x.target='_blank';x.rel='noopener';x.textContent='تواصل مع مستر مؤمن على واتساب';f.appendChild(x);}
 function init(){paintChip();wa();if(/login\.html|profile\.html/.test(location.pathname)||GATED||localStorage.getItem(FLAG))load();}
 if(GATED){document.documentElement.style.visibility='hidden';
  if(!localStorage.getItem(FLAG)){location.replace(loginUrl());}
  else{setTimeout(function(){if(document.documentElement.style.visibility==='hidden')show();},12000);load();}}
-window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,reset:reset,recheck:recheck,resend:resend,pending:function(){return pending;},saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
+window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,setTrack:setTrack,track:track,tracks:TRACKS,reset:reset,recheck:recheck,resend:resend,pending:function(){return pending;},saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
