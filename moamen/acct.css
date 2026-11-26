@@ -155,5 +155,7 @@ html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout
 input,textarea,select,[contenteditable="true"],[contenteditable="true"] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 
 /* light design only: stop forced dark mode */
-:root{color-scheme:light only}
-html{color-scheme:light only}
+:root{color-scheme:only light}
+html{color-scheme:only light}
+html,body{background-color:#f6efdd;color:#22303c;color-scheme:only light}
+@media (prefers-color-scheme:dark){:root,html,body{color-scheme:only light;background-color:#f6efdd;color:#22303c}}
