@@ -91,3 +91,8 @@ footer b{color:var(--yellow)}
  .sh h2,.teach h2{font-size:28px}
  .demo{flex-direction:column;text-align:center}.demo img{height:100px}
 }
+
+.grp{background:#efe6cf;border-top:2px solid var(--ink);padding:12px 16px;text-align:center;font-size:13px}
+.grp .grp-t{display:block;font-weight:800;color:var(--ink);margin-bottom:6px;font-size:12.5px;letter-spacing:.3px}
+.grp a{display:inline-block;margin:2px 6px;padding:5px 14px;border:2px solid var(--ink);border-radius:99px;color:var(--ink);text-decoration:none;font-weight:700;background:var(--paper)}
+.grp a.on{background:var(--ink);color:var(--yellow);cursor:default}
