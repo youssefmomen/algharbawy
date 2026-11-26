@@ -108,3 +108,8 @@ document.addEventListener('click',function(e){var im=e.target.closest&&e.target.
  var n=new Image();n.onload=function(){im.src=n.src;hop(im);say(im,p);if(window.mmSound)mmSound('pop');};n.src='assets/img/mr-moamen-'+p+'.png';});
 document.querySelectorAll('#heroPose,#trackPose,.auth-char img').forEach(function(im){im.style.cursor='pointer';im.setAttribute('role','button');im.setAttribute('aria-label','مستر مؤمن');});
 })();
+(function(){var Q='img[src*="mr-moamen"],.bubble,.char,.char-wrap,.auth-char,.feed,.pop-ch,.feed-ch,.ch-fig';
+function hit(e){return e.target&&e.target.closest&&e.target.closest(Q);}
+['contextmenu','dragstart','selectstart'].forEach(function(t){document.addEventListener(t,function(e){if(hit(e))e.preventDefault();},true);});
+function fix(){document.querySelectorAll('img[src*="mr-moamen"]').forEach(function(i){i.draggable=false;});}
+fix();new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});})();
