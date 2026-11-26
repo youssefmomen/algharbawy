@@ -89,18 +89,11 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
-/* Mr. Youssef reacts to the pointer: gentle lean toward the cursor, happy bounce on hover, click/tap bounce + a fresh bubble line */
+/* Mr. Youssef mascot: tap gives a happy bounce + a fresh bubble line (no hover effects) */
 (function(){
 var SEL='#heroPose,#trackPose,.auth-char img,.pop-ch',
- rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,raf=0,mx=0,my=0;
-function imgs(){return document.querySelectorAll(SEL);}
-function lean(){raf=0;imgs().forEach(function(im){var r=im.getBoundingClientRect();if(r.width<10||r.bottom<0||r.top>innerHeight)return;
- var dx=(mx-(r.left+r.width/2))/innerWidth,dy=(my-(r.top+r.height/3))/innerHeight;dx=Math.max(-1,Math.min(1,dx*2));dy=Math.max(-1,Math.min(1,dy*2));
- im.style.transition='translate .25s ease-out,rotate .25s ease-out';im.style.translate=(dx*8).toFixed(1)+'px '+(dy*4).toFixed(1)+'px';im.style.rotate=(dx*3).toFixed(1)+'deg';});}
-if(!rm){document.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse')return;mx=e.clientX;my=e.clientY;if(!raf)raf=requestAnimationFrame(lean);},{passive:true});
- document.addEventListener('mouseleave',function(){imgs().forEach(function(im){im.style.translate='';im.style.rotate='';});});}
+ rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 function hop(im){if(rm||!im.animate)return;im.animate([{scale:'1'},{scale:'1.05'},{scale:'.99'},{scale:'1'}],{duration:420,easing:'ease-out'});}
-document.addEventListener('mouseover',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(im&&!im._h){im._h=1;hop(im);setTimeout(function(){im._h=0;},900);}});
 var cats=['greet','start','back'],ci=0;
 document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(!im)return;hop(im);
  var b=im.parentNode&&im.parentNode.querySelector('.bubble');
