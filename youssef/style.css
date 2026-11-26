@@ -138,6 +138,7 @@ footer .fl{display:flex;gap:18px;justify-content:center;margin-bottom:10px;font-
 [data-go]{cursor:pointer}
 h1[data-go],h2[data-go],.stage b[data-go]{text-decoration:underline dotted var(--accent);text-decoration-thickness:2px;text-underline-offset:8px}
 [data-go]:hover{color:var(--primary)}
+.stage b[data-go]:hover{color:var(--paper)}
 [data-go]:active{opacity:.7}
 .row{scroll-margin-top:84px}
 
