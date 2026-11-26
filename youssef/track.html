@@ -12,7 +12,7 @@ var D=window[TC.glob]||{stages:[],lessons:[]},A="٠١٢٣٤٥٦٧٨٩",ar=functi
 var h="";D.stages.forEach(function(st){if(!D.lessons.some(function(l){return l.stage===st.id}))return;
  var ls=D.lessons.map(function(l,i){return{l:l,i:i}}).filter(function(x){return x.l.stage===st.id});
  h+='<div class="unit"><h3><b>'+ar(st.n)+'</b>'+st.title+'</h3><div class="lessons">';
- ls.forEach(function(x){h+='<a class="ls" href="lesson.html?t='+TRK+'&lesson='+(x.i+1)+'"><div class="n">'+ar(x.i+1)+'</div><div><b>'+x.l.title+'</b><span>صفحات '+(x.l.pages||"")+'</span></div><div class="chip">ابدأ</div></a>'});
+ ls.forEach(function(x){h+='<a class="ls" href="lesson.html?t='+TRK+'&lesson='+(x.i+1)+'"><div class="n">'+ar(x.i+1)+'</div><div><b>'+x.l.title+'</b></div><div class="chip">ابدأ</div></a>'});
  h+='</div></div>'});
 document.getElementById("units").innerHTML=h||'<div class="hint">مقدرناش نحمّل الدروس. اتأكد من الإنترنت وجرّب تاني.<br><button type="button" class="pbtn" onclick="location.reload()" style="margin-top:10px;max-width:220px">إعادة المحاولة</button></div>';
 </script></body></html>

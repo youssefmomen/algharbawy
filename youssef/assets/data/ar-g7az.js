@@ -24,7 +24,7 @@ az3namazeg:"<div class='mh'>نموذج إعراب ١: قال تعالى: ﴿وَ
 az3tadreeb:"<div class='side'><b class='sh'>تدريبات الدرس</b>أسئلة الكتاب المقرر وامتحانات السنوات السابقة على درس «أجزاء الكلام» بإجاباتها النموذجية.</div>"
 },
 lessons:[{
-id:"l1",stage:"nahw",title:"الدرس ١: تعريف علم النحو",pages:"٥–٧",
+id:"l1",stage:"nahw",title:"الدرس ١: تعريف علم النحو",
 segments:[
 {label:"تعريف علم النحو وموضوعه وفائدته",
  explain:[{b:"az1def"},{b:"az1faida"}],
@@ -67,7 +67,7 @@ segments:[
  ]}
 ]}
 ,{
-id:"l2",stage:"nahw",title:"الدرس ٢: الكلام في اصطلاح النحويين",pages:"٨–١٠",
+id:"l2",stage:"nahw",title:"الدرس ٢: الكلام في اصطلاح النحويين",
 segments:[
 {label:"متى يُسمى الكلام كلامًا؟",
  explain:[{b:"az2amthila"},{b:"az2sharh1"},{b:"az2sharh2"}],
@@ -108,7 +108,7 @@ segments:[
   {t:"mcq",src:"أسئلة سريعة",q:"«قام علي» كلام مفيد.",options:["صح","خطأ"],a:0,why:["az2amthila"]}
  ]}
 ]},{
-id:"l3",stage:"nahw",title:"الدرس ٣: أجزاء الكلام",pages:"١١–١٥",
+id:"l3",stage:"nahw",title:"الدرس ٣: أجزاء الكلام",
 segments:[
 {label:"الاسم",
  explain:[{b:"az3intro"},{b:"az3ism"}],
