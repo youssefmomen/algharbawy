@@ -3,6 +3,9 @@
    "bac2:<lesson>:<itemId>:p<picked>" | "bac2:<lesson>:<itemId>:o" | "bac2:day:YYYY-MM-DD".  Email must be verified (Google counts as verified). */
 (function(){
 'use strict';
+try{history.scrollRestoration='manual';}catch(e){}
+function top(){if(!location.hash)window.scrollTo(0,0);}
+top();window.addEventListener('DOMContentLoaded',top);window.addEventListener('load',function(){top();setTimeout(top,60);});window.addEventListener('pageshow',function(e){if(e.persisted)top();});
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',lightbulb:'فكرة',tablet:'تابلت',magnifier:'مُدقّق'};
