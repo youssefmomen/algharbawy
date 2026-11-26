@@ -1,0 +1,1 @@
+window.AR_SIMPLIFY={};
