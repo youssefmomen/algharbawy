@@ -6,7 +6,7 @@
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',lightbulb:'فكرة',tablet:'تابلت',magnifier:'مُدقّق'};
-var auth=null,db=null,loading=null,user=null,profile=null,listeners=[],pulled=false;
+var auth=null,db=null,loading=null,user=null,profile=null,listeners=[];
 function img(p){return 'assets/img/mr-moamen-'+p+'.png';}
 function one(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 function load(){
@@ -16,8 +16,8 @@ function load(){
   auth.onAuthStateChanged(function(u){
    user=u;try{u?localStorage.setItem(FLAG,'1'):localStorage.removeItem(FLAG);}catch(e){}
    if(u){db.collection('users').doc(u.uid).set({email:u.email||'',role:'student',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){});
-    loadProfile().then(function(){return pull();}).then(function(){fire();paintChip();});}
-   else{profile=null;pulled=false;fire();paintChip();}
+    loadProfile().then(function(){return hydrate();}).then(function(h){fire();paintChip();gateOK(h);});}
+   else{profile=null;clearProg();fire();paintChip();gateNo();}
   });return true;}).catch(function(){loading=null;return false;});
  return loading;
 }
@@ -38,45 +38,52 @@ function signUp(name,id,pass){var em=toEmail(id);if(!em)return Promise.reject({c
  return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.createUserWithEmailAndPassword(em,pass);}).then(function(c){
   return db.collection('users').doc(c.user.uid).set({email:em,name:String(name||'').slice(0,100),role:'student',avatarId:'waving',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){return c;});});}
 function google(){return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());});}
-function signOut(){return load().then(function(){return auth.signOut();});}
+function signOut(){return load().then(function(){clearProg();return auth.signOut();});}
 function loadProfile(){if(!user)return Promise.resolve(null);return db.collection('users').doc(user.uid).get().then(function(d){profile=d.exists?d.data():{};return profile;}).catch(function(){profile={};return profile;});}
 function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.name!=null)p.name=String(patch.name).slice(0,100);if(patch.avatarId)p.avatarId=String(patch.avatarId).slice(0,24);
  return db.collection('users').doc(user.uid).set(p,{merge:true}).then(function(){profile=Object.assign(profile||{},p);fire();paintChip();});}
-/* ---- local state <-> cloud list ---- */
+/* ---- progress lives in the account only. In this tab it sits in sessionStorage (cleared when the tab closes),
+   never in localStorage; the lesson page's localStorage calls for progress keys are redirected here. ---- */
+var rawGet=Storage.prototype.getItem,rawSet=Storage.prototype.setItem,rawDel=Storage.prototype.removeItem;
+function isProg(k){return typeof k==='string'&&(k.indexOf(PFX)===0||k==='mm-days');}
+Storage.prototype.getItem=function(k){return rawGet.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
+Storage.prototype.removeItem=function(k){return rawDel.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
+Storage.prototype.setItem=function(k,v){
+ if(this===localStorage&&isProg(k)){rawSet.call(sessionStorage,k,v);
+  if(/^bac-g2p1-l\d+$/.test(k)){try{var S=JSON.parse(v);if(S&&S.done&&Object.keys(S.done).length){var ds=days(),t=today();if(ds.indexOf(t)<0){ds.push(t);rawSet.call(sessionStorage,'mm-days',JSON.stringify(ds));}}}catch(e){}push();}
+  return;}
+ return rawSet.call(this,k,v);};
+(function purge(){try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){rawDel.call(localStorage,n);});}catch(e){}})();
+function clearProg(){try{var del=[];for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(isProg(n)||n==='mm-h')del.push(n);}del.forEach(function(n){rawDel.call(sessionStorage,n);});}catch(e){}}
 function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
-function localKeys(){var k=[];try{for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(n&&n.indexOf(PFX)===0&&/^bac-g2p1-l\d+$/.test(n))k.push(n);}}catch(e){}return k;}
-function days(){try{return JSON.parse(localStorage.getItem('mm-days')||'[]');}catch(e){return [];}}
+function localKeys(){var k=[];try{for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(n&&/^bac-g2p1-l\d+$/.test(n))k.push(n);}}catch(e){}return k;}
+function days(){try{return JSON.parse(rawGet.call(sessionStorage,'mm-days')||'[]');}catch(e){return [];}}
 function localItems(){
- var out=[];localKeys().forEach(function(n){var L=n.slice(PFX.length),S;try{S=JSON.parse(localStorage.getItem(n));}catch(e){return;}
+ var out=[];localKeys().forEach(function(n){var L=n.slice(PFX.length),S;try{S=JSON.parse(rawGet.call(sessionStorage,n));}catch(e){return;}
   if(!S||!S.done)return;Object.keys(S.done).forEach(function(id){var v=S.done[id];out.push('bac2:'+L+':'+id+':'+(v&&v.open?'o':'p'+(v&&v.picked!=null?v.picked:0)));});});
  days().forEach(function(d){out.push('bac2:day:'+d);});return out;}
 function merge(list){
- var changed=false,byL={};
- list.forEach(function(s){var m=s.split(':');if(m[0]!=='bac2')return;if(m[1]==='day'){var ds=days();if(ds.indexOf(m[2])<0){ds.push(m[2]);localStorage.setItem('mm-days',JSON.stringify(ds));}return;}
+ var byL={},ds=days(),dch=false;
+ list.forEach(function(s){var m=s.split(':');if(m[0]!=='bac2')return;if(m[1]==='day'){if(ds.indexOf(m[2])<0){ds.push(m[2]);dch=true;}return;}
   (byL[m[1]]=byL[m[1]]||[]).push({id:m[2],v:m[3]});});
- Object.keys(byL).forEach(function(L){var key=PFX+L,S;try{S=JSON.parse(localStorage.getItem(key));}catch(e){}
-  if(!S||typeof S!=='object')S={view:'map',seg:0,sub:0,done:{},seenIntro:true};S.done=S.done||{};var ch=false;
-  byL[L].forEach(function(x){if(!S.done[x.id]){S.done[x.id]=x.v==='o'?{open:true}:{picked:+x.v.slice(1)};ch=true;}});
-  if(ch){S.seenIntro=true;rawSet.call(localStorage,key,JSON.stringify(S));changed=true;}});
- return changed;}
-function pull(){
- if(!user||pulled)return Promise.resolve();pulled=true;
- return db.collection('progress').doc(user.uid).get().then(function(d){
-  var cloud=(d.exists&&d.data().completed)||[];var ch=merge(cloud);
-  var set={};cloud.forEach(function(x){set[x]=1;});var add=localItems().filter(function(x){return !set[x];});
-  var p=add.length?db.collection('progress').doc(user.uid).set({completed:firebase.firestore.FieldValue.arrayUnion.apply(null,add)},{merge:true}):Promise.resolve();
-  return p.then(function(){if(ch&&/bac\.html/.test(location.pathname)&&!sessionStorage.getItem('mm-rl')){sessionStorage.setItem('mm-rl','1');location.reload();}});
- }).catch(function(){pulled=false;});}
+ if(dch)rawSet.call(sessionStorage,'mm-days',JSON.stringify(ds));
+ Object.keys(byL).forEach(function(L){var key=PFX+L,S;try{S=JSON.parse(rawGet.call(sessionStorage,key));}catch(e){}
+  if(!S||typeof S!=='object')S={view:'map',seg:0,sub:0,done:{},seenIntro:true};S.done=S.done||{};
+  byL[L].forEach(function(x){if(!S.done[x.id])S.done[x.id]=x.v==='o'?{open:true}:{picked:+x.v.slice(1)};});
+  S.seenIntro=true;rawSet.call(sessionStorage,key,JSON.stringify(S));});}
+/* load this account's progress from the cloud into the tab (once per tab and account) */
+var hydrating=null;
+function hydrate(){
+ if(!user)return Promise.resolve(false);
+ if(rawGet.call(sessionStorage,'mm-h')===user.uid)return Promise.resolve(false);
+ if(hydrating)return hydrating;
+ hydrating=db.collection('progress').doc(user.uid).get().then(function(d){clearProg();merge((d.exists&&d.data().completed)||[]);rawSet.call(sessionStorage,'mm-h',user.uid);hydrating=null;return true;}).catch(function(){hydrating=null;return false;});
+ return hydrating;}
 var tm=null;
-function push(){clearTimeout(tm);tm=setTimeout(function(){if(!user||!pulled)return;var add=localItems();if(!add.length)return;
- db.collection('progress').doc(user.uid).set({completed:firebase.firestore.FieldValue.arrayUnion.apply(null,add)},{merge:true}).catch(function(){});},1800);}
-/* hook localStorage writes from the lesson page */
-var rawSet=Storage.prototype.setItem;
-Storage.prototype.setItem=function(k,v){rawSet.call(this,k,v);
- if(this===localStorage&&typeof k==='string'&&/^bac-g2p1-l\d+$/.test(k)){
-  try{var S=JSON.parse(v);if(S&&S.done&&Object.keys(S.done).length){var ds=days(),t=today();if(ds.indexOf(t)<0){ds.push(t);rawSet.call(localStorage,'mm-days',JSON.stringify(ds));}}}catch(e){}
-  push();nag();}};
-/* stats */
+function flush(){clearTimeout(tm);if(!user)return;var add=localItems();if(!add.length)return;
+ db.collection('progress').doc(user.uid).set({completed:firebase.firestore.FieldValue.arrayUnion.apply(null,add)},{merge:true}).catch(function(){});}
+function push(){clearTimeout(tm);tm=setTimeout(flush,500);}
+window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',function(){if(document.hidden)flush();});
 function stats(){
  var items=localItems().filter(function(x){return x.indexOf('bac2:day:')!==0;}).length,ds=days().slice().sort(),set={};ds.forEach(function(d){set[d]=1;});
  var streak=0,d=new Date();if(!set[today()])d.setDate(d.getDate()-1);
@@ -94,17 +101,16 @@ function paintChip(){
  if(host){host.insertBefore(a,host.querySelector('.mm-snd')||host.querySelector('.btn'));}
  else{hd.insertBefore(a,hd.querySelector('.mm-snd')||hd.querySelector('.nhome'));}
 }
-/* gentle prompt (guests only, once a day, after 3 answers) */
-function nag(){
- if(user||localStorage.getItem(FLAG))return;var st=stats();if(st.items<3)return;
- var until=+localStorage.getItem('mm-nag')||0;if(Date.now()<until||document.getElementById('mmNag')||document.querySelector('.overlay'))return;
- setTimeout(function(){if(user||document.querySelector('.overlay'))return;
-  rawSet.call(localStorage,'mm-nag',String(Date.now()+864e5));
-  var n=document.createElement('div');n.id='mmNag';n.className='mm-nag';
-  n.innerHTML='<img src="'+img('thumbsup')+'" alt=""><div><b>شغلك حلو!</b><p>اعمل حساب علشان تحفظ تقدمك وتكمل من أي جهاز.</p><div class="r"><a class="y" href="login.html?mode=up&next='+encodeURIComponent(location.pathname.split('/').pop()+location.search)+'">احفظ تقدمي</a><button type="button">مش دلوقتي</button></div></div>';
-  n.querySelector('button').onclick=function(){n.remove();};document.body.appendChild(n);setTimeout(function(){n.remove();},15000);},2500);}
-function init(){paintChip();var r=false;try{r=!!localStorage.getItem(FLAG);}catch(e){}
- if(r||/login\.html|profile\.html/.test(location.pathname))load();}
-window.MM={load:load,signIn:signIn,signUp:signUp,google:google,signOut:signOut,saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
+/* lessons need an account: hide the page until we know, then send visitors to login (and back) */
+var GATED=/\/bac\.html$/.test(location.pathname);
+function loginUrl(){return 'login.html?need=1&next='+encodeURIComponent('bac.html'+location.search);}
+function show(){document.documentElement.style.visibility='';}
+function gateNo(){if(GATED)location.replace(loginUrl());}
+function gateOK(h){if(!GATED)return;if(h){location.reload();return;}show();}
+function init(){paintChip();if(/login\.html|profile\.html/.test(location.pathname)||GATED||localStorage.getItem(FLAG))load();}
+if(GATED){document.documentElement.style.visibility='hidden';
+ if(!localStorage.getItem(FLAG)){location.replace(loginUrl());}
+ else{setTimeout(function(){if(document.documentElement.style.visibility==='hidden')show();},12000);load();}}
+window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
