@@ -113,3 +113,6 @@ function hit(e){return e.target&&e.target.closest&&e.target.closest(Q);}
 ['contextmenu','dragstart','selectstart'].forEach(function(t){document.addEventListener(t,function(e){if(hit(e))e.preventDefault();},true);});
 function fix(){document.querySelectorAll('img[src*="mr-moamen"]').forEach(function(i){i.draggable=false;});}
 fix();new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});})();
+
+(function(){function ok(t){return t&&t.closest&&t.closest('input,textarea,select,[contenteditable="true"]');}
+['contextmenu','selectstart'].forEach(function(n){document.addEventListener(n,function(e){if(!ok(e.target))e.preventDefault();},true);});})();
