@@ -149,3 +149,7 @@ small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;bor
 img[src*="mr-moamen"],.bubble,.char,.char-wrap,.auth-char,.feed,.pop-ch,.feed-ch,.ch-fig{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-user-drag:none}
 img[src*="mr-moamen"]{-webkit-user-drag:none}
 .bubble *,.feed *{-webkit-user-select:none;user-select:none}
+
+/* no text selection anywhere except form fields */
+html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,select,[contenteditable="true"],[contenteditable="true"] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
