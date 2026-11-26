@@ -162,3 +162,9 @@ h1[data-go],h2[data-go],.stage b[data-go]{text-decoration:underline dotted var(-
 
 body .auth-char .bubble::before{content:"";position:absolute;left:-12px;bottom:14px;width:20px;height:20px;background:var(--ink);border:0;transform:rotate(45deg)}
 body .auth-char .bubble::after{content:"";position:absolute;left:-7.1px;bottom:15.5px;width:17px;height:17px;background:inherit;border:0;transform:rotate(45deg)}
+
+/* مفتاح أجزاء الكلام: اسم / فعل / حرف */
+.w-ism{color:#1668b4;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.w-feil{color:#1a7f4b;font-weight:700;text-decoration:underline dashed;text-decoration-thickness:2px;text-underline-offset:3px}
+.w-harf{color:#c2410c;font-weight:700;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px}
+.wlegend{font-size:13.5px;border:1.5px dashed currentColor;border-radius:10px;padding:3px 10px;margin:0 0 8px;display:inline-block}
