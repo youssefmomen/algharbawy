@@ -8,6 +8,10 @@ function top(){if(!location.hash)window.scrollTo(0,0);}
 top();window.addEventListener('DOMContentLoaded',top);window.addEventListener('load',function(){top();setTimeout(top,60);});window.addEventListener('pageshow',function(e){if(e.persisted)top();});
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
+/* === TEST_OPEN_ALL: مفتاح تجربة مؤقت ===
+   true  = كل الدروس مفتوحة للزوار من غير تسجيل دخول ومن غير قفل التسلسل.
+   لإرجاع القفل والتسجيل: خلّي السطر اللي تحت false وبس. === */
+var TEST_OPEN_ALL=true;window.MM_TEST_OPEN_ALL=TEST_OPEN_ALL;
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',tablet:'تابلت',magnifier:'مُدقّق'};
 var TRACKS={bac2:{name:'تانية بكالوريا',live:true},bac1:{name:'أولى بكالوريا',live:false}},auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
 
@@ -108,14 +112,15 @@ function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.a
    never in localStorage; the lesson page's localStorage calls for progress keys are redirected here. ---- */
 var rawGet=Storage.prototype.getItem,rawSet=Storage.prototype.setItem,rawDel=Storage.prototype.removeItem;
 function isProg(k){return typeof k==='string'&&(k.indexOf(PFX)===0||k==='mm-days');}
-Storage.prototype.getItem=function(k){return rawGet.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
-Storage.prototype.removeItem=function(k){return rawDel.call((this===localStorage&&isProg(k))?sessionStorage:this,k);};
+function progStore(){return (TEST_OPEN_ALL&&!user)?localStorage:sessionStorage;}
+Storage.prototype.getItem=function(k){return rawGet.call((this===localStorage&&isProg(k))?progStore():this,k);};
+Storage.prototype.removeItem=function(k){return rawDel.call((this===localStorage&&isProg(k))?progStore():this,k);};
 Storage.prototype.setItem=function(k,v){
- if(this===localStorage&&isProg(k)){rawSet.call(sessionStorage,k,v);
+ if(this===localStorage&&isProg(k)){if(TEST_OPEN_ALL&&!user){return rawSet.call(localStorage,k,v);}rawSet.call(sessionStorage,k,v);
   if(/^bac-g2p1-l\d+$/.test(k)){try{var S=JSON.parse(v);if(S&&S.done&&Object.keys(S.done).length){var ds=days(),t=today();if(ds.indexOf(t)<0){ds.push(t);rawSet.call(sessionStorage,'mm-days',JSON.stringify(ds));}}}catch(e){}push();}
   return;}
  return rawSet.call(this,k,v);};
-(function purge(){try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){rawDel.call(localStorage,n);});}catch(e){}})();
+(function purge(){if(TEST_OPEN_ALL)return;try{var del=[];for(var i=0;i<localStorage.length;i++){var n=localStorage.key(i);if(isProg(n))del.push(n);}del.forEach(function(n){rawDel.call(localStorage,n);});}catch(e){}})();
 function clearProg(){try{var del=[];for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(isProg(n)||n==='mm-h'||n==='mm-track')del.push(n);}del.forEach(function(n){rawDel.call(sessionStorage,n);});}catch(e){}}
 function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function localKeys(){var k=[];try{for(var i=0;i<sessionStorage.length;i++){var n=sessionStorage.key(i);if(n&&/^bac-g2p1-l\d+$/.test(n))k.push(n);}}catch(e){}return k;}
@@ -164,7 +169,7 @@ function paintChip(){
  else{hd.insertBefore(a,hd.querySelector('.mm-snd')||hd.querySelector('.nhome'));}
 }
 /* lessons need an account: hide the page until we know, then send visitors to login (and back) */
-var GATED=/\/bac\.html$/.test(location.pathname);
+var GATED=/\/bac\.html$/.test(location.pathname)&&!TEST_OPEN_ALL;
 function loginUrl(){return 'login.html?need=1&next='+encodeURIComponent('bac.html'+location.search);}
 function show(){document.documentElement.style.visibility='';}
 function gateNo(){if(GATED)location.replace(loginUrl());}
