@@ -889,7 +889,7 @@ function mcqHTML(q,id,letters){
   }).join('');
   if(done){
     if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">أحسنت! إجابة صحيحة ✓</div>';
-    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-serious.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
     if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
