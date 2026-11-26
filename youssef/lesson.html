@@ -1350,7 +1350,7 @@ function renderList(){
   });
   h+='</div>';
   m.innerHTML=h;
-  m.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){location.href='bac.html?lesson='+b.dataset.l;};});
+  m.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){location.href='lesson.html?lesson='+b.dataset.l;};});
   paintAll();
 }
 function backBtn(){
