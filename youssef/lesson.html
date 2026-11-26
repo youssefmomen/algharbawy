@@ -208,8 +208,9 @@ main{max-width:720px;margin:0 auto}
 </div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script>document.write('<script src="assets/data/ar-g1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
-<script>document.write('<script src="assets/data/ar-g1-simplify.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول · كتاب المرشد"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
+<script>document.write('<script src="assets/data/'+TC.src+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>document.write('<script src="assets/data/'+TC.simp+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
@@ -1065,11 +1066,11 @@ seg8:{cap:"راجع إجاباتك بنفسك",svg:
 '<text x="110" y="14">خفض الإنفاق</text>'+
 '<text x="110" y="146">إعداد موظفين لا مواطنين واعين</text></g></svg>'}
 };
-var D=window.AR_G1;
+var D=window[TC.glob];
 var qL=parseInt(new URLSearchParams(location.search).get('lesson')||'',10);
 var LES=(qL>=1&&qL<=D.lessons.length)?D.lessons[qL-1]:null;
 var STG=LES?D.stages.filter(function(s){return s.id===LES.stage;})[0]:null;
-var IMG='assets/book/taw-g2p1/L'+(qL||1)+'/',KEY=LES?('ar-g1-'+LES.id):'ar-g1-none';
+var IMG='assets/book/taw-g2p1/L'+(qL||1)+'/',KEY=LES?('ar-'+TRK+'-'+LES.id):'ar-'+TRK+'-none';
 var S={view:'map',seg:0,sub:0,done:{},seenIntro:false};
 if(LES){try{var sv=JSON.parse(localStorage.getItem(KEY));if(sv&&sv.done){for(var k in sv)S[k]=sv[k];}}catch(e){}}
 if(typeof S.seg!=='number')S.seg=0;if(typeof S.sub!=='number')S.sub=0;
@@ -1081,7 +1082,7 @@ function paint(){
   var t=totals(),pc=Math.round(Object.keys(S.done).length/(t.b+t.c)*100);
   document.getElementById('fill').style.width=pc+'%';
 }
-function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('ar-g1-'+l.id));if(sv&&sv.done){var tot=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});if(tot)pc=Math.round(Object.keys(sv.done).length/tot*100);}}catch(e){}return pc;}
+function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('ar-'+TRK+'-'+l.id));if(sv&&sv.done){var tot=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});if(tot)pc=Math.round(Object.keys(sv.done).length/tot*100);}}catch(e){}return pc;}
 function paintAll(){var pc=0;if(D.lessons.length){var sm=0;D.lessons.forEach(function(l){sm+=lessonPc(l);});pc=Math.round(sm/D.lessons.length);}document.getElementById('fill').style.width=pc+'%';}
 function zoom(src){var z=document.getElementById('zoom');document.getElementById('zoom-img').src=src;z.classList.add('on');}
 function chime(){
@@ -1352,13 +1353,13 @@ function renderList(){
   });
   h+='</div>';
   m.innerHTML=h;
-  m.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){location.href='lesson.html?lesson='+b.dataset.l;};});
+  m.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){location.href='lesson.html?t='+TRK+'&lesson='+b.dataset.l;};});
   paintAll();
 }
 function backBtn(){
   var b=document.getElementById('backBtn');
-  if(!LES){b.onclick=function(){location.href='track.html';};return;}
-  if(S.view==='map'){b.onclick=function(){location.href='track.html';};}
+  if(!LES){b.onclick=function(){location.href='track.html?t='+TRK;};return;}
+  if(S.view==='map'){b.onclick=function(){location.href='track.html?t='+TRK;};}
   else{b.onclick=function(){S.view='map';save();render();};}
 }
 function render(){
