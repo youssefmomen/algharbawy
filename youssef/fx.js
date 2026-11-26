@@ -112,7 +112,7 @@ document.querySelectorAll('#heroPose,#trackPose,.auth-char img').forEach(functio
 /* Tappable headings: any element carrying data-go navigates (click, Enter or Space) */
 (function(){
 var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-document.addEventListener('click',function(e){var g=e.target.closest&&e.target.closest('[data-go]');if(!g)return;var d=g.getAttribute('data-go');if(!d)return;
+document.addEventListener('click',function(e){var g=e.target.closest&&e.target.closest('[data-go]');if(!g)return;var d=g.getAttribute('data-go');if(!d||d==='1')return;
  if(window.mmSound)mmSound('tap');
  if(d.charAt(0)==='#'){var el=document.querySelector(d);if(el){el.scrollIntoView({behavior:rm?'auto':'smooth',block:'start'});return;}}
  location.href=d;});
