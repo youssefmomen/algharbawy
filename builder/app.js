@@ -15,6 +15,7 @@ function SNDLIB(){
   music:function(n,on,custom){clearInterval(mt);if(au){au.pause();au=null}if(!on||!n||n==='none')return;try{if(n==='custom'){if(custom){au=new Audio(custom);au.loop=true;au.play().catch(function(){})}return}var m=MUS[n]||MUS.calm;mt=setInterval(function(){tone(m.n[mi++%m.n.length],0,m.ms/1000*1.6,m.t,.05)},m.ms)}catch(e){}}}
 }
 const SND=SNDLIB();
+const EX=typeof EXTRA!=='undefined'?EXTRA:{anim:[],deco:[],clip:[],looks:[['','عادي']],bgfx:[['','سادة']]};
 /* ===== ألوان وخطوط ===== */
 const lum=h=>{h=String(h).replace('#','');if(h.length==3)h=h.split('').map(c=>c+c).join('');const v=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4));return .2126*v[0]+.7152*v[1]+.0722*v[2]};
 const contrast=h=>{try{return lum(h)>.45?'#1a1a2e':'#ffffff'}catch(e){return '#ffffff'}};
@@ -79,7 +80,7 @@ h1,h2,h3,.hd,.btn,.price{font-family:${fontOf(t.hf)}}
 .a-fade{animation:fade 1s both}.a-up{animation:up .8s both}.a-zoom{animation:zoom .7s both}.a-slide{animation:slide .8s both}
 .a-bounce{animation:bounce 1.6s infinite}.a-pulse{animation:pulse 1.8s infinite}.a-float{animation:float 4s ease-in-out infinite}
 @media(max-width:720px){.sec{padding:calc(var(--spad,70px)*.7) 16px}.in.split{grid-template-columns:1fr;gap:24px}.b.p{width:100%!important}.b.h{width:calc(50% - var(--g)/2)!important}.in{justify-content:center}.card.ft{transform:none}}
-`}
+`+(typeof LOOKCSS!=='undefined'?LOOKCSS:'')}
 /* ===== رسم العناصر ===== */
 const nl=s=>esc(s).replace(/\n/g,'<br>');
 function resolveC(v,t){return !v?'':(t[v]||v)}
@@ -133,7 +134,7 @@ const bodyHtml=tpl=>tpl.sections.map((s,i)=>secHtml(s,i,tpl.theme)).join('');
 const PREVCSS=`.sec{cursor:pointer}.sec.secsel{outline:3px solid #8a5cf6;outline-offset:-3px}.b{cursor:pointer}.b:hover{outline:1px dashed #8a5cf6}.b.sel{outline:2px solid #5b4bdb!important;outline-offset:3px;touch-action:none;cursor:move}.sec a,.sec button{pointer-events:none}.sec details summary{pointer-events:none}`;
 function pageDoc(tpl,edit){
  const t=tpl.theme;
- return `<!doctype html><html lang="${t.dir==='ltr'?'en':'ar'}" dir="${t.dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(tpl.name)}</title>${fontsLink(t,tpl.sections)}<style id="pc">${pageCss(t)}</style>${edit?`<style id="ec">${PREVCSS}</style>`:''}</head><body>${bodyHtml(tpl)}</body></html>`;
+ return `<!doctype html><html lang="${t.dir==='ltr'?'en':'ar'}" dir="${t.dir}" data-look="${t.look||''}" data-bg="${t.bgfx||''}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(tpl.name)}</title>${fontsLink(t,tpl.sections)}<style id="pc">${pageCss(t)}</style>${edit?`<style id="ec">${PREVCSS}</style>`:''}</head><body>${bodyHtml(tpl)}</body></html>`;
 }
 function runtimeScript(tpl){
  const C={click:tpl.sounds.click,success:tpl.sounds.success,music:tpl.sounds.music,custom:tpl.sounds.custom||{}};
@@ -149,7 +150,7 @@ let hist=[],hi=-1,saveT=0,histT=0;
 const OBJ={theme:()=>S.tpl.theme,sec:()=>S.tpl.sections[S.si],st:()=>S.tpl.sections[S.si].st,blk:()=>S.tpl.sections[S.si].blocks[S.bi],snd:()=>S.tpl.sounds,tpl:()=>S.tpl};
 function normalize(t){
  const base=TEMPLATES[0];t=t||{};
- const o={id:t.id||'x',name:t.name||'قالب جديد',desc:t.desc||'',v:2,theme:Object.assign({},base.theme,t.theme||{}),sounds:Object.assign({click:'click',success:'success',music:'none',custom:{}},t.sounds||{}),sections:[]};
+ const o={id:t.id||'x',name:t.name||'قالب جديد',desc:t.desc||'',v:2,theme:Object.assign({look:'',bgfx:''},base.theme,t.theme||{}),sounds:Object.assign({click:'click',success:'success',music:'none',custom:{}},t.sounds||{}),sections:[]};
  if(!o.sounds.custom)o.sounds.custom={};
  (t.sections||[]).forEach(s=>{const ns=Object.assign({id:uid(),name:'قسم',lay:''},s);ns.st=Object.assign({bg:'',tx:'',al:'start',pad:70,deco:'',clip:'',bgimg:'',ov:0,minh:0},s.st||{});ns.blocks=(s.blocks||[]).map(b=>B(b.t in DEF?b.t:'text',b));o.sections.push(ns)});
  return o;
@@ -163,7 +164,7 @@ function refresh(){
  if(!ready||!fdoc){frame.srcdoc=pageDoc(S.tpl,true);return}
  const sy=fdoc.defaultView.scrollY;
  fdoc.getElementById('pc').textContent=pageCss(S.tpl.theme);
- fdoc.documentElement.dir=S.tpl.theme.dir;fdoc.documentElement.lang=S.tpl.theme.dir==='ltr'?'en':'ar';
+ fdoc.documentElement.dir=S.tpl.theme.dir;fdoc.documentElement.dataset.look=S.tpl.theme.look||'';fdoc.documentElement.dataset.bg=S.tpl.theme.bgfx||'';fdoc.documentElement.lang=S.tpl.theme.dir==='ltr'?'en':'ar';
  fdoc.body.innerHTML=bodyHtml(S.tpl);
  const old=fdoc.querySelector('link[href*="fonts.googleapis.com/css2"]');const want=fontsLink(S.tpl.theme,S.tpl.sections);
  if(want){const m=want.match(/href="(https:\/\/fonts.googleapis.com\/css2[^"]+)"/);if(m&&(!old||old.href!==m[1].replace(/&amp;/g,'&'))){if(old)old.remove();const l=fdoc.createElement('link');l.rel='stylesheet';l.href=m[1];fdoc.head.appendChild(l)}}else if(old)old.remove();
@@ -226,7 +227,7 @@ function F(o,k,label,kind,opt,hint){
 }
 const WOPT=[[100,'كامل العرض'],[66,'ثلثين'],[50,'نص العرض'],[33,'تلت العرض'],[25,'ربع العرض'],[0,'على قد المحتوى']];
 const ALOPT=[['','زي القسم'],['start','بداية (يمين)'],['center','وسط'],['end','نهاية (شمال)']];
-const ANIM=[['','بدون حركة'],['fade','ظهور تدريجي'],['up','طلوع من تحت'],['zoom','تكبير'],['slide','انزلاق'],['bounce','نط'],['pulse','نبض'],['float','طفو']];
+const ANIM=[['','بدون حركة'],['fade','ظهور تدريجي'],['up','طلوع من تحت'],['zoom','تكبير'],['slide','انزلاق'],['bounce','نط'],['pulse','نبض'],['float','طفو']].concat(EX.anim);
 const FL={
  heading:[['text','النص','a'],['size','حجم الخط','n',[14,110,1]],['wt','سمك الخط','s',[[400,'عادي'],[700,'عريض'],[900,'عريض جداً']]],['color','لون النص','c'],['font','نوع الخط','f']],
  text:[['text','النص','a'],['size','حجم الخط','n',[12,32,1]],['op','الشفافية','n',[30,100,5]],['color','لون النص','c']],
@@ -258,8 +259,8 @@ function panelSec(){
   h+=`<div class="grp"><b>شكل القسم</b>${F('sec','name','اسم القسم (ليك بس)','t')}${F('sec','lay','تقسيم القسم','s',[['','عادي (العناصر ورا بعض)'],['split','عمودين (نص + صورة)']])}${F('st','al','محاذاة العناصر','s',[['start','بداية (يمين)'],['center','وسط'],['end','نهاية (شمال)'],['between','موزعة على العرض (للشريط العلوي)']])}`;
   const bgv=s.st.bg;h+=`<div class="fld"><label>خلفية القسم</label><div class="pal">${[['','بدون'],['bg','خلفية'],['sf','سطح'],['p','أساسي'],['s','ثانوي'],['tx','غامق']].map(x=>`<button data-act="bgk" data-v="${x[0]}" style="${bgv===x[0]?'box-shadow:0 0 0 3px #5b4bdb;':''}background:${x[0]?'var(--k'+x[0]+')':'#fff'};font-size:11px;align-items:center;justify-content:center;color:${x[0]&&x[0]!=='bg'&&x[0]!=='sf'?'#fff':'#333'}">${x[1]}</button>`).join('')}</div></div>`;
   h+=F('st','bg','أو لون خاص','c')+F('st','tx','لون الكلام في القسم','c')+F('st','pad','المسافة فوق وتحت','n',[0,200,5])+F('st','minh','أقل ارتفاع للقسم','n',[0,900,10])
-   +F('st','deco','زخرفة الخلفية','s',[['','بدون'],['dots','نقط'],['grid','شبكة'],['stripes','خطوط مائلة'],['bubbles','فقاعات ملونة'],['glow','توهج']])
-   +F('st','clip','شكل حافة القسم','s',[['','مستقيمة'],['curve','منحنية تحت'],['slant','مائلة'],['arch','قوس فوق']])
+   +F('st','deco','زخرفة الخلفية','s',[['','بدون'],['dots','نقط'],['grid','شبكة'],['stripes','خطوط مائلة'],['bubbles','فقاعات ملونة'],['glow','توهج']].concat(EX.deco))
+   +F('st','clip','شكل حافة القسم','s',[['','مستقيمة'],['curve','منحنية تحت'],['slant','مائلة'],['arch','قوس فوق']].concat(EX.clip))
    +F('st','bgimg','صورة خلفية','img')+(s.st.bgimg?F('st','ov','تعتيم فوق الصورة','n',[0,90,5]):'')+`</div>`;
  }else{
   const s=T.sections[S.si],b=s&&s.blocks[S.bi];if(!b){S.view='sec';return panelSec()}
@@ -275,6 +276,7 @@ function panelDesign(){
  const T=S.tpl.theme;let h=`<h3>🎨 تصميم الموقع كله</h3><p class="sub">أي تغيير هنا بيتطبق على الصفحة كلها.</p>`;
  h+=`<div class="grp"><b>فاتح / غامق</b><div class="two"><button class="big alt" data-act="mode" data-m="light" style="margin:0">☀️ فاتح</button><button class="big alt" data-act="mode" data-m="dark" style="margin:0">🌙 غامق</button></div></div>`;
  h+=`<div class="grp"><b>ألوان جاهزة</b><div class="pal">${PALETTES.map((p,i)=>`<button data-act="pal" data-i="${i}" title="${p[0]}"><i style="background:${p[1]}"></i><i style="background:${p[2]}"></i><i style="background:${p[3]};border:1px solid #eee"></i><i style="background:${p[4]}"></i></button>`).join('')}</div></div>`;
+ h+=`<div class="grp"><b>ستايل التصميم</b>${F('theme','look','شكل الكروت والأزرار','s',EX.looks)}${F('theme','bgfx','خلفية الصفحة','s',EX.bgfx)}<p class="sub">جرّب ستايل بروتاليست أو زجاجي أو نيون أو طين... وغيّر الألوان بعده.</p></div>`;
  h+=`<div class="grp"><b>الألوان</b>${F('theme','p','اللون الأساسي (الأزرار والتمييز)','c')}${F('theme','s','اللون الثانوي','c')}${F('theme','bg','خلفية الصفحة','c')}${F('theme','sf','خلفية الكروت والأقسام','c')}${F('theme','tx','لون الكلام','c')}</div>`;
  h+=`<div class="grp"><b>الخطوط</b>${F('theme','hf','خط العناوين والأزرار','f','plain')}${F('theme','bf','خط الكلام','f','plain')}${F('theme','fs','حجم الكلام','n',[14,24,1])}<label class="sub"><input type="checkbox" data-o="theme" data-k="online" ${T.online?'checked':''}> حمّل الخطوط من النت (لو مفيش نت بيستخدم خط الجهاز)</label></div>`;
  h+=`<div class="grp"><b>الأشكال والمسافات</b>${F('theme','r','تدوير الحواف','n',[0,48,1])}${F('theme','sh','الظل','s',[['none','بدون'],['soft','خفيف'],['strong','قوي']])}${F('theme','gap','المسافة بين العناصر','n',[0,60,2])}${F('theme','width','عرض المحتوى','s',[[820,'ضيق'],[1100,'وسط'],[1300,'واسع']])}${F('theme','dir','اتجاه الصفحة','s',[['rtl','عربي (من اليمين)'],['ltr','English (من الشمال)']])}</div>`;
