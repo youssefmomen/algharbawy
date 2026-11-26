@@ -94,7 +94,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 var SEL='#heroPose,#trackPose,.auth-char img,.pop-ch',
  rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 function hop(im){if(rm||!im.animate)return;im.animate([{scale:'1'},{scale:'1.05'},{scale:'.99'},{scale:'1'}],{duration:420,easing:'ease-out'});}
-var cats=['greet','start','back'],ci=0;
+var cats=['greet','start'],ci=0;
 document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(!im)return;hop(im);
  var b=im.parentNode&&im.parentNode.querySelector('.bubble');
  if(b&&window.mmBubble){var t=mmBubble('waving',cats[ci++%cats.length],'char');if(t)b.textContent=t;}

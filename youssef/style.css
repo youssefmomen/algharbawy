@@ -50,6 +50,7 @@ section{padding:56px 0}
 .row.live{background:var(--mint)}
 .row .btn{padding:7px 16px;font-size:13px;flex:none}
 .feat{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.feat3{grid-template-columns:repeat(3,1fr)}
 .feat .f{display:flex;gap:16px;align-items:center;background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:18px;box-shadow:5px 5px 0 var(--ink)}
 .feat .f i{font-style:normal;flex:none;display:grid;place-items:center;width:60px;height:60px;border:3px solid var(--ink);border-radius:14px;background:var(--accent)}
 .feat .f>div{min-width:0}
@@ -81,7 +82,8 @@ footer .fl{display:flex;gap:18px;justify-content:center;margin-bottom:10px;font-
  .ph-note{font-size:11px}
  .bubble{right:0;font-size:12.5px;max-width:160px}
  .strip .wrap{grid-template-columns:repeat(2,1fr)}
- .rows,.feat{grid-template-columns:1fr}
+ .rows,.feat,.feat3{grid-template-columns:1fr}
+ .feat .f i{width:44px;height:44px;border-radius:12px}
  .row{padding:12px 12px;gap:10px}.row .btn{display:none}.row .chip{font-size:11px;padding:2px 8px}
  .teach .wrap{grid-template-columns:1fr}.teach svg{height:190px}.teach .pfig{width:min(86%,330px)}
  .sh h2,.teach h2{font-size:28px}
@@ -95,7 +97,7 @@ footer .fl{display:flex;gap:18px;justify-content:center;margin-bottom:10px;font-
 .th h1{font-weight:900;font-size:40px;line-height:1.4}
 .th h1 em{font-style:normal;color:var(--ink)}
 .th .char{position:relative;text-align:center}
-.th .char svg{height:210px;margin:auto;display:block}
+.th .char svg,.th .char img{height:210px;margin:auto;display:block}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
 .tabs span{border:2.5px solid var(--ink);border-radius:999px;padding:6px 18px;font-weight:800;background:var(--paper);font-size:14px}
 .tabs span.on{background:var(--primary);color:#fffdf2}
@@ -111,10 +113,10 @@ footer .fl{display:flex;gap:18px;justify-content:center;margin-bottom:10px;font-
 .hint{background:var(--sky);border:2.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-weight:700;font-size:14px;line-height:1.9;margin-bottom:14px}
 .pbtn{display:inline-block;background:var(--accent);border:2.5px solid var(--ink);border-radius:999px;padding:10px 20px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
 @media(max-width:760px){
- .th{padding:24px 0 20px}
- .th .wrap{grid-template-columns:1fr}
- .th h1{font-size:28px}
- .th .char svg{height:150px}
+ .th{padding:20px 0 22px}
+ .th .wrap{grid-template-columns:1fr 120px;gap:0 12px;align-items:end}
+ .th h1{font-size:26px}
+ body .th .char img{height:120px;margin-top:70px}
  .lessons{grid-template-columns:1fr}
 }
 
@@ -133,6 +135,9 @@ h1[data-go],h2[data-go],.stage b[data-go]{text-decoration:underline dotted var(-
  body .hero .bubble{position:absolute;left:0;right:auto;top:0;bottom:auto;margin:0;max-width:172px;width:auto;font-size:12.5px;line-height:1.55;padding:10px 14px}
  body .hero .bubble::before{left:74px}
  body .hero .bubble::after{left:75.5px}
+ body .th .bubble{max-width:150px}
+ body .th .bubble::before{left:49px}
+ body .th .bubble::after{left:50.5px}
 }
 
 @media (min-width:861px){
