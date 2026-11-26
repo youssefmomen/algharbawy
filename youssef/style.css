@@ -60,7 +60,7 @@ section{padding:56px 0}
 .demo .bb::before{content:"";position:absolute;right:-12px;top:34%;margin-top:-10px;width:20px;height:20px;background:var(--ink);transform:rotate(45deg)}
 .demo .bb::after{content:"";position:absolute;right:-7.1px;top:34%;margin-top:-8.5px;width:17px;height:17px;background:inherit;transform:rotate(45deg)}
 .demo .bb b{color:var(--primary)}
-.teach{background:var(--primary);color:#fffdf2;border-top:4px solid var(--ink);border-bottom:4px solid var(--ink)}
+.teach{background:#2B5DA3;color:#fffdf2;border-top:4px solid var(--ink);border-bottom:4px solid var(--ink)}
 .teach .wrap{display:grid;grid-template-columns:.7fr 1.3fr;gap:30px;align-items:center;padding-top:48px;padding-bottom:48px}
 .teach .pfig{display:block;width:100%;max-width:340px;margin:0 auto}
 .teach h2{font-weight:900;font-size:36px;color:var(--accent);margin-bottom:8px}
