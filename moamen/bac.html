@@ -81,6 +81,10 @@ textarea{width:100%;min-height:84px;border:2px dashed var(--ink);border-radius:1
 .done-screen h2{font-family:'Lalezar',sans-serif;font-size:26px;font-weight:400;color:var(--green);margin:8px 0 6px}
 .done-screen p{font-size:14px;line-height:2;font-weight:600}
 footer{height:30px}
+.grp{background:#efe6cf;border-top:2px solid var(--ink);padding:12px 16px;text-align:center;font-size:13px}
+.grp .grp-t{display:block;font-weight:800;color:var(--ink);margin-bottom:6px;font-size:12.5px;letter-spacing:.3px}
+.grp a{display:inline-block;margin:2px 6px;padding:5px 14px;border:2px solid var(--ink);border-radius:99px;color:var(--ink);text-decoration:none;font-weight:700;background:var(--paper)}
+.grp a.on{background:var(--ink);color:var(--yellow);cursor:default}
 .zoom{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}
 .zoom img{max-width:100%;max-height:100%}
 .zoom.on{display:flex}
@@ -103,7 +107,8 @@ footer{height:30px}
 .bk ul.dash li{margin:6px 0}
 .bk .num{color:var(--blue);font-weight:800}
 .rh-star svg{width:19px;height:19px;vertical-align:-3px;margin-left:4px;fill:none;stroke:var(--red);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.sec-h{margin:4px 14px 10px;font-size:19px;font-weight:400;font-family:'Lalezar',sans-serif}
+.sec-h{margin:18px 14px 10px;font-size:19px;font-weight:400;font-family:'Lalezar',sans-serif}
+.sec-h .sec-ch{height:46px;width:auto;vertical-align:-14px;margin:-18px 0 -12px 6px;filter:drop-shadow(2px 2px 0 rgba(34,48,60,.2))}
 .sec-h::after{content:"";display:block;height:6px;width:120px;background:var(--yellow);border-radius:60% 40% 55% 45%/70% 60% 40% 30%;margin-top:2px;opacity:.8}
 .map{padding:26px 20px;display:flex;flex-direction:column;align-items:center;gap:0;position:relative}
 .node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1}
@@ -187,10 +192,10 @@ main{max-width:720px;margin:0 auto}
 </header>
 <div class="nprog"><i id="fill"></i></div>
 <main id="main"></main>
-<div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">موقع مؤمن الغرباوي التعليمي · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي · تعليم العربية</a></div><footer></footer>
+<div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">منصة مستر مؤمن · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي · تعليم العربية</a></div><footer></footer>
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
 <div class="char-wrap" id="charWrap" hidden>
-<img class="ch-fig" id="chFig" src="assets/img/mr-moamen-pointing.png" alt="مستر مؤمن">
+<img class="ch-fig" id="chFig" src="assets/img/mr-moamen-tablet.png" alt="مستر مؤمن">
 <div class="simp-bub" id="simpBub">
 <button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
 <span class="sb-txt" id="sbTxt"></span>
@@ -882,8 +887,8 @@ function chime(){
     });
   }catch(e){}
 }
-function showPop(html,ms,cb){
-  var pose=ms?'thumbsup':'waving';
+function showPop(html,ms,cb,ps){
+  var pose=ps||(ms?'trophy':'waving');
   var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="assets/img/mr-moamen-'+pose+'.png" alt="مستر مؤمن">'+html+'</div>';
   document.body.appendChild(o);
   chime();
@@ -929,7 +934,7 @@ function renderMap(){
     S.view='lesson';S.seg=+b.dataset.node;S.sub=0;save();render();
   };});
   if(!S.seenIntro){
-    var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>');
+    var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>',0,null,'map');
     S.seenIntro=true;save();
     o.querySelector('#introOk').onclick=function(){o.remove();};
   }
@@ -983,11 +988,11 @@ function segIds(i){
   var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
-var SIMP_AV='<img src="assets/img/mr-moamen-thumbsup.png" alt="" style="width:100%;height:100%;object-fit:contain">';
-var SIMP_AV_SM='<img src="assets/img/mr-moamen-thumbsup.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
+var SIMP_AV='<img src="assets/img/mr-moamen-tablet.png" alt="" style="width:100%;height:100%;object-fit:contain">';
+var SIMP_AV_SM='<img src="assets/img/mr-moamen-tablet.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
 function simpOff(){try{return localStorage.getItem('bac-simp-off')==='1';}catch(e){return false;}}
 function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
-var POSES={pointing:'assets/img/mr-moamen-pointing.png',waving:'assets/img/mr-moamen-waving.png'};
+var POSES={pointing:'assets/img/mr-moamen-tablet.png',waving:'assets/img/mr-moamen-tablet.png'};
 function simpPose(){var k=localStorage.getItem('bac-simp-met')?'pointing':'waving';localStorage.setItem('bac-simp-met','1');return POSES[k];}
 function showSimp(id,manual){
   var txt=(window.BAC_SIMPLIFY||{})[id];if(!txt)return;
@@ -1033,7 +1038,7 @@ function renderLesson(){
   document.getElementById('mbar').hidden=true;
   var m=document.getElementById('main');
   if(S.seg>=LES.segments.length){
-    m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-moamen-celebrating.png" alt="مستر مؤمن"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت '+LES.title.split(':')[0]+'</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
+    m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-moamen-trophy.png" alt="مستر مؤمن"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت '+LES.title.split(':')[0]+'</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
     paint();chime();window.scrollTo(0,0);
     document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
     return;
@@ -1046,11 +1051,11 @@ function renderLesson(){
   }else{
     var letters=['أ','ب','ج','د'];
     if(sg.check&&sg.check.length){
-      h+='<div class="sec-h">أسئلة سريعة على ما قرأته</div>';
+      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-moamen-lightbulb.png" alt="">أسئلة سريعة على ما قرأته</div>';
       h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
     }
     if(sg.questions.length){
-      h+='<div class="sec-h">أسئلة الكتاب</div>';
+      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-moamen-magnifier.png" alt="">أسئلة الكتاب</div>';
       h+=sg.questions.map(function(q,i){
         var id='q'+(base+i);
         return q.t==='mcq'?mcqHTML(q,id,letters):openHTML(q,id);
