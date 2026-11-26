@@ -140,5 +140,33 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['kind', 'refId', 'teacherId', 'studentUid', 'studentEmail', 'title', 'score', 'total', 'durationSec', 'finishedAt']);
       allow update, delete: if false;
     }
+
+    // ===== منصة مستر يوسف: إدارة المحتوى (مالك + مساعدون) =====
+    // صلاحيات المساعد: وثيقة staff/{uid} فيها perms {edit, publish}. المالك هو isAdmin().
+    function staffPerms() {
+      return get(/databases/$(database)/documents/staff/$(request.auth.uid)).data.perms;
+    }
+    function isStaff() {
+      return signedIn() && exists(/databases/$(database)/documents/staff/$(request.auth.uid));
+    }
+
+    // المساعدون: المالك فقط ينشئ ويعدل ويحذف؛ المساعد يقرأ وثيقته هو فقط
+    match /staff/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // المحتوى المنشور: يقرأه الجميع (الطلاب بدون حساب)؛ الكتابة للمالك أو مساعد عنده صلاحية نشر
+    match /cmsLive/{id} {
+      allow read: if true;
+      allow write: if isAdmin() || (signedIn() && staffPerms().publish == true);
+    }
+
+    // مسودة المحتوى: يقرأها المالك وأي مساعد؛ الكتابة للمالك أو مساعد عنده صلاحية تعديل
+    match /cmsDraft/{id} {
+      allow get, list: if isAdmin() || isStaff();
+      allow write: if isAdmin() || (signedIn() && staffPerms().edit == true);
+    }
   }
 }
