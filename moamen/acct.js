@@ -42,8 +42,8 @@ function google(){return load().then(function(ok){if(!ok)throw{code:'auth/networ
 function reset(id){var em=toEmail(id);if(!em)return Promise.reject({code:'auth/invalid-email'});return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.sendPasswordResetEmail(em);});}
 function signOut(){return load().then(function(){clearProg();pending=null;return auth.signOut();});}
 function loadProfile(){if(!user)return Promise.resolve(null);return db.collection('users').doc(user.uid).get().then(function(d){profile=d.exists?d.data():{};return profile;}).catch(function(){profile={};return profile;});}
-function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.name!=null)p.name=String(patch.name).slice(0,100);if(patch.avatarId)p.avatarId=String(patch.avatarId).slice(0,24);
- return db.collection('users').doc(user.uid).set(p,{merge:true}).then(function(){profile=Object.assign(profile||{},p);fire();paintChip();});}
+function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.avatarData!=null){var ad=String(patch.avatarData);if(ad.length>100000)return Promise.reject({code:'big'});p.avatarData=ad?ad:firebase.firestore.FieldValue.delete();}if(patch.name!=null)p.name=String(patch.name).slice(0,100);if(patch.avatarId)p.avatarId=String(patch.avatarId).slice(0,24);
+ return db.collection('users').doc(user.uid).set(p,{merge:true}).then(function(){profile=Object.assign(profile||{},p);if(patch.avatarData!=null){if(patch.avatarData)profile.avatarData=patch.avatarData;else delete profile.avatarData;}fire();paintChip();});}
 /* ---- progress lives in the account only. In this tab it sits in sessionStorage (cleared when the tab closes),
    never in localStorage; the lesson page's localStorage calls for progress keys are redirected here. ---- */
 var rawGet=Storage.prototype.getItem,rawSet=Storage.prototype.setItem,rawDel=Storage.prototype.removeItem;
@@ -98,7 +98,7 @@ function paintChip(){
  var host=document.querySelector('nav .wrap'),hd=document.querySelector('.nhd');if(!host&&!hd)return;
  var a=document.createElement('a');a.id='mmChip';a.className='mm-chip';
  if(user){var av=(profile&&profile.avatarId)||'waving';if(!POSES[av])av='waving';a.href='profile.html';a.setAttribute('aria-label','حسابي');
-  a.innerHTML='<img src="'+img(av)+'" alt=""><span>'+(first(profile&&profile.name)||'حسابي').replace(/</g,'')+'</span>';}
+  var ph=profile&&typeof profile.avatarData==='string'&&profile.avatarData.indexOf('data:image/jpeg')===0;a.innerHTML=(ph?'<img class="ph" src="'+profile.avatarData+'" alt="">':'<img src="'+img(av)+'" alt="">')+'<span>'+(first(profile&&profile.name)||'حسابي').replace(/</g,'')+'</span>';}
  else{a.href='login.html?next='+encodeURIComponent(location.pathname.split('/').pop()+location.search);a.setAttribute('aria-label','دخول');a.innerHTML='<span>دخول</span>';a.classList.add('guest');}
  if(host){host.insertBefore(a,host.querySelector('.mm-snd')||host.querySelector('.btn'));}
  else{hd.insertBefore(a,hd.querySelector('.mm-snd')||hd.querySelector('.nhome'));}
