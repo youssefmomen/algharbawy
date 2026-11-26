@@ -85,3 +85,4 @@ footer .fl a{color:#f6efdd;font-weight:700;text-decoration:underline;text-underl
 }
 .vp{margin-top:8px}.vp h2{font-size:22px;margin:0 0 8px}.vp p{line-height:1.9;margin:0 0 12px}.vp .pbtn{margin-top:10px;width:100%}
 .pbtn[hidden],.seg[hidden],.vp[hidden],form[hidden]{display:none!important}
+small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;border:0;font-family:inherit;font-size:15px;cursor:pointer;padding:10px;margin:4px auto 0;min-height:44px}
