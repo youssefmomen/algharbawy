@@ -198,8 +198,8 @@ main{max-width:720px;margin:0 auto}
 </div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script src="assets/data/25-bac-tarikh-g2p1.js?v=11"></script>
-<script src="assets/data/25-bac-simplify.js?v=3"></script>
+<script src="assets/data/25-bac-tarikh-g2p1.js?v=12"></script>
+<script src="assets/data/25-bac-simplify.js?v=4"></script>
 <script>
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
@@ -218,6 +218,70 @@ function dood(name,style,color,size){
 var ST='<svg viewBox="0 0 100 100"><path d="M50 8 L57 39 L88 40 L63 58 L71 89 L50 69 L29 89 L37 58 L12 40 L43 39 Z"/></svg>';
 var T='fill="none" stroke-linecap="round" stroke-linejoin="round"';
 var ILLUST={
+"l8-1":{cap:"من احتلال الأرض إلى احتلال العقول",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="72" cy="72" r="34" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M72 44 a28 28 0 0 1 0 56 M72 44 a28 28 0 0 0 0 56" stroke="var(--ink)"/>'+
+'<path d="M40 72 h64 M46 54 h52 M46 90 h52" stroke="var(--ink)"/>'+
+'<rect x="140" y="44" width="44" height="58" rx="7" stroke="var(--ink)" fill="#fff"/>'+
+'<circle cx="162" cy="66" r="9" stroke="var(--red)" fill="var(--peach)"/>'+
+'<path d="M150 88 h24" stroke="var(--ink)"/>'+
+'<path d="M112 66 h20 M112 82 h20" stroke="var(--blue)"/>'+
+'<path d="M30 124 H190" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">السيطرة على القرار من الخارج</text></g></svg>'},
+"l8-2":{cap:"حرب تستهدف العقول لا الأرض",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="60" r="26" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M110 86 v18" stroke="var(--ink)"/>'+
+'<path d="M88 104 h44 l-6 22 h-32 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M52 34 q14 -18 36 -22 M132 12 q22 4 36 22" stroke="var(--red)"/>'+
+'<path d="M84 60 h52 M84 70 h52" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">إعادة تشكيل الوعي الجماعي</text></g></svg>'},
+"l8-3":{cap:"الشباب في مرمى الاستقطاب",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="66" r="30" stroke="var(--red)"/>'+
+'<circle cx="110" cy="66" r="14" stroke="var(--red)"/>'+
+'<path d="M110 22 v14 M110 96 v14 M66 66 h14 M140 66 h14" stroke="var(--red)"/>'+
+'<circle cx="110" cy="60" r="8" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M96 84 q14 10 28 0" stroke="var(--ink)"/>'+
+'<path d="M36 126 H184" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">من الإحباط إلى الصراع الداخلي</text></g></svg>'},
+"l8-4":{cap:"الإرهاب يستنزف الدول من الداخل",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 26 l36 13 v24 q0 32 -36 46 q-36 -14 -36 -46 v-24 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M110 40 v34 M110 82 v4" stroke="var(--red)"/>'+
+'<path d="M52 122 h116" stroke="var(--ink)"/>'+
+'<path d="M52 130 h116" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">تقويض الثقة في المؤسسات</text></g></svg>'},
+"l8-5":{cap:"الإعلام الوطني درع الوعي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M70 46 h80 l14 60 h-108 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M62 46 l48 -18 48 18" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<circle cx="110" cy="78" r="12" stroke="var(--blue)" fill="var(--peach)"/>'+
+'<path d="M92 100 h36" stroke="var(--ink)"/>'+
+'<path d="M30 126 H190" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">رواية موضوعية ضد الشائعات</text></g></svg>'},
+"l8-6":{cap:"الأسرة خط الدفاع الأول",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M56 126 v-40 l54 -34 54 34 v40 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M46 92 l64 -40 64 40" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<circle cx="96" cy="98" r="9" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<circle cx="126" cy="98" r="9" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M84 120 q26 -14 52 0" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">غرس القيم وتعزيز الانتماء</text></g></svg>'},
+
 "l7-1":{cap:"تزوير الانتخابات شوَّه الحياة السياسية",svg:
 '<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
 '<rect x="70" y="46" width="80" height="66" rx="6" stroke="var(--ink)" fill="#fff"/>'+
@@ -822,7 +886,7 @@ function showPop(html,ms,cb){
   if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
   return o;
 }
-var ROBOT='<svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"><rect x="8" y="14" width="32" height="24" rx="6"/><line x1="24" y1="7" x2="24" y2="14"/><circle cx="24" cy="5" r="2.4" fill="var(--ink)" stroke="none"/><circle cx="17" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><circle cx="31" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><line x1="18" y1="33" x2="30" y2="33"/></svg>';
+var ROBOT='<img src="assets/img/mr-moamen-avatar.png" alt="" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0">';
 function segDone(i){
   var sg=LES.segments[i],base=0;
   for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
