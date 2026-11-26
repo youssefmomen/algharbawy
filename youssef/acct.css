@@ -144,3 +144,9 @@ small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;bor
 .hero .char img{height:215px;margin-top:58px}
 .hero .bubble{right:auto;left:0;top:0;max-width:150px;font-size:12px}
 }
+
+/* no text selection on page content; inputs and editable fields stay selectable */
+html{-webkit-tap-highlight-color:transparent}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img{-webkit-user-drag:none}
