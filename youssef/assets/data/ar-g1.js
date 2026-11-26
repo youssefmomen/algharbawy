@@ -19,7 +19,7 @@ words1:"<div class='mh'>أولًا: نركّب كلمات:</div><p class='tx'>ب
 words2:"<div class='mh'>ثانيًا: نقرأ ونفهم:</div><p class='tx'>اقرا الكلمات دي وفكّر في معناها: <b>باب البيت</b> — <b>جمل كبير</b> — <b>أرنب صغير</b>. بعدين حط كل كلمة في جملة من عندك.</p>"
 },
 lessons:[{
-id:"l1",stage:"u1",title:"الدرس الأول: حرف الألف",pages:"٤٧–٥٠",
+id:"l1",stage:"u1",title:"الدرس الأول: حرف الألف",
 segments:[
 {label:"نتعرف على حرف الألف",
  explain:[{b:"g1l1song"},{b:"g1l1shapes"}],
@@ -57,7 +57,7 @@ segments:[
  ]}
 ]},
 {
-id:"l2",stage:"u1",title:"الدرس التاني: حرف الباء",pages:"٥–٨",
+id:"l2",stage:"u1",title:"الدرس التاني: حرف الباء",
 segments:[
 {label:"نتعرف على حرف الباء",
  explain:[{b:"baa1"},{b:"baa2"}],
@@ -72,7 +72,7 @@ segments:[
  ]}
 ]},
 {
-id:"l3",stage:"u2",title:"الدرس التالت: أقرأ كلماتي الأولى",pages:"٩–١٢",
+id:"l3",stage:"u2",title:"الدرس التالت: أقرأ كلماتي الأولى",
 segments:[
 {label:"نركّب كلمات من الحروف",
  explain:[{b:"words1"},{b:"words2"}],
