@@ -108,12 +108,13 @@ window.mmBubble=function(pose,cat,key){
   var base=window.MM_BUBBLES[cat]||window.MM_BUBBLES.greet,
       pl=(cat==="greet"||cat==="back"||cat==="start")?(window.MM_POSE_LINES[pose]||[]):[],
       pool=pl.concat(base);
-  var k="my-bub-"+key,rec=[];
+  var k="my-bub-"+cat,lk="my-line-"+key,rec=[];
+  try{var kept=sessionStorage.getItem(lk);if(kept&&pool.indexOf(kept)>=0)return kept;}catch(e){}
   try{rec=JSON.parse(sessionStorage.getItem(k)||"[]")}catch(e){}
   var avail=pool.filter(function(x){return rec.indexOf(x)<0});
   if(!avail.length){rec=[];avail=pool}
   var pick=avail[Math.floor(Math.random()*avail.length)];
   rec.push(pick);if(rec.length>4)rec.shift();
-  try{sessionStorage.setItem(k,JSON.stringify(rec))}catch(e){}
+  try{sessionStorage.setItem(k,JSON.stringify(rec));sessionStorage.setItem(lk,pick)}catch(e){}
   return pick;
 };
