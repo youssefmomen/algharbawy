@@ -106,7 +106,8 @@ function loginUrl(){return 'login.html?need=1&next='+encodeURIComponent('bac.htm
 function show(){document.documentElement.style.visibility='';}
 function gateNo(){if(GATED)location.replace(loginUrl());}
 function gateOK(h){if(!GATED)return;if(h){location.reload();return;}show();}
-function init(){paintChip();if(/login\.html|profile\.html/.test(location.pathname)||GATED||localStorage.getItem(FLAG))load();}
+function wa(){var f=document.querySelector('footer .fl');if(!f||f.querySelector('.wa'))return;var x=document.createElement('a');x.className='wa';x.href='https://wa.me/201063272601';x.target='_blank';x.rel='noopener';x.textContent='تواصل مع مستر مؤمن على واتساب';f.appendChild(x);}
+function init(){paintChip();wa();if(/login\.html|profile\.html/.test(location.pathname)||GATED||localStorage.getItem(FLAG))load();}
 if(GATED){document.documentElement.style.visibility='hidden';
  if(!localStorage.getItem(FLAG)){location.replace(loginUrl());}
  else{setTimeout(function(){if(document.documentElement.style.visibility==='hidden')show();},12000);load();}}
