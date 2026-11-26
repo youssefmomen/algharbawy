@@ -83,3 +83,5 @@ footer .fl a{color:#f6efdd;font-weight:700;text-decoration:underline;text-underl
  .auth-char .bubble::after{left:-10px;bottom:14px;border:0;border-left:3px solid #22303c;border-bottom:3px solid #22303c;transform:rotate(45deg)}
  .fld input{font-size:16px;min-height:48px}
 }
+.vp{margin-top:8px}.vp h2{font-size:22px;margin:0 0 8px}.vp p{line-height:1.9;margin:0 0 12px}.vp .pbtn{margin-top:10px;width:100%}
+.pbtn[hidden],.seg[hidden],.vp[hidden],form[hidden]{display:none!important}
