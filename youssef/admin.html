@@ -1,0 +1,77 @@
+<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=color-scheme content='only light'><meta name=supported-color-schemes content='light'><meta name=darkreader-lock><meta name="robots" content="noindex"><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=20261126y9"><link rel="stylesheet" href="admin.css?v=1"><title>لوحة تحكم المحتوى | منصة مستر يوسف</title></head><body class="adm">
+<nav><div class="wrap"><a class="brand" href="index.html"><span class="dm"><b>ي</b></span>منصة مستر يوسف</a><ul><li><a href="index.html">الموقع</a></li><li><a href="track.html?t=g1">الدروس</a></li></ul><a class="btn" href="index.html">الرئيسية</a></div></nav>
+<div class="adm-wrap">
+
+  <!-- بوابة الدخول -->
+  <div id="gate" hidden>
+    <div class="adm-head"><h1>لوحة تحكم المحتوى</h1></div>
+    <div class="adm-note">الصفحة دي لمالك المنصة والمساعدين بس. الطلاب مش محتاجين حساب أبدًا.</div>
+    <div class="adm-card">
+      <div class="adm-fld"><label for="gEmail">الإيميل</label><input id="gEmail" type="email" dir="ltr" autocomplete="email" inputmode="email" placeholder="name@gmail.com"></div>
+      <div class="adm-fld"><label for="gPass">كلمة السر</label><input id="gPass" type="password" dir="ltr" autocomplete="current-password"></div>
+      <div class="adm-msg" id="gMsg" role="alert"></div>
+      <button class="adm-btn pri block" id="gGo" type="button">دخول</button>
+      <button class="adm-back" id="gForgot" type="button">نسيت كلمة السر؟</button>
+    </div>
+  </div>
+
+  <div id="app" hidden>
+    <div class="adm-head">
+      <h1>لوحة تحكم المحتوى</h1>
+      <div class="adm-who"><span id="whoEmail"></span><span class="adm-badge" id="whoRole"></span><button class="adm-signout" id="btnOut" type="button">خروج</button></div>
+    </div>
+    <div class="adm-tabs" id="tabs">
+      <button type="button" data-tab="content" class="on">المحتوى</button>
+      <button type="button" data-tab="team" id="tabTeam" hidden>الفريق</button>
+    </div>
+
+    <!-- المحتوى -->
+    <div id="panelContent">
+      <div id="trackPick">
+        <div class="adm-sect"><span class="n">١</span>اختار الصف</div>
+        <div class="adm-chips" id="trackChips"></div>
+        <div class="adm-note" id="draftInfo" hidden></div>
+      </div>
+      <div id="treeBox"></div>
+      <div id="editorBox"></div>
+    </div>
+
+    <!-- الفريق -->
+    <div id="panelTeam" hidden>
+      <div class="adm-sect"><span class="n">١</span>المساعدون الحاليون</div>
+      <div id="teamList"></div>
+      <div class="adm-sect"><span class="n">٢</span>إضافة مساعد جديد</div>
+      <div class="adm-card">
+        <div class="adm-fld"><label for="tName">اسم المساعد</label><input id="tName" type="text" maxlength="60" placeholder="مثال: أ/ أحمد"></div>
+        <div class="adm-fld"><label for="tEmail">إيميل المساعد</label><input id="tEmail" type="email" dir="ltr" inputmode="email" placeholder="assistant@gmail.com"></div>
+        <div class="adm-fld"><label for="tPass">كلمة سر مؤقتة</label><input id="tPass" type="text" dir="ltr" minlength="6" placeholder="٦ حروف أو أرقام على الأقل"></div>
+        <div class="adm-fld"><label>صلاحياته</label>
+          <div class="adm-perms">
+            <label><input type="checkbox" id="pView" checked disabled> عرض</label>
+            <label><input type="checkbox" id="pEdit"> تعديل (مسودة)</label>
+            <label><input type="checkbox" id="pPublish"> نشر للطلاب</label>
+          </div>
+        </div>
+        <div class="adm-msg" id="tMsg" role="alert"></div>
+        <button class="adm-btn pri block" id="tAdd" type="button">إنشاء الحساب</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="adm-load" id="loading">جاري التحميل…</div>
+</div>
+
+<!-- شريط الحفظ والنشر -->
+<div class="adm-bar" id="saveBar" hidden>
+  <button class="adm-btn" id="btnPreview" type="button">معاينة</button>
+  <button class="adm-btn yel" id="btnSave" type="button">حفظ مسودة</button>
+  <button class="adm-btn pri" id="btnPublish" type="button">نشر للطلاب</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cms.js?v=1"></script>
+<script src="admin.js?v=1"></script>
+</body></html>
