@@ -106,3 +106,6 @@ small[hidden],.fld[hidden]{display:none!important}button.lnk{background:none;bor
 .trk button.on{background:#f5b301;box-shadow:3px 3px 0 #22303c}
 .trk small{font-weight:600;opacity:.75}
 .fld select{width:100%;border:2.5px solid #22303c;border-radius:12px;padding:12px 14px;font-family:inherit;font-size:16px;background:#fff;min-height:48px}
+
+.tabs[hidden],.demo[hidden],.subj[hidden],.lnk[hidden],button.lnk[hidden]{display:none!important}
+#heroPose,#trackPose,.auth-char img{will-change:translate,rotate}
