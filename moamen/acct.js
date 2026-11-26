@@ -1,12 +1,12 @@
 /* منصة مستر مؤمن: student accounts. Firebase Auth + Firestore (same project/rules as the old site).
    Cloud data: users/{uid} {email,name,role,avatarId,lastActive}; progress/{uid}.completed = string list:
-   "bac2:<lesson>:<itemId>:p<picked>" | "bac2:<lesson>:<itemId>:o" | "bac2:day:YYYY-MM-DD".  Guest mode keeps working with localStorage. */
+   "bac2:<lesson>:<itemId>:p<picked>" | "bac2:<lesson>:<itemId>:o" | "bac2:day:YYYY-MM-DD".  Email must be verified (Google counts as verified). */
 (function(){
 'use strict';
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
 var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',lightbulb:'فكرة',tablet:'تابلت',magnifier:'مُدقّق'};
-var auth=null,db=null,loading=null,user=null,profile=null,listeners=[];
+var auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
 function img(p){return 'assets/img/mr-moamen-'+p+'.png';}
 function one(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 function load(){
@@ -14,31 +14,29 @@ function load(){
  loading=SDK.reduce(function(p,f){return p.then(function(){return one(f);});},Promise.resolve()).then(function(){
   firebase.initializeApp(window.FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
   auth.onAuthStateChanged(function(u){
-   user=u;try{u?localStorage.setItem(FLAG,'1'):localStorage.removeItem(FLAG);}catch(e){}
-   if(u){db.collection('users').doc(u.uid).set({email:u.email||'',role:'student',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){});
-    loadProfile().then(function(){return hydrate();}).then(function(h){fire();paintChip();gateOK(h);});}
-   else{profile=null;clearProg();fire();paintChip();gateNo();}
+   if(u&&u.emailVerified){pending=null;activate(u);}
+   else{user=null;pending=u||null;try{localStorage.removeItem(FLAG);}catch(e){}profile=null;clearProg();fire();paintChip();gateNo();}
   });return true;}).catch(function(){loading=null;return false;});
  return loading;
 }
+function activate(u){
+ user=u;try{localStorage.setItem(FLAG,'1');}catch(e){}
+ db.collection('users').doc(u.uid).set({email:u.email||'',role:'student',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){});
+ loadProfile().then(function(){return hydrate();}).then(function(h){fire();paintChip();gateOK(h);});}
+function recheck(){return load().then(function(){if(!pending)return !!user;return pending.reload().then(function(){if(pending&&pending.emailVerified){var u=pending;pending=null;activate(u);return true;}return false;});});}
+function resend(){return load().then(function(){if(!pending)throw{code:'auth/user-not-found'};return pending.sendEmailVerification();});}
 function fire(){listeners.forEach(function(f){try{f(user,profile);}catch(e){}});}
 function arDigits(s){return String(s).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);});}
-function toEmail(id){
- var s=arDigits(id).trim().replace(/[\s-]/g,'');
- if(s.indexOf('@')>-1)return s.toLowerCase();
- s=s.replace(/^\+?20/,'0');if(/^1[0125]\d{8}$/.test(s))s='0'+s;
- if(/^01[0125]\d{8}$/.test(s))return s+DOM;
- return null;
-}
+function toEmail(id){var s=arDigits(id).trim().replace(/\s/g,'').toLowerCase();return /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(s)?s:null;}
 function errMsg(e){var c=(e&&e.code)||'';
- var m={'auth/invalid-credential':'البيانات غلط. راجع رقم الموبايل أو الإيميل وكلمة السر.','auth/wrong-password':'كلمة السر غلط.','auth/user-not-found':'مفيش حساب بالبيانات دي. جرّب «حساب جديد».','auth/invalid-login-credentials':'البيانات غلط. راجع رقم الموبايل أو الإيميل وكلمة السر.','auth/email-already-in-use':'الحساب ده موجود قبل كده. جرّب تسجيل الدخول.','auth/weak-password':'كلمة السر لازم تكون ٦ حروف أو أرقام على الأقل.','auth/invalid-email':'اكتب رقم موبايل صحيح (١١ رقم) أو إيميل صحيح.','auth/network-request-failed':'مفيش إنترنت دلوقتي. جرّب تاني.','auth/too-many-requests':'محاولات كتير. استنى شوية وجرّب تاني.','auth/popup-closed-by-user':'اتقفلت نافذة جوجل.','auth/operation-not-allowed':'الطريقة دي مش مفعلة.','auth/unauthorized-domain':'الدومين ده مش مسموح لتسجيل جوجل.'};
+ var m={'auth/invalid-credential':'البيانات غلط. راجع الإيميل وكلمة السر.','auth/wrong-password':'كلمة السر غلط.','auth/user-not-found':'مفيش حساب بالبيانات دي. جرّب «حساب جديد».','auth/invalid-login-credentials':'البيانات غلط. راجع الإيميل وكلمة السر.','auth/email-already-in-use':'الحساب ده موجود قبل كده. جرّب تسجيل الدخول.','auth/weak-password':'كلمة السر لازم تكون ٦ حروف أو أرقام على الأقل.','auth/invalid-email':'اكتب إيميل صحيح.','auth/too-many-requests':'محاولات كتير. استنى شوية وجرّب تاني.','auth/network-request-failed':'مفيش إنترنت دلوقتي. جرّب تاني.','auth/too-many-requests':'محاولات كتير. استنى شوية وجرّب تاني.','auth/popup-closed-by-user':'اتقفلت نافذة جوجل.','auth/operation-not-allowed':'الطريقة دي مش مفعلة.','auth/unauthorized-domain':'الدومين ده مش مسموح لتسجيل جوجل.'};
  return m[c]||'حصلت مشكلة. جرّب تاني بعد شوية.';}
-function signIn(id,pass){var em=toEmail(id);if(!em)return Promise.reject({code:'auth/invalid-email'});return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithEmailAndPassword(em,pass);});}
+function signIn(id,pass){var em=toEmail(id);if(!em)return Promise.reject({code:'auth/invalid-email'});return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithEmailAndPassword(em,pass);}).then(function(c){return {verified:!!c.user.emailVerified};});}
 function signUp(name,id,pass){var em=toEmail(id);if(!em)return Promise.reject({code:'auth/invalid-email'});
  return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.createUserWithEmailAndPassword(em,pass);}).then(function(c){
-  return db.collection('users').doc(c.user.uid).set({email:em,name:String(name||'').slice(0,100),role:'student',avatarId:'waving',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){return c;});});}
-function google(){return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());});}
-function signOut(){return load().then(function(){clearProg();return auth.signOut();});}
+  return db.collection('users').doc(c.user.uid).set({email:em,name:String(name||'').slice(0,100),role:'student',avatarId:'waving',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){}).then(function(){return c.user.sendEmailVerification().catch(function(){});}).then(function(){return {verified:false};});});}
+function google(){return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());}).then(function(){return {verified:true};});}
+function signOut(){return load().then(function(){clearProg();pending=null;return auth.signOut();});}
 function loadProfile(){if(!user)return Promise.resolve(null);return db.collection('users').doc(user.uid).get().then(function(d){profile=d.exists?d.data():{};return profile;}).catch(function(){profile={};return profile;});}
 function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.name!=null)p.name=String(patch.name).slice(0,100);if(patch.avatarId)p.avatarId=String(patch.avatarId).slice(0,24);
  return db.collection('users').doc(user.uid).set(p,{merge:true}).then(function(){profile=Object.assign(profile||{},p);fire();paintChip();});}
@@ -111,6 +109,6 @@ function init(){paintChip();if(/login\.html|profile\.html/.test(location.pathnam
 if(GATED){document.documentElement.style.visibility='hidden';
  if(!localStorage.getItem(FLAG)){location.replace(loginUrl());}
  else{setTimeout(function(){if(document.documentElement.style.visibility==='hidden')show();},12000);load();}}
-window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
+window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,recheck:recheck,resend:resend,pending:function(){return pending;},saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
