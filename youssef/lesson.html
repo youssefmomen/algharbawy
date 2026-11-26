@@ -181,6 +181,8 @@ body{padding-top:78px!important;padding-bottom:96px!important}
 .simp-c{position:relative}
 .simp-chip{position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;background:var(--yellow);border:2px solid var(--ink);border-radius:99px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:800;cursor:pointer;box-shadow:2px 2px 0 rgba(34,48,60,.25);color:var(--ink)}
 .card.bk.simp-c{padding-bottom:18px}
+.simp-static .simp-bub{padding:8px 10px}
+.simp-static .sb-txt{padding-left:0;margin-bottom:0}
 .simp-chip svg{width:17px;height:17px}
 .char-wrap{position:static;display:flex;direction:ltr;align-items:flex-end;gap:0;width:100%;margin:10px 0}
 .char-wrap[hidden]{display:none}
@@ -212,17 +214,9 @@ main{max-width:720px;margin:0 auto}
 <main id="main"></main>
 <div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">منصة مستر يوسف · اللغة العربية</a><a href="../moamen/">منصة مستر مؤمن · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي</a></div><footer></footer>
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
-<div class="char-wrap" id="charWrap" hidden>
-<img class="ch-fig" id="chFig" src="assets/img/mr-youssef-wave.png" alt="مستر يوسف">
-<div class="simp-bub" id="simpBub">
-<button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
-<span class="sb-txt" id="sbTxt"></span>
-<button class="sb-mode" id="sbMode" type="button"></button>
-</div>
-</div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g8ar:{src:"ar-g8",simp:"ar-g8-simplify",glob:"AR_G8",extra:["ar-g8-pre","ar-g8-nahw","ar-g8-u1","ar-g8-u2","ar-g8-u3","ar-g8-bal","ar-g8-imla","ar-g8-tabeer","ar-g8-tahaddath"],grade:"تانية إعدادي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",extra:["ar-g7az-mot","ar-g7az-fonon","ar-g7az-exams","ar-g7az-nahw-e","ar-g7az-nahw-a","ar-g7az-nahw-b","ar-g7az-nahw-c","ar-g7az-nahw-d","ar-g7az-unit1","ar-g7az-unit2","ar-g7az-rev"],grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
+<script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g8ar:{src:"ar-g8",simp:"ar-g8-simplify",glob:"AR_G8",grade:"تانية إعدادي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",extra:["ar-g7az-mot","ar-g7az-fonon","ar-g7az-exams","ar-g7az-nahw-e","ar-g7az-nahw-a","ar-g7az-nahw-b","ar-g7az-nahw-c","ar-g7az-nahw-d","ar-g7az-unit1","ar-g7az-unit2","ar-g7az-rev"],grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
 <script>document.write('<script src="assets/data/'+TC.src+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>document.write('<script src="assets/data/'+TC.simp+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');(TC.extra||[]).forEach(function(x){document.write('<script src="assets/data/'+x+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');});</script>
 <script>
@@ -1256,48 +1250,21 @@ function segIds(i){
 }
 var SIMP_AV='<img src="assets/img/mr-youssef-book.png" alt="" style="width:100%;height:100%;object-fit:contain">';
 var SIMP_AV_SM='<img src="assets/img/mr-youssef-book.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 15%;vertical-align:-5px">';
-function simpOff(){try{return localStorage.getItem('ar1-simp-off')==='1';}catch(e){return false;}}
-function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
 var POSES={pointing:'assets/img/mr-youssef-pointup.png',waving:'assets/img/mr-youssef-wave.png'};
 function simpPose(){var k=localStorage.getItem('ar1-simp-met')?'pointing':'waving';localStorage.setItem('ar1-simp-met','1');return POSES[k];}
-function hideSimp(){
-  var bub=window.__cw;
-  if(!bub)return;
-  bub.hidden=true;clearTimeout(showSimp.t);
-}
-function showSimp(id,manual){
-  var txt=(window.AR_SIMPLIFY||{})[id];if(!txt)return;
-  var bub=window.__cw;
-  var card=document.querySelector('[data-simp="'+id+'"]');
-  if(card&&bub)bub=card.after(bub)||bub;
-  document.getElementById('chFig').src=simpPose();
-  document.getElementById('sbTxt').textContent=txt;
-  document.getElementById('sbMode').textContent=simpModeLabel();
-  bub.hidden=false;
-  try{bub.scrollIntoView({behavior:'smooth',block:'nearest'});}catch(e){}
-  clearTimeout(showSimp.t);
-  showSimp.t=setTimeout(hideSimp,manual?12000:8000);
-}
-document.getElementById('sbX').onclick=hideSimp;
-document.getElementById('sbMode').onclick=function(){
-  try{localStorage.setItem('ar1-simp-off',simpOff()?'0':'1');}catch(e){}
-  this.textContent=simpModeLabel();
-};
 function setupSimp(m){
-  var cw=window.__cw||(window.__cw=document.getElementById('charWrap'));
-  if(cw&&!cw.isConnected)document.body.appendChild(cw);
-  hideSimp();
-  if(setupSimp.io){setupSimp.io.disconnect();setupSimp.io=null;}
   if(S.sub!==0)return;
-  var els=m.querySelectorAll('[data-simp]');
-  els.forEach(function(el){
-    var ch=el.querySelector('.simp-chip');
-    if(ch)ch.onclick=function(ev){ev.stopPropagation();showSimp(el.dataset.simp,true);};
+  m.querySelectorAll('[data-simp]').forEach(function(el){
+    var txt=(window.AR_SIMPLIFY||{})[el.dataset.simp];if(!txt)return;
+    if(el.nextElementSibling&&el.nextElementSibling.classList&&el.nextElementSibling.classList.contains('simp-static'))return;
+    var w=document.createElement('div');
+    w.className='char-wrap simp-static';
+    var img=document.createElement('img');img.className='ch-fig';img.src=simpPose();img.alt='مستر يوسف';
+    var b=document.createElement('div');b.className='simp-bub';
+    var sp=document.createElement('span');sp.className='sb-txt';sp.textContent=txt;
+    b.appendChild(sp);w.appendChild(img);w.appendChild(b);
+    el.after(w);
   });
-  setupSimp.io=new IntersectionObserver(function(en){
-    en.forEach(function(x){if(x.isIntersecting&&!simpOff())showSimp(x.target.dataset.simp,false);});
-  },{threshold:0.65});
-  els.forEach(function(el){setupSimp.io.observe(el);});
 }
 function cheerFor(seg){
   if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس';
