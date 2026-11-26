@@ -36,6 +36,7 @@ function signUp(name,id,pass){var em=toEmail(id);if(!em)return Promise.reject({c
  return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.createUserWithEmailAndPassword(em,pass);}).then(function(c){
   return db.collection('users').doc(c.user.uid).set({email:em,name:String(name||'').slice(0,100),role:'student',avatarId:'waving',lastActive:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){}).then(function(){return c.user.sendEmailVerification().catch(function(){});}).then(function(){return {verified:false};});});}
 function google(){return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());}).then(function(){return {verified:true};});}
+function reset(id){var em=toEmail(id);if(!em)return Promise.reject({code:'auth/invalid-email'});return load().then(function(ok){if(!ok)throw{code:'auth/network-request-failed'};return auth.sendPasswordResetEmail(em);});}
 function signOut(){return load().then(function(){clearProg();pending=null;return auth.signOut();});}
 function loadProfile(){if(!user)return Promise.resolve(null);return db.collection('users').doc(user.uid).get().then(function(d){profile=d.exists?d.data():{};return profile;}).catch(function(){profile={};return profile;});}
 function saveProfile(patch){if(!user)return Promise.reject();var p={};if(patch.name!=null)p.name=String(patch.name).slice(0,100);if(patch.avatarId)p.avatarId=String(patch.avatarId).slice(0,24);
@@ -109,6 +110,6 @@ function init(){paintChip();if(/login\.html|profile\.html/.test(location.pathnam
 if(GATED){document.documentElement.style.visibility='hidden';
  if(!localStorage.getItem(FLAG)){location.replace(loginUrl());}
  else{setTimeout(function(){if(document.documentElement.style.visibility==='hidden')show();},12000);load();}}
-window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,recheck:recheck,resend:resend,pending:function(){return pending;},saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
+window.MM={load:load,hydrate:hydrate,signIn:signIn,signUp:signUp,google:google,signOut:signOut,reset:reset,recheck:recheck,resend:resend,pending:function(){return pending;},saveProfile:saveProfile,onChange:function(f){listeners.push(f);if(auth&&(user||profile))f(user,profile);},err:errMsg,stats:stats,poses:POSES,img:img,user:function(){return user;},profile:function(){return profile;}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
