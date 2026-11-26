@@ -1,5 +1,5 @@
 <!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=color-scheme content='light only'><meta name=supported-color-schemes content='light'><meta name=darkreader-lock>
 <title>اللغة العربية — أولى ابتدائي | منصة مستر يوسف</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Cairo&display=swap" rel="stylesheet">
 <style>
@@ -198,7 +198,7 @@ main{max-width:720px;margin:0 auto}
 <div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">منصة مستر يوسف · اللغة العربية</a><a href="../moamen/">منصة مستر مؤمن · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي</a></div><footer></footer>
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
 <div class="char-wrap" id="charWrap" hidden>
-<img class="ch-fig" id="chFig" src="assets/img/mr-youssef-placeholder.svg" alt="مستر يوسف">
+<img class="ch-fig" id="chFig" src="assets/img/mr-youssef.png" alt="مستر يوسف">
 <div class="simp-bub" id="simpBub">
 <button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
 <span class="sb-txt" id="sbTxt"></span>
@@ -1103,7 +1103,7 @@ function chime(){
 }
 function showPop(html,ms,cb,ps){
   var pose=ps||(ms?'trophy':'waving');
-  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="assets/img/mr-youssef-placeholder.svg" alt="مستر يوسف">'+html+'</div>';
+  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop"><img class="pop-ch" src="assets/img/mr-youssef.png" alt="مستر يوسف">'+html+'</div>';
   document.body.appendChild(o);
   chime();
   if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
@@ -1175,8 +1175,8 @@ function mcqHTML(q,id,letters){
     return '<button class="'+cls+'" data-mq="'+id+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
   }).join('');
   if(done){
-    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-youssef-placeholder.svg" alt="">'+mmBubble("thumbsup","correct","c-"+id)+'</div>';
-    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-youssef-placeholder.svg" alt="">'+mmBubble("notebook","wrong","w-"+id)+'</div>';
+    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-youssef.png" alt="">'+mmBubble("thumbsup","correct","c-"+id)+'</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-youssef.png" alt="">'+mmBubble("notebook","wrong","w-"+id)+'</div>';
     if(q.why)h+='<details class="why"><summary>راجع الشرح</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
@@ -1188,7 +1188,7 @@ function openHTML(q,id){
   if(!done){
     h+='<textarea id="ta-'+id+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
     h+='<button class="btn btn-reveal" data-rev="'+id+'">اعرض نموذج الإجابة</button>';
-    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h"><img class="feed-ch" src="assets/img/mr-youssef-placeholder.svg" alt="" style="height:44px;width:auto;display:inline-block;vertical-align:-14px;margin:-12px 0 -8px 4px">نموذج الإجابة — قارنها بما كتبت</div>'+mod+'</div>';
+    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h"><img class="feed-ch" src="assets/img/mr-youssef.png" alt="" style="height:44px;width:auto;display:inline-block;vertical-align:-14px;margin:-12px 0 -8px 4px">نموذج الإجابة — قارنها بما كتبت</div>'+mod+'</div>';
     h+='<button class="btn btn-done" data-ok="'+id+'" hidden id="ok-'+id+'">✓ راجعت إجابتي</button>';
   }else{
     h+='<div class="feed ok">تمت المراجعة ✓</div>';
@@ -1202,11 +1202,11 @@ function segIds(i){
   var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
-var SIMP_AV='<img src="assets/img/mr-youssef-placeholder.svg" alt="" style="width:100%;height:100%;object-fit:contain">';
-var SIMP_AV_SM='<img src="assets/img/mr-youssef-placeholder.svg" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
+var SIMP_AV='<img src="assets/img/mr-youssef.png" alt="" style="width:100%;height:100%;object-fit:contain">';
+var SIMP_AV_SM='<img src="assets/img/mr-youssef.png" alt="" style="width:22px;height:22px;object-fit:cover;object-position:50% 6%;vertical-align:-5px">';
 function simpOff(){try{return localStorage.getItem('ar1-simp-off')==='1';}catch(e){return false;}}
 function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
-var POSES={pointing:'assets/img/mr-youssef-placeholder.svg',waving:'assets/img/mr-youssef-placeholder.svg'};
+var POSES={pointing:'assets/img/mr-youssef.png',waving:'assets/img/mr-youssef.png'};
 function simpPose(){var k=localStorage.getItem('ar1-simp-met')?'pointing':'waving';localStorage.setItem('ar1-simp-met','1');return POSES[k];}
 function hideSimp(){
   var bub=window.__cw;
@@ -1262,7 +1262,7 @@ function renderLesson(){
   document.getElementById('mbar').hidden=true;
   var m=document.getElementById('main');
   if(S.seg>=LES.segments.length){
-    m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-youssef-placeholder.svg" alt="مستر يوسف"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>'+mmBubble("trophy","done","d")+'</h2><p>أنهيت «'+LES.title.split(':')[0]+'»: قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
+    m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-youssef.png" alt="مستر يوسف"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>'+mmBubble("trophy","done","d")+'</h2><p>أنهيت «'+LES.title.split(':')[0]+'»: قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
     paint();chime();window.scrollTo(0,0);
     document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
     return;
@@ -1275,11 +1275,11 @@ function renderLesson(){
   }else{
     var letters=['أ','ب','ج','د'];
     if(sg.check&&sg.check.length){
-      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-youssef-placeholder.svg" alt="">أسئلة سريعة على ما قرأته</div>';
+      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-youssef.png" alt="">أسئلة سريعة على ما قرأته</div>';
       h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
     }
     if(sg.questions.length){
-      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-youssef-placeholder.svg" alt="">أسئلة الدرس</div>';
+      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-youssef.png" alt="">أسئلة الدرس</div>';
       h+=sg.questions.map(function(q,i){
         var id='q'+(base+i);
         return q.t==='mcq'?mcqHTML(q,id,letters):openHTML(q,id);

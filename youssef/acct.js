@@ -58,7 +58,7 @@ function avSvg(id,size){var c=Array.isArray(id)?id:(avDec(id)||PRE[0]),o='',f='f
  o+='</g>';
  return '<svg class="avs" viewBox="0 0 100 100" width="'+(size||28)+'" height="'+(size||28)+'" aria-hidden="true">'+o+'</svg>';}
 function avId(p,uid){var a=p&&p.avatarId;if(typeof a==='string'&&avDec(a))return a;var h=0,u=String(uid||'x');for(var i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))>>>0;return 'st'+(h%PRE.length+1);}
-function img(p){return 'assets/img/mr-youssef-placeholder.svg';}
+function img(p){return 'assets/img/mr-youssef.png';}
 function one(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 function load(){
  if(loading)return loading;
