@@ -126,4 +126,5 @@ h1[data-go],h2[data-go],.stage b[data-go]{text-decoration:underline dotted var(-
  body .hero .char{grid-column:1/-1;justify-self:center}
  body .hero .char img{max-width:min(76vw,300px);height:auto;margin-top:84px;filter:none}
  body .hero .bubble{left:50%;right:auto;transform:translateX(-50%);top:0}
+ body .hero .cta{flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;padding-bottom:0;width:100%}
 }
