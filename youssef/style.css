@@ -1,4 +1,4 @@
-:root,html{color-scheme:light only}
+:root,html{color-scheme:only light}
 :root{--yellow:#ffc93c;--green:#2d5da1;--bg:#fffdf2;--ink:#17252e;--paper:#ffffff;--primary:#2d5da1;--accent:#ffc93c;--red:#ff6b6b;--mint:#d6efe6;--sky:#e3f0ff}
 *{box-sizing:border-box;margin:0}
 html,body{overflow-x:hidden;max-width:100%}
