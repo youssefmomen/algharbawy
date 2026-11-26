@@ -217,7 +217,7 @@ main{max-width:720px;margin:0 auto}
 .scorepill .star{color:#e07b00;font-size:15px}
 .scorepill.pulse{animation:scp .45s ease}
 @keyframes scp{50%{transform:scale(1.14)}}
-</style><link rel="stylesheet" href="acct.css?v=20261126k"><script src="acct.js?v=20261126n"></script><script src="bubbles.js?v=20261126l"></script><link rel="stylesheet" href="fx.css?v=20261126k"><script src="fx.js?v=20261126p" defer></script><script>window.MM_INTER={prefix:'my',selectors:{mascot:'img[src*="mr-youssef"]',node:'.circle[data-node]',tile:'.strip .wrap>div'}};window.MM_HEADS=[];</script><script src="intro.js?v=20261126k" defer></script><script src="heads.js?v=20261126k" defer></script><script src="inter.js?v=2" defer></script><style>.w-ism{color:#1668b4;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.w-feil{color:#1a7f4b;font-weight:700;text-decoration:underline dashed;text-decoration-thickness:2px;text-underline-offset:3px}.w-harf{color:#c2410c;font-weight:700;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px}</style></head><body>
+</style><link rel="stylesheet" href="acct.css?v=20261126k"><script src="acct.js?v=20261126n"></script><script src="cms.js?v=1"></script><script src="bubbles.js?v=20261126l"></script><link rel="stylesheet" href="fx.css?v=20261126k"><script src="fx.js?v=20261126p" defer></script><script>window.MM_INTER={prefix:'my',selectors:{mascot:'img[src*="mr-youssef"]',node:'.circle[data-node]',tile:'.strip .wrap>div'}};window.MM_HEADS=[];</script><script src="intro.js?v=20261126k" defer></script><script src="heads.js?v=20261126k" defer></script><script src="inter.js?v=2" defer></script><style>.w-ism{color:#1668b4;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.w-feil{color:#1a7f4b;font-weight:700;text-decoration:underline dashed;text-decoration-thickness:2px;text-underline-offset:3px}.w-harf{color:#c2410c;font-weight:700;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px}</style></head><body>
 <div class="halftone"></div>
 <script>if("scrollRestoration" in history){history.scrollRestoration="manual"}window.scrollTo(0,0);addEventListener("load",function(){window.scrollTo(0,0)});</script>
 <header class="nhd">
@@ -236,6 +236,7 @@ main{max-width:720px;margin:0 auto}
 <script>document.write('<script src="assets/data/'+TC.src+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>document.write('<script src="assets/data/'+TC.simp+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');(TC.extra||[]).forEach(function(x){document.write('<script src="assets/data/'+x+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');});</script>
 <script>
+(window.MMCMS?MMCMS.ready(TRK):Promise.resolve()).then(function(){
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
 sun:'<circle cx="50" cy="44" r="15"/><path d="M50 18 v-9 M50 70 v9 M24 44 h-11 M76 44 h11 M31 25 l-7 -7 M69 25 l7 -7 M31 63 l-7 7 M69 63 l7 7"/>',
@@ -1251,6 +1252,7 @@ function renderMap(){
 }
 function explainHTML(list){
   return list.map(function(e,ix){
+    if(e.v){var vid=String(e.v||'').replace(/[^A-Za-z0-9_-]/g,'');return '<div class="card bk"><div style="position:relative;padding-top:56.25%;border-radius:10px;overflow:hidden">'+'<iframe src="https://www.youtube-nocookie.com/embed/'+vid+'" title="فيديو الشرح" loading="lazy" allow="accelerometer;encrypted-media;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe></div>'+(e.cap?'<div class="cap" style="text-align:center">'+e.cap+'</div>':'')+'</div>';}
     if(e.b){var sx=(window.AR_SIMPLIFY||{})[e.b];return '<div class="card bk simp-c"'+(sx?' data-simp="'+e.b+'"':'')+'>'+D.B[e.b]+'</div>';}
     if(e.illus){var il=ILLUST[e.illus];return '<div class="illus">'+(il?il.svg:'')+(il&&il.cap?'<div class="il-cap">'+il.cap+'</div>':'')+'</div>';}
     return '<div class="frame'+(ix%2?' alt':'')+'"><img loading="lazy" src="'+IMG+e.img+'.jpg" onclick="zoom(this.src)" alt="من الدرس">'+(e.cap?'<div class="cap">'+e.cap+'</div>':'')+'</div>';
@@ -1469,4 +1471,5 @@ render();
 if(window.MM&&MM.onChange)MM.onChange(function(){paintScore(false);});
 var _nt=document.getElementById('nTitle');if(_nt){_nt.addEventListener('click',function(){backBtn();});}
 
+});
 </script></body></html>
