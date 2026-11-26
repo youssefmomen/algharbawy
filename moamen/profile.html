@@ -5,7 +5,7 @@
 <div id="acbox" hidden><div class="who"><div class="fld"><label for="nn">اسمك</label><input id="nn" maxlength="60"></div><button class="pbtn" id="sv" type="button">حفظ</button></div>
 <div class="msg" id="m" role="status"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">صورتك</h2><div class="pho"><div class="cur" id="cur"></div><div class="bt"><button class="pbtn g" id="up" type="button">ارفع صورتك</button><button class="pbtn g" id="rm" type="button" hidden>شيل الصورة</button></div></div><input type="file" id="fi" accept="image/*" hidden><div class="msg" id="pm" role="status"></div>
-<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">أو اختار شخصيتك</h2><div class="av" id="av"></div></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">اعمل شخصيتك</h2><div class="bld"><div class="bpv" id="bpv"></div><div class="bbt"><button class="pbtn g" id="brnd" type="button">عشوائي</button><button class="pbtn" id="bsv" type="button">استخدم الشخصية دي</button></div></div><div class="bm" id="bm" role="status"></div><div class="bctl" id="bctl"></div><h3 class="bh">أو ابدأ من شكل جاهز</h3><div class="av" id="av"></div></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px">مساري</h2><div class="trk" id="trk" role="group" aria-label="اختار مسارك"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px" id="plh">تقدمي في الدروس</h2><div class="pl" id="pl"></div>
 <button class="pbtn g" id="out" type="button" hidden style="margin-top:18px">تسجيل الخروج</button></div></div>
@@ -21,7 +21,12 @@ function lessons(){var D=window.BAC_G2P1,h='';var T=MM.track();$('plh').textCont
  try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done)dn=Object.keys(sv.done).length;}catch(e){}
  var pc=tot?Math.min(100,Math.round(dn/tot*100)):0;
  h+='<a href="bac.html?lesson='+(i+1)+'"><b>'+l.title+'</b><div class="pb"><i style="width:'+pc+'%"></i></div><span>'+ar(pc)+'٪ · '+ar(dn)+' من '+ar(tot)+' سؤال</span></a>';});$('pl').innerHTML=h;}
-function POSE(k){return MM.poses[k]?k:'waving';}
+var S=null,O=MM.AVO;
+var ROWS=[['الشعر',0,'c',O.hair],['لون الشعر',1,'s',O.hc],['لون البشرة',2,'s',O.skin],['النضارة',3,'c',O.glasses],['حجاب',4,'c',O.hijab],['اللبس',5,'c',O.shirt],['لون اللبس',6,'s',O.sc],['العيون',7,'c',O.eyes],['الفم',8,'c',O.mouth],['الخلفية',9,'s',O.bg],['إكسسوار',10,'c',O.acc]];
+function paintB(){$('bpv').innerHTML=MM.avSvg(S,150);}
+function buildCtl(){paintB();var h='';ROWS.forEach(function(r){h+='<div class="br"><b>'+r[0]+'</b><div class="bo">';r[3].forEach(function(x,n){var on=S[r[1]]===n;
+ h+=r[2]==='s'?'<button type="button" class="sw'+(on?' on':'')+'" data-r="'+r[1]+'" data-n="'+n+'" aria-label="'+r[0]+' '+ar(n+1)+'" aria-pressed="'+on+'" style="background:'+x+'"></button>':'<button type="button" class="ch'+(on?' on':'')+'" data-r="'+r[1]+'" data-n="'+n+'" aria-pressed="'+on+'">'+x+'</button>';});h+='</div></div>';});
+ $('bctl').innerHTML=h;$('bctl').querySelectorAll('button').forEach(function(b){b.onclick=function(){S[+b.dataset.r]=+b.dataset.n;buildCtl();};});}
 function draw(u,p){
  stats();lessons();
  if(!u){$('guestbox').hidden=false;$('acbox').hidden=true;$('out').hidden=true;$('who').textContent='مش مسجل دخول';return;}
@@ -29,8 +34,10 @@ function draw(u,p){
  var em=u.email||'';$('who').textContent=(p&&p.name?p.name:'طالب')+' · '+(/@phone\.mrmoamen\.app$/.test(em)?em.split('@')[0]:em);
  if(document.activeElement!==$('nn'))$('nn').value=(p&&p.name)||u.displayName||'';
  var tc='';Object.keys(MM.tracks).forEach(function(k){tc+='<button type="button" data-t="'+k+'" class="'+(k===MM.track()?'on':'')+'" aria-pressed="'+(k===MM.track())+'">'+MM.tracks[k].name+(MM.tracks[k].live?'':' <small>(قريبًا)</small>')+'</button>';});$('trk').innerHTML=tc;$('trk').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.setTrack(b.dataset.t).then(function(){draw(MM.user(),MM.profile());if(window.mmSound)mmSound('pop');}).catch(function(){pmsg('معرفتش أغيّر المسار. جرّب تاني.');});};});
- var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=MM.avId(p,u.uid),h='';$('cur').className='cur';$('cur').innerHTML=ph?'<img alt="" src="'+p.avatarData+'">':MM.avSvg(cur,84);$('rm').hidden=!ph;MM.avIds().forEach(function(k,n){h+='<button type="button" data-k="'+k+'" aria-label="شخصية '+ar(n+1)+'" aria-pressed="'+(!ph&&k===cur)+'" class="'+(!ph&&k===cur?'on':'')+'">'+MM.avSvg(k,64)+'</button>';});$('av').innerHTML=h;
- $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.saveProfile({avatarId:b.dataset.k,avatarData:''}).then(function(){if(window.mmSound)mmSound('pop');});};});
+ var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=MM.avId(p,u.uid),h='';$('cur').className='cur';$('cur').innerHTML=ph?'<img alt="" src="'+p.avatarData+'">':MM.avSvg(cur,84);$('rm').hidden=!ph;
+ MM.avIds().forEach(function(k,n){h+='<button type="button" data-k="'+k+'" aria-label="شكل جاهز '+ar(n+1)+'">'+MM.avSvg(k,56)+'</button>';});$('av').innerHTML=h;
+ if(!S){S=MM.avDec(cur)||MM.avDec('st1');buildCtl();}
+ $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){S=MM.avDec(b.dataset.k);buildCtl();if(window.mmSound)mmSound('pop');};});
 }
 /* photo: pick, crop to a square, shrink to 256px JPEG, store in the account */
 var im=null,sc=1,ox=0,oy=0,base=1,cv=$('cv'),cx=cv.getContext('2d');
@@ -46,6 +53,8 @@ cv.onpointerup=cv.onpointercancel=function(){dr=null;};
 $('cno').onclick=function(){$('crop').hidden=true;im=null;};
 $('cok').onclick=function(){var d=cv.toDataURL('image/jpeg',0.8);$('crop').hidden=true;pmsg('ثواني...',true);MM.saveProfile({avatarData:d}).then(function(){pmsg('اتحفظت صورتك.',true);if(window.mmSound)mmSound('ok');}).catch(function(){pmsg('معرفتش أحفظ الصورة. جرّب تاني.');});};
 $('rm').onclick=function(){MM.saveProfile({avatarData:''}).then(function(){pmsg('اتشالت الصورة.',true);}).catch(function(){pmsg('معرفتش أشيل الصورة. جرّب تاني.');});};
+$('brnd').onclick=function(){if(!S)return;S=MM.avRand();buildCtl();if(window.mmSound)mmSound('pop');};
+$('bsv').onclick=function(){if(!S)return;$('bm').className='msg';$('bm').textContent='ثواني...';MM.saveProfile({avatarId:MM.avEnc(S),avatarData:''}).then(function(){$('bm').className='msg ok';$('bm').textContent='اتحفظت شخصيتك.';if(window.mmSound)mmSound('ok');}).catch(function(){$('bm').className='msg';$('bm').textContent='معرفتش أحفظ. جرّب تاني.';});};
 $('sv').onclick=function(){var n=$('nn').value.trim();if(!n){$('m').textContent='اكتب اسمك.';return;}MM.saveProfile({name:n}).then(function(){$('m').className='msg ok';$('m').textContent='اتحفظ ✓';if(window.mmSound)mmSound('ok');}).catch(function(){$('m').className='msg';$('m').textContent='معرفتش أحفظ. جرّب تاني.';});};
 $('out').onclick=function(){MM.signOut().then(function(){location.href='index.html';});};
 draw(null,null);
