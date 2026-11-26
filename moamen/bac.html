@@ -184,7 +184,10 @@ main{max-width:720px;margin:0 auto}
 .nprog{right:max(12px, calc(50% - 350px));left:max(12px, calc(50% - 350px))}
 .mbar{right:max(0px, calc(50% - 360px));left:max(0px, calc(50% - 360px));border-right:2.5px solid var(--ink);border-left:2.5px solid var(--ink)}
 }
-</style><link rel="stylesheet" href="acct.css?v=20261126h"><script src="acct.js?v=20261126h"></script><script src="bubbles.js"></script><link rel="stylesheet" href="fx.css?v=20261126h"><script src="fx.js?v=20261126h" defer></script><script src="intro.js?v=1" defer></script></head><body>
+*,*::before,*::after{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img{-webkit-user-drag:none}
+</style><link rel="stylesheet" href="acct.css?v=20261126h"><script src="acct.js?v=20261126h"></script><script src="bubbles.js"></script><script>(function(){var orig=null;function patch(){orig=window.mmBubble;if(!orig)return;window.mmBubble=function(pose,cat,key){var lk="mm-line-"+key;try{var kept=sessionStorage.getItem(lk);if(kept)return kept;}catch(e){}var v=orig(pose,cat,key);try{sessionStorage.setItem(lk,v);}catch(e){}return v;};}patch();})();</script><link rel="stylesheet" href="fx.css?v=20261126h"><script src="fx.js?v=20261126h" defer></script><script>document.addEventListener("selectstart",function(e){var t=e.target;if(!(t&&t.closest&&t.closest("input,textarea,[contenteditable]")))e.preventDefault();},true);document.addEventListener("contextmenu",function(e){var t=e.target;if(!(t&&t.closest&&t.closest("input,textarea,[contenteditable]")))e.preventDefault();},true);</script><script src="intro.js?v=1" defer></script></head><body>
 <div class="halftone"></div>
 <script>if("scrollRestoration" in history){history.scrollRestoration="manual"}window.scrollTo(0,0);addEventListener("load",function(){window.scrollTo(0,0)});</script>
 <header class="nhd">
@@ -1174,8 +1177,8 @@ function mcqHTML(q,id,letters){
     return '<button class="'+cls+'" data-mq="'+id+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
   }).join('');
   if(done){
-    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">'+mmBubble("thumbsup","correct","c")+'</div>';
-    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-notebook.png" alt="">'+mmBubble("notebook","wrong","w")+'</div>';
+    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">'+mmBubble("thumbsup","correct","c-"+id)+'</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-notebook.png" alt="">'+mmBubble("notebook","wrong","w-"+id)+'</div>';
     if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
