@@ -2,10 +2,11 @@
 <div class="acc"><div class="auth-grid"><div class="panel"><h1 id="ttl">أهلًا بيك</h1><p class="sub">تقدمك بيتحفظ في حسابك بس، وتكمل من أي جهاز.</p>
 <div class="seg"><button type="button" id="tin" class="on">دخول</button><button type="button" id="tup">حساب جديد</button></div>
 <div class="hint" id="need" hidden>لازم تسجل دخولك الأول علشان نفتح الدرس ونحفظ تقدمك. التسجيل بياخد دقيقة.</div><form id="f" novalidate><div class="fld" id="nm" hidden><label for="n">اسمك</label><input id="n" autocomplete="name" maxlength="60" placeholder="مثال: أحمد محمد"></div>
-<div class="fld"><label for="u">رقم الموبايل أو الإيميل</label><input id="u" dir="ltr" autocomplete="username" inputmode="email" placeholder="01012345678"><small id="uh" hidden>لو سجلت برقم الموبايل، متنساش كلمة السر: مفيش استرجاع ليها.</small></div>
+<div class="fld"><label for="u">الإيميل</label><input id="u" type="email" dir="ltr" autocomplete="email" inputmode="email" placeholder="name@gmail.com"><small id="uh" hidden>هنبعتلك رابط تأكيد على الإيميل ده. لازم تفتحه مرة واحدة.</small></div>
 <div class="fld"><label for="p">كلمة السر</label><div class="pw"><input id="p" type="password" dir="ltr" autocomplete="current-password" minlength="6" placeholder="٦ حروف أو أرقام على الأقل"><button type="button" id="eye" aria-label="إظهار كلمة السر">إظهار</button></div></div>
 <div class="msg" id="m" role="alert"></div>
 <button class="pbtn" id="go" type="submit">دخول</button></form>
+<div class="vp" id="vp" hidden><h2>أكّد إيميلك</h2><p>بعتنا رابط تأكيد على <b id="ve" dir="ltr"></b>. افتحه من الإيميل (شوف كمان في Spam) وبعدين دوس تحت.</p><div class="msg" id="vm" role="alert"></div><button class="pbtn" id="vok" type="button">أكدت، كمّل</button><button class="pbtn g" id="vre" type="button">ابعت الرابط تاني</button><button class="lnk" id="vout" type="button">استخدم إيميل تاني</button></div>
 <button class="pbtn g" id="gg" type="button">كمّل بحساب جوجل</button>
 <a class="lnk" id="guest" href="index.html">الرجوع للصفحة الرئيسية</a></div>
 <div class="auth-char"><div class="bubble" id="bb">سجّل وخلّي تقدمك محفوظ!</div><img src="assets/img/mr-moamen-waving.png" alt="مستر مؤمن"></div></div></div>
@@ -18,14 +19,20 @@ function $(i){return document.getElementById(i);}
 function mode(u){up=u;$('tin').classList.toggle('on',!u);$('tup').classList.toggle('on',u);$('nm').hidden=!u;$('uh').hidden=!u;$('go').textContent=u?'إنشاء حساب':'دخول';$('ttl').textContent=u?'حساب جديد':'أهلًا بيك';$('p').autocomplete=u?'new-password':'current-password';$('m').textContent='';}
 $('tin').onclick=function(){mode(false);};$('tup').onclick=function(){mode(true);};if(q.get('mode')==='up')mode(true);
 function msg(t,ok){var m=$('m');m.textContent=t;m.className='msg'+(ok?' ok':'');}
+function vmsg(t,ok){var m=$('vm');m.textContent=t;m.className='msg'+(ok?' ok':'');}
+function showV(){var u=MM.pending();$('f').hidden=true;$('gg').hidden=true;document.querySelector('.seg').hidden=true;$('vp').hidden=false;$('ve').textContent=u?u.email:'';$('ttl').textContent='خطوة أخيرة';}
+function after(r){if(r&&r.verified===false){$('go').disabled=false;showV();vmsg('اتبعت الرابط.',true);return;}done();}
 function done(){msg('تمام! بنفتح لك...',true);if(window.mmSound)mmSound('ok');setTimeout(function(){location.href=next;},700);}
 function fail(e){$('go').disabled=false;$('gg').disabled=false;msg(MM.err(e));if(window.mmSound)mmSound('no');}
 $('f').onsubmit=function(ev){ev.preventDefault();var u=$('u').value,p=$('p').value,n=$('n').value.trim();
- if(up&&!n){msg('اكتب اسمك الأول.');return;}if(!u.trim()||!p){msg('اكتب رقم الموبايل (أو الإيميل) وكلمة السر.');return;}
- $('go').disabled=true;msg('ثواني...',true);(up?MM.signUp(n,u,p):MM.signIn(u,p)).then(done).catch(fail);};
-$('gg').onclick=function(){$('gg').disabled=true;MM.google().then(done).catch(fail);};
+ if(up&&!n){msg('اكتب اسمك الأول.');return;}if(!u.trim()||!p){msg('اكتب الإيميل وكلمة السر.');return;}
+ $('go').disabled=true;msg('ثواني...',true);(up?MM.signUp(n,u,p):MM.signIn(u,p)).then(after).catch(fail);};
+$('gg').onclick=function(){$('gg').disabled=true;MM.google().then(after).catch(fail);};
 if(q.get('need')==='1'){document.getElementById('need').hidden=false;document.getElementById('bb').textContent='سجّل دخولك الأول وهنكمل الدرس سوا!';}
 document.getElementById('eye').onclick=function(){var i=document.getElementById('p'),h=i.type==='password';i.type=h?'text':'password';this.textContent=h?'إخفاء':'إظهار';};
-MM.load();
+$('vok').onclick=function(){vmsg('ثواني...',true);MM.recheck().then(function(ok){if(ok)done();else vmsg('لسه مأكدتش. افتح الرابط في الإيميل وجرّب تاني.');}).catch(function(e){vmsg(MM.err(e));});};
+$('vre').onclick=function(){MM.resend().then(function(){vmsg('بعتنا الرابط تاني.',true);}).catch(function(e){vmsg(MM.err(e));});};
+$('vout').onclick=function(){MM.signOut().then(function(){location.href='login.html'+location.search;});};
+MM.load().then(function(){setTimeout(function(){if(MM.pending())showV();},1200);});
 })();
 </script></body></html>
