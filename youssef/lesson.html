@@ -1284,7 +1284,8 @@ function renderLesson(keep){
   if(S.seg>=LES.segments.length){
     m.innerHTML='<div class="done-screen"><img class="done-ch" src="assets/img/mr-youssef-celebrating.png" alt="مستر يوسف"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>'+mmBubble("trophy","done","d")+'</h2><p>أنهيت «'+LES.title.split(':')[0]+'»: قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
     paint();chime();window.scrollTo(0,0);
-    document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
+    document.getElementById('toMap').onclick=function(){if(TRK==='g8ar'){location.href='track.html?t='+TRK;return;}S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
+    if(TRK==='g8ar'){var tb=document.getElementById('toMap');tb.textContent='اختر الدرس التالي ◂';var pp=m.querySelector('.done-screen p');if(pp)pp.innerHTML=pp.innerHTML.replace('انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.','اضغط الزر للرجوع إلى صفحة الدروس واختيار الدرس التالي.');}
     return;
   }
   var sg=LES.segments[S.seg];
