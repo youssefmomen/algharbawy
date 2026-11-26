@@ -5,7 +5,7 @@
 <div id="acbox" hidden><div class="who"><div class="fld"><label for="nn">اسمك</label><input id="nn" maxlength="60"></div><button class="pbtn" id="sv" type="button">حفظ</button></div>
 <div class="msg" id="m" role="status"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">صورتك</h2><div class="pho"><div class="cur" id="cur"></div><div class="bt"><button class="pbtn g" id="up" type="button">ارفع صورتك</button><button class="pbtn g" id="rm" type="button" hidden>شيل الصورة</button></div></div><input type="file" id="fi" accept="image/*" hidden><div class="msg" id="pm" role="status"></div>
-<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">أو اختار شكل مستر مؤمن</h2><div class="av" id="av"></div></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">أو اختار شخصيتك</h2><div class="av" id="av"></div></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px">مساري</h2><div class="trk" id="trk" role="group" aria-label="اختار مسارك"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px" id="plh">تقدمي في الدروس</h2><div class="pl" id="pl"></div>
 <button class="pbtn g" id="out" type="button" hidden style="margin-top:18px">تسجيل الخروج</button></div></div>
@@ -29,7 +29,7 @@ function draw(u,p){
  var em=u.email||'';$('who').textContent=(p&&p.name?p.name:'طالب')+' · '+(/@phone\.mrmoamen\.app$/.test(em)?em.split('@')[0]:em);
  if(document.activeElement!==$('nn'))$('nn').value=(p&&p.name)||u.displayName||'';
  var tc='';Object.keys(MM.tracks).forEach(function(k){tc+='<button type="button" data-t="'+k+'" class="'+(k===MM.track()?'on':'')+'" aria-pressed="'+(k===MM.track())+'">'+MM.tracks[k].name+(MM.tracks[k].live?'':' <small>(قريبًا)</small>')+'</button>';});$('trk').innerHTML=tc;$('trk').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.setTrack(b.dataset.t).then(function(){draw(MM.user(),MM.profile());if(window.mmSound)mmSound('pop');}).catch(function(){pmsg('معرفتش أغيّر المسار. جرّب تاني.');});};});
- var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=(p&&p.avatarId)||'waving',h='';$('cur').className='cur'+(ph?'':' pose');$('cur').innerHTML='<img alt="" src="'+(ph?p.avatarData:MM.img(POSE(cur)))+'">';$('rm').hidden=!ph;Object.keys(MM.poses).forEach(function(k){h+='<button type="button" data-k="'+k+'" class="'+(k===cur?'on':'')+'"><img src="'+MM.img(k)+'" alt=""><span>'+MM.poses[k]+'</span></button>';});$('av').innerHTML=h;
+ var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=MM.avId(p,u.uid),h='';$('cur').className='cur';$('cur').innerHTML=ph?'<img alt="" src="'+p.avatarData+'">':MM.avSvg(cur,84);$('rm').hidden=!ph;MM.avIds().forEach(function(k,n){h+='<button type="button" data-k="'+k+'" aria-label="شخصية '+ar(n+1)+'" aria-pressed="'+(!ph&&k===cur)+'" class="'+(!ph&&k===cur?'on':'')+'">'+MM.avSvg(k,64)+'</button>';});$('av').innerHTML=h;
  $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.saveProfile({avatarId:b.dataset.k,avatarData:''}).then(function(){if(window.mmSound)mmSound('pop');});};});
 }
 /* photo: pick, crop to a square, shrink to 256px JPEG, store in the account */
