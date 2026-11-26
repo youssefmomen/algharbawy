@@ -1,0 +1,949 @@
+<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>التاريخ الوطني — البكالوريا المصرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#f6efdd;--ink:#22303c;--paper:#fffdf6;--green:#1f4d3a;--red:#d64545;
+ --blue:#2b6cb0;--yellow:#f5b301;--pink:#f6d5d8;--mint:#cfe8d5;--peach:#f8dcb8;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.halftone{position:fixed;top:-40px;left:-40px;width:190px;height:190px;pointer-events:none;transform:rotate(15deg);opacity:.5;
+ background-image:radial-gradient(circle,rgba(34,48,60,.28) 1.4px,transparent 1.6px);background-size:9px 9px;z-index:0}
+header{background:var(--green);color:#f6efdd;padding:16px 16px 20px;border-radius:0 0 4px 4px;position:relative;border-bottom:5px solid var(--yellow);z-index:1}
+.hd-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.hd-exit{display:none;align-items:center;gap:8px;background:var(--yellow);color:var(--ink);border:2.5px solid var(--ink);border-radius:999px;padding:10px 20px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.hd-exit:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(0,0,0,.35)}
+.hd-exit svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.brand-link{display:inline-flex;align-items:center;gap:10px;color:#f6efdd;text-decoration:none}
+.hd-top{margin-bottom:10px}
+.brand-link .dm{width:30px;height:30px;display:grid;place-items:center;border:2px solid var(--yellow);border-radius:5px;transform:rotate(45deg);background:rgba(0,0,0,.12)}
+.brand-link .dm b{transform:rotate(-45deg);font-family:Amiri,serif;font-weight:700;font-size:16px;color:var(--yellow)}
+.brand-link .bt{font-weight:800;font-size:15px}
+.crumbs{font-size:10.5px;opacity:.8;margin-bottom:8px;line-height:1.9}
+h1{font-family:'Lalezar',sans-serif;font-size:26px;font-weight:400;line-height:1.6;position:relative;z-index:1}
+.stage{display:inline-block;border:2px dashed rgba(246,239,221,.7);font-size:11px;font-weight:700;border-radius:999px;padding:3px 12px;margin-top:10px}
+.prog{display:flex;align-items:center;gap:10px;margin-top:14px}
+.bar{flex:1;height:14px;background:rgba(246,239,221,.25);border-radius:999px;border:2px solid rgba(246,239,221,.5);overflow:hidden}
+.fill{height:100%;background:var(--yellow);border-radius:999px;transition:width .4s}
+.pct{font-size:16px;font-weight:800;font-family:'Lalezar',sans-serif}
+main{position:relative;z-index:1}
+.seg-label{display:flex;align-items:center;gap:8px;margin:16px 14px 10px;font-family:'Lalezar',sans-serif;font-size:19px;font-weight:400}
+.seg-label .n{min-width:30px;height:30px;border-radius:52% 48% 55% 45%/48% 55% 45% 52%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:16px;padding:0 4px;border:2px solid var(--ink)}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:14px 18px 16px 20px/18px 14px 20px 16px;margin:0 12px 14px;box-shadow:4px 5px 0 rgba(34,48,60,.15);overflow:hidden}
+.card .cap{padding:8px 14px 6px;font-size:15px;font-weight:700;color:var(--red);font-family:'Amiri',serif}
+.card img{width:100%;display:block;cursor:zoom-in}
+.frame{background:var(--paper);padding:8px;border:2px solid var(--ink);transform:rotate(-1deg);margin:6px 16px 18px;box-shadow:5px 7px 0 rgba(34,48,60,.15);position:relative}
+.frame.alt{transform:rotate(1deg)}
+.frame::before,.frame::after{content:"";position:absolute;width:70px;height:19px;background:rgba(245,179,1,.55);border:1px dashed rgba(34,48,60,.35);z-index:2}
+.frame::before{top:-9px;right:30px;transform:rotate(-4deg)}
+.frame::after{bottom:-9px;left:30px;transform:rotate(3deg)}
+.frame img{width:100%;display:block;cursor:zoom-in}
+.frame .cap{padding:8px 6px 4px;font-size:15px;font-weight:700;color:var(--red);font-family:'Amiri',serif;text-align:center}
+.illus{background:var(--paper);border:2px solid var(--ink);border-radius:16px 14px 18px 14px/14px 18px 14px 16px;margin:0 16px 16px;padding:12px 8px 4px;box-shadow:4px 5px 0 rgba(34,48,60,.15);transform:rotate(.6deg)}
+.illus svg{display:block;width:100%;max-width:300px;margin:0 auto}
+.illus .il-cap{text-align:center;font-family:'Amiri',serif;font-size:14px;font-weight:700;color:var(--ink);opacity:.75;padding:4px 0 8px}
+.q{background:var(--paper);border:2px solid var(--ink);border-radius:16px 14px 18px 14px/14px 18px 14px 16px;margin:0 12px 14px;padding:14px;box-shadow:4px 5px 0 rgba(34,48,60,.15)}
+.q .src{display:inline-block;font-size:11px;font-weight:800;color:var(--blue);border:2px dashed var(--blue);border-radius:999px;padding:2px 10px;margin-bottom:8px}
+.q h3{font-size:17px;font-weight:700;line-height:2;margin-bottom:10px;font-family:'Amiri',serif}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:right;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);background:transparent;border:2px solid var(--ink);border-radius:999px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.opt .k{min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:13px}
+.opt.ok{background:var(--mint);border-color:var(--green)}.opt.ok .k{background:var(--green)}
+.opt.no{background:var(--pink);border-color:var(--red)}.opt.no .k{background:var(--red)}
+.opt:disabled{cursor:default}
+textarea{width:100%;min-height:84px;border:2px dashed var(--ink);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:14px;line-height:1.9;resize:vertical;background:transparent;color:var(--ink)}
+.btn{display:block;width:100%;border:2px solid var(--ink);border-radius:999px;padding:11px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px;background:transparent;color:var(--ink)}
+.btn-reveal{background:var(--yellow);color:#22303c}
+.btn-done{background:var(--green);color:#f6efdd}
+.ans{margin-top:10px;border:2px dashed var(--ink);border-radius:12px;overflow:hidden}
+.ans .h{background:var(--peach);color:var(--ink);font-size:12.5px;font-weight:800;padding:8px 12px}
+.ans img{width:100%;display:block}
+.mod{padding:10px 14px;font-size:15.5px;line-height:2;background:var(--paper);font-family:'Amiri',serif;font-size:16.5px}
+.feed{font-size:13px;font-weight:800;margin-top:6px}
+.feed-ch{height:64px;width:auto;vertical-align:middle;margin-left:4px;filter:drop-shadow(2px 2px 0 rgba(34,48,60,.2))}
+.done-ch{display:block;height:200px;width:auto;margin:0 auto 4px;filter:drop-shadow(4px 4px 0 rgba(34,48,60,.2))}
+.feed.ok{color:var(--green)}.feed.no{color:var(--red)}
+.why{margin-top:10px}
+.why summary{font-size:12.5px;font-weight:800;color:var(--blue);cursor:pointer}
+.why .bk{padding:8px 2px;font-size:15px}
+.why img{width:100%;border-radius:10px;margin-top:6px;border:2px solid var(--ink)}
+.next{border:2px solid var(--ink);border-radius:999px;padding:13px;background:var(--ink);color:var(--bg);font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(34,48,60,.3);flex:2}
+.next:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.prev{flex:1;background:transparent;color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:13px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.prev:disabled{opacity:.35;cursor:not-allowed}
+.navrow{display:flex;gap:10px;margin:8px 12px 12px}
+.lock{font-size:12px;opacity:.75;text-align:center;padding-bottom:14px;font-weight:700}
+.done-screen{text-align:center;padding:40px 20px}
+.done-screen .big{margin-bottom:6px}
+.done-screen h2{font-family:'Lalezar',sans-serif;font-size:26px;font-weight:400;color:var(--green);margin:8px 0 6px}
+.done-screen p{font-size:14px;line-height:2;font-weight:600}
+footer{height:30px}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:100%}
+.zoom.on{display:flex}
+.bk{font-size:16.5px;line-height:2;color:var(--ink);padding:14px 16px}
+.bk .rh{color:var(--red);font-family:'Lalezar',sans-serif;font-size:22px;font-weight:400;margin:12px 0 4px}
+.bk .mh{color:var(--blue);font-family:'Lalezar',sans-serif;font-size:20px;font-weight:400;margin:12px 0 4px}
+.bk .bq{color:var(--blue);font-weight:700;font-size:16px;margin:10px 0 6px;line-height:1.9}
+.bk .tx{margin:6px 0}
+.bk .side{background:var(--peach);border:2px dashed var(--ink);border-radius:4px 14px 4px 14px;padding:10px 12px;margin:10px 0;font-size:15px;transform:rotate(-.4deg)}
+.bk .side .sh{color:var(--red);display:block;font-size:15px;margin-bottom:4px;font-weight:800;font-family:'Amiri',serif}
+.bk .pill{display:inline-block;background:var(--ink);color:var(--bg);border-radius:999px;padding:4px 16px;font-weight:800;font-size:14px;margin:12px 0 4px}
+.bk .pill.bl{background:var(--blue)}.bk .pill.rd{background:var(--red)}.bk .pill.tq{background:#0e7490}
+.bk .pill.ol{background:transparent;color:#b36b00;border:2px solid #b36b00}
+.bk .act{background:var(--mint);border:2px dashed var(--ink);border-radius:4px 14px 4px 14px;padding:10px 14px;margin:10px 0}
+.bk .doc{border:2px solid var(--ink);border-radius:4px;padding:10px 12px;margin:8px 0;font-size:15px;background:var(--paper);box-shadow:3px 3px 0 rgba(34,48,60,.12)}
+.bk .doc h{font-size:15px;font-weight:900;margin-bottom:4px;font-family:'Amiri',serif}
+.bk .doc.g h{color:var(--green)}.bk .doc.b h{color:var(--blue)}.bk .doc.m h{color:#b03060}.bk .doc.o h{color:#b36b00}
+.bk .quote{background:var(--mint);border-right:6px solid var(--green);border-radius:4px;padding:12px 16px;font-size:16.5px;margin:10px 0;font-family:'Amiri',serif}
+.bk ul.dash{margin:4px 18px 4px 0;padding:0;list-style:none}
+.bk ul.dash li{margin:6px 0}
+.bk .num{color:var(--blue);font-weight:800}
+.rh-star svg{width:19px;height:19px;vertical-align:-3px;margin-left:4px;fill:none;stroke:var(--red);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.sec-h{margin:4px 14px 10px;font-size:19px;font-weight:400;font-family:'Lalezar',sans-serif}
+.sec-h::after{content:"";display:block;height:6px;width:120px;background:var(--yellow);border-radius:60% 40% 55% 45%/70% 60% 40% 30%;margin-top:2px;opacity:.8}
+.map{padding:26px 20px;display:flex;flex-direction:column;align-items:center;gap:0;position:relative}
+.node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1}
+.circle{width:68px;height:68px;border-radius:52% 48% 55% 45%/48% 55% 45% 52%;display:grid;place-items:center;font-size:24px;font-weight:900;border:3px solid var(--ink);cursor:pointer;font-family:'Lalezar',sans-serif;background:var(--paper);color:var(--ink);box-shadow:4px 5px 0 rgba(34,48,60,.18)}
+.circle.done{background:var(--green);color:#f6efdd}
+.circle.cur{background:var(--yellow);transform:rotate(-3deg) scale(1.06)}
+.circle.lock{background:transparent;opacity:.55;cursor:not-allowed}
+.linkline{width:0;height:22px;border-right:3px dashed rgba(34,48,60,.4)}
+.nlabel{font-size:13px;font-weight:700;font-family:'Amiri',serif;max-width:140px;text-align:center;line-height:1.6}
+.overlay{position:fixed;inset:0;background:rgba(20,30,25,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
+.pop{background:var(--paper);border:2px solid var(--ink);border-radius:6px 16px 6px 16px;padding:0 0 4px;max-width:340px;text-align:right;overflow:hidden;box-shadow:6px 8px 0 rgba(34,48,60,.25);border-top:6px solid var(--yellow)}
+.pop .pop-h{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;font-size:17px;font-weight:900;line-height:1.8;font-family:'Lalezar',sans-serif;font-weight:400;font-size:19px}
+.pop p{padding:4px 16px 12px;font-size:15px;font-weight:600;line-height:2}
+.pop .pop-btn{display:block;width:calc(100% - 32px);margin:6px 16px 12px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer}
+
+main{padding-bottom:26px}
+.exit{position:fixed;bottom:14px;left:14px;z-index:40;display:none;align-items:center;gap:7px;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:999px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:4px 5px 0 rgba(34,48,60,.25)}
+.exit svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lcard{display:flex;gap:12px;align-items:center;background:var(--paper);border:2px solid var(--ink);border-radius:16px 14px 18px 14px/14px 18px 14px 16px;margin:0 14px 12px;padding:12px 14px;box-shadow:4px 5px 0 rgba(34,48,60,.15);cursor:pointer}
+.lc-n{min-width:46px;height:46px;border-radius:52% 48% 55% 45%/48% 55% 45% 52%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;font-family:'Lalezar',sans-serif;font-size:21px;color:var(--ink)}
+.lc-n.full{background:var(--green);color:#f6efdd}
+.lc-t b{display:block;font-family:'Amiri',serif;font-size:16px;line-height:1.8}
+.lc-t span{font-size:12px;opacity:.7;font-weight:700}
+body{padding-top:78px!important;padding-bottom:96px!important}
+.nhd{position:fixed;top:0;right:0;left:0;z-index:60;background:var(--green);height:56px;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:3px solid var(--yellow)}
+.nback{min-width:46px;height:46px;border-radius:13px;background:var(--yellow);border:2.5px solid var(--ink);display:grid;place-items:center;box-shadow:2px 2px 0 rgba(0,0,0,.3);cursor:pointer;padding:0}
+.nback svg{width:22px;height:22px;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.nt{flex:1;color:#f6efdd;font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.nhome{width:46px;height:46px;border-radius:13px;border:2px solid rgba(246,239,221,.45);display:grid;place-items:center;background:rgba(0,0,0,.15);text-decoration:none}
+.nhome span{width:26px;height:26px;display:grid;place-items:center;border:2px solid var(--yellow);border-radius:5px;transform:rotate(45deg)}
+.nhome b{transform:rotate(-45deg);font-family:'Amiri',serif;font-weight:700;font-size:13px;color:var(--yellow)}
+.nprog{position:fixed;top:59px;right:12px;left:12px;height:8px;background:rgba(246,239,221,.3);z-index:61;border-radius:99px;overflow:hidden}
+.nprog i{display:block;height:100%;background:var(--yellow);border-radius:99px;transition:width .3s}
+.mbar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--paper);border-top:2.5px solid var(--ink);display:flex;gap:8px;padding:10px 12px;box-shadow:0 -3px 0 rgba(34,48,60,.08)}
+.mbar[hidden]{display:none}
+.mbar button{flex:1;height:54px;border-radius:14px;border:2.5px solid var(--ink);font-family:'Cairo',sans-serif;font-weight:800;font-size:16.5px;cursor:pointer;box-shadow:3px 3px 0 rgba(34,48,60,.2)}
+.mbar .p{background:var(--yellow);color:var(--ink)}
+.mbar .s{background:var(--paper);color:var(--ink)}
+.mbar button:disabled{opacity:.45}
+.ubanner{margin:26px 14px 8px;background:var(--green);color:#f6efdd;border:2.5px solid var(--ink);border-radius:14px;padding:10px 16px;box-shadow:3px 3px 0 rgba(34,48,60,.2)}
+.ubanner h2{margin:0;font-family:'Amiri',serif;font-size:20px;font-weight:700}
+.ubanner p{margin:2px 0 0;font-size:12px;opacity:.9;font-weight:700}
+.ubanner.locked{background:var(--paper);color:#7a7060;border-style:dashed}
+.ubanner.locked h2{font-size:16.5px;display:flex;align-items:center;gap:6px}
+.ubanner.locked h2 svg{width:19px;height:19px}
+.pnode{position:relative;margin:26px auto;width:max-content;text-align:center}
+.pnode .c{width:74px;height:74px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-family:'Amiri',serif;font-size:26px;font-weight:700;box-shadow:0 5px 0 rgba(34,48,60,.25);cursor:pointer;background:var(--paper);color:var(--ink)}
+.pnode.done .c{background:var(--yellow);color:var(--ink)}
+.pnode.here .c{outline:4px dashed var(--yellow);outline-offset:5px;color:var(--green)}
+.pnode.lock .c{background:#efe6cf;color:#9a8f78;border-color:#b7ab90;box-shadow:none;cursor:default}
+.pnode .t{margin-top:8px;font-size:13px;font-weight:800;color:var(--ink);max-width:170px}
+.pnode.lock .t{color:#9a8f78}
+.pnode .c svg{width:30px;height:30px}
+.heretag{position:absolute;top:-14px;right:-34px;background:var(--red);color:#fffdf6;font-size:11px;font-weight:800;border-radius:99px;padding:3px 9px;border:2px solid var(--ink);white-space:nowrap}
+.simp-c{position:relative}
+.simp-chip{position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;background:var(--yellow);border:2px solid var(--ink);border-radius:99px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:800;cursor:pointer;box-shadow:2px 2px 0 rgba(34,48,60,.25);color:var(--ink)}
+.simp-chip svg{width:17px;height:17px}
+.char-wrap{position:fixed;bottom:84px;left:6px;z-index:58;display:flex;direction:ltr;align-items:flex-end;gap:0;width:min(92vw,400px)}
+.char-wrap[hidden]{display:none}
+.ch-fig{height:155px;width:auto;flex:0 0 auto;margin:0 -10px -4px 0;filter:drop-shadow(3px 3px 0 rgba(34,48,60,.22))}
+.simp-bub{position:relative;flex:1 1 auto;min-width:0;margin:0 0 34px 0;background:var(--paper);border:2.5px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 rgba(34,48,60,.25);padding:8px 8px 22px 10px}
+.simp-bub::after{content:"";position:absolute;bottom:-10px;left:18px;width:16px;height:16px;background:var(--paper);border-left:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:rotate(-45deg)}
+.sb-txt{font-size:12.5px;font-weight:700;line-height:1.85;max-height:150px;overflow-y:auto;margin-bottom:14px}
+.sb-x{position:absolute;top:5px;left:6px;width:24px;height:24px;border-radius:8px;border:2px solid var(--ink);background:var(--paper);font-size:13px;font-weight:800;line-height:1;cursor:pointer;color:var(--ink);padding:0}
+.sb-mode{position:absolute;bottom:4px;left:8px;font-size:10.5px;font-weight:800;color:var(--blue);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'Cairo',sans-serif;padding:0}
+@media (min-width:860px){
+.char-wrap{bottom:64px;width:min(560px,44vw)}
+.ch-fig{height:215px}
+main{max-width:720px;margin:0 auto}
+.nhd{padding:0 max(10px, calc(50% - 350px))}
+.nprog{right:max(12px, calc(50% - 350px));left:max(12px, calc(50% - 350px))}
+.mbar{right:max(0px, calc(50% - 360px));left:max(0px, calc(50% - 360px));border-right:2.5px solid var(--ink);border-left:2.5px solid var(--ink)}
+}
+</style></head><body>
+<div class="halftone"></div>
+<header class="nhd">
+  <button class="nback" id="backBtn" type="button" aria-label="رجوع"><svg viewBox="0 0 24 24"><path d="M4 12 h16 M14 5 l7 7 -7 7"/></svg></button>
+  <div class="nt" id="nTitle"></div>
+  <a class="nhome" href="index.html" aria-label="العودة إلى الموقع الرئيسي"><span><b>م</b></span></a>
+</header>
+<div class="nprog"><i id="fill"></i></div>
+<main id="main"></main>
+<footer></footer>
+<div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
+<div class="char-wrap" id="charWrap" hidden>
+<img class="ch-fig" id="chFig" src="../assets/img/mr-moamen-pointing.png" alt="مستر مؤمن">
+<div class="simp-bub" id="simpBub">
+<button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
+<span class="sb-txt" id="sbTxt"></span>
+<button class="sb-mode" id="sbMode" type="button"></button>
+</div>
+</div>
+<div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
+
+<script>document.write('<script src="../assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>document.write('<script src="../assets/data/25-bac-simplify.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script>
+var DOOD={
+pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
+sun:'<circle cx="50" cy="44" r="15"/><path d="M50 18 v-9 M50 70 v9 M24 44 h-11 M76 44 h11 M31 25 l-7 -7 M69 25 l7 -7 M31 63 l-7 7 M69 63 l7 7"/>',
+felucca:'<path d="M10 70 Q50 88 90 70"/><path d="M50 68 V20"/><path d="M50 22 L50 60 L80 60 Q70 32 50 22"/><path d="M18 78 q8 6 16 0 t16 0 t16 0 t16 0"/>',
+column:'<path d="M40 86 V42 M60 86 V42 M33 86 h34 M36 42 q14 -28 28 0 M43 42 q7 -18 14 0 M30 34 q20 -14 40 0"/>',
+ankh:'<circle cx="50" cy="26" r="11"/><path d="M50 37 V88 M32 54 H68"/>',
+scroll:'<path d="M28 24 h40 q12 0 12 11 t-12 11 H28"/><ellipse cx="26" cy="35" rx="9" ry="11"/><path d="M44 34 h20 M44 42 h14"/>',
+water:'<path d="M6 34 q10 -13 20 0 t20 0 t20 0 t20 0"/><path d="M6 54 q10 -13 20 0 t20 0 t20 0 t20 0"/>',
+star:'<path d="M50 8 L57 39 L88 40 L63 58 L71 89 L50 69 L29 89 L37 58 L12 40 L43 39 Z"/>',
+swirl:'<path d="M12 82 Q42 18 86 42 M86 42 l-13 -3 M86 42 l-1 -13"/>'
+};
+function dood(name,style,color,size){
+ return '<svg class="dood" viewBox="0 0 100 100" style="position:absolute;pointer-events:none;fill:none;stroke:'+(color||'currentColor')+';stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;width:'+(size||80)+'px;height:'+(size||80)+'px;'+style+'">'+DOOD[name]+'</svg>';
+}
+var ST='<svg viewBox="0 0 100 100"><path d="M50 8 L57 39 L88 40 L63 58 L71 89 L50 69 L29 89 L37 58 L12 40 L43 39 Z"/></svg>';
+var T='fill="none" stroke-linecap="round" stroke-linejoin="round"';
+var ILLUST={
+seg0:{cap:"أركان الدولة الأربعة",svg:
+'<svg viewBox="0 0 220 160"><g '+T+' stroke-width="2.6">'+
+'<path d="M104 14 L26 44 H194 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<rect x="30" y="48" width="168" height="8" rx="3" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<g stroke="var(--ink)"><path d="M44 66 V112 M56 66 V112"/><path d="M40 66 h20 M38 62 q12 -10 24 0"/></g>'+
+'<g stroke="var(--ink)"><path d="M84 66 V112 M96 66 V112"/><path d="M80 66 h20 M78 62 q12 -10 24 0"/></g>'+
+'<g stroke="var(--ink)"><path d="M124 66 V112 M136 66 V112"/><path d="M120 66 h20 M118 62 q12 -10 24 0"/></g>'+
+'<g stroke="var(--ink)"><path d="M164 66 V112 M176 66 V112"/><path d="M160 66 h20 M158 62 q12 -10 24 0"/></g>'+
+'<circle cx="170" cy="82" r="4.5" stroke="var(--blue)"/><path d="M163 96 q7 -8 14 0" stroke="var(--blue)"/>'+
+'<path d="M130 76 q6 0 6 6 q0 7 -6 12 q-6 -5 -6 -12 q0 -6 6 -6 Z" stroke="var(--red)"/>'+
+'<path d="M90 74 v14 M82 78 h16 M84 88 q-3 5 -6 0 M96 88 q3 5 6 0" stroke="var(--green)"/>'+
+'<path d="M50 74 v18 M50 76 l-10 3 10 3" stroke="var(--red)"/>'+
+'<path d="M26 118 H194 M34 126 H186" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="170" y="148">الشعب</text><text x="130" y="148">الحيز</text><text x="90" y="148">السُّلطة</text><text x="50" y="148">السيادة</text></g></svg>'},
+seg1:{cap:"الشعب مصدر السلطات",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M14 126 H206" stroke="var(--ink)"/>'+
+'<path d="M40 122 V70 M40 70 l22 -12 6 16 -28 6" stroke="var(--red)" fill="none"/>'+
+'<path d="M46 64 l16 -9 M46 70 l21 1" stroke="var(--red)"/>'+
+'<g stroke="var(--ink)"><circle cx="70" cy="70" r="8"/><path d="M70 78 V104 M70 86 l-10 10 M70 86 l10 10 M70 104 l-8 18 M70 104 l8 18"/></g>'+
+'<g stroke="var(--ink)"><circle cx="100" cy="66" r="8"/><path d="M100 74 V100 M100 82 l-11 -8 M100 82 l11 -8 M100 100 l-8 22 M100 100 l8 22"/></g>'+
+'<g stroke="var(--ink)"><circle cx="130" cy="70" r="8"/><path d="M130 78 V104 M130 86 l-10 -10 M130 86 l10 10 M130 104 l-8 18 M130 104 l8 18"/></g>'+
+'<g stroke="var(--ink)"><circle cx="160" cy="66" r="8"/><path d="M160 74 V100 M160 82 l-10 8 M160 82 l10 -10 M160 100 l-8 22 M160 100 l8 22"/></g>'+
+'<g stroke="var(--ink)"><circle cx="188" cy="72" r="7"/><path d="M188 79 V102 M188 87 l-9 8 M188 87 l9 8 M188 102 l-7 18 M188 102 l7 18"/></g>'+
+'<path d="M58 40 q10 -12 20 0 M120 36 q10 -12 20 0" stroke="var(--blue)"/>'+
+'</g></svg>'},
+seg2:{cap:"اليابس والمياه الإقليمية والمجال الجوي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="184" cy="30" r="11" stroke="var(--yellow)"/><path d="M184 10 v-6 M184 50 v6 M164 30 h-7 M204 30 h7 M170 16 l-5 -5 M198 16 l5 -5" stroke="var(--yellow)"/>'+
+'<path d="M20 34 q8 -12 18 -2 l10 -14 4 16 z M32 30 l-8 -6" stroke="var(--ink)"/>'+
+'<path d="M86 24 q6 -8 12 0 M102 20 q6 -8 12 0" stroke="var(--blue)"/>'+
+'<path d="M14 108 H206" stroke="var(--ink)"/>'+
+'<path d="M60 108 l6 10 M84 108 l6 10 M108 108 l6 10 M132 108 l6 10" stroke="var(--ink)"/>'+
+'<path d="M14 128 q10 -10 20 0 t20 0 M170 128 q10 -10 20 0 t20 0" stroke="var(--blue)"/>'+
+'<path d="M14 140 q10 -10 20 0 t20 0 M170 140 q10 -10 20 0 t20 0" stroke="var(--blue)"/>'+
+'<g stroke="var(--red)"><path d="M24 108 V88 M24 90 l12 4 -12 4"/><path d="M196 108 V88 M196 90 l-12 4 12 4"/></g>'+
+'</g></svg>'},
+seg3:{cap:"السلطات الثلاث",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="18" r="9" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M102 24 L48 52 M110 27 V52 M118 24 L172 52" stroke="var(--ink)" stroke-dasharray="4 4"/>'+
+'<g stroke="var(--blue)"><path d="M28 92 h40 M30 92 v-8 M38 92 v-8 M46 92 v-8 M54 92 v-8 M62 92 v-8 M64 92 h-40"/><path d="M30 80 q18 -22 36 0" /><path d="M48 58 v6"/></g>'+
+'<g stroke="var(--green)"><rect x="92" y="66" width="36" height="26" rx="2"/><path d="M110 66 V50 M110 52 l12 4 -12 4"/><path d="M98 74 h8 M114 74 h8 M98 82 h8 M114 82 h8"/></g>'+
+'<g stroke="var(--red)"><path d="M172 60 V94 M158 66 h28"/><path d="M162 66 l-7 14 q7 7 14 0 Z M182 66 l-7 14 q7 7 14 0 Z"/><path d="M166 94 h12"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="48" y="122">تشريعية</text><text x="110" y="122">تنفيذية</text><text x="172" y="122">قضائية</text></g></svg>'},
+seg4:{cap:"قرار وطني مستقل",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 18 Q152 26 152 52 Q152 102 110 126 Q68 102 68 52 Q68 26 110 18 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M110 30 Q140 36 140 54 Q140 94 110 112 Q80 94 80 54 Q80 36 110 30 Z" stroke="var(--green)"/>'+
+'<path d="M98 96 V52 M98 54 l22 7 -22 7" stroke="var(--red)"/>'+
+'<path d="M24 60 h22 M38 52 l-8 8 8 8 M196 60 h-22 M182 52 l8 8 -8 8" stroke="var(--blue)"/>'+
+'</g></svg>'},
+seg5:{cap:"الموقع والنيل والموارد",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M62 22 Q96 10 128 20 L158 30 Q170 60 158 92 L150 126 L74 126 L60 90 Q50 52 62 22 Z" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M104 126 Q96 100 108 80 Q118 62 106 44 Q100 32 108 22" stroke="var(--blue)" stroke-width="3.4"/>'+
+'<path d="M118 92 q10 -6 18 2 M120 100 q8 -4 14 1" stroke="var(--blue)"/>'+
+'<circle cx="40" cy="34" r="10" stroke="var(--yellow)"/><path d="M40 16 v-6 M40 52 v6 M22 34 h-7 M58 34 h7 M28 22 l-5 -5 M52 22 l5 -5" stroke="var(--yellow)"/>'+
+'<path d="M136 110 v-16 M136 94 q-9 -4 -12 -12 M136 94 q9 -4 12 -12 M136 94 q-12 2 -18 -4 M136 94 q12 2 18 -4" stroke="var(--green)"/>'+
+'<circle cx="84" cy="58" r="2.4" stroke="var(--red)"/><circle cx="132" cy="48" r="2.4" stroke="var(--red)"/><circle cx="90" cy="100" r="2.4" stroke="var(--red)"/>'+
+'</g></svg>'},
+seg6:{cap:"تجانس وحكومة وجيش",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="48" cy="72" r="30" stroke="var(--ink)" stroke-dasharray="3 5"/>'+
+'<g stroke="var(--blue)"><circle cx="48" cy="52" r="4.5"/><circle cx="30" cy="70" r="4.5"/><circle cx="66" cy="70" r="4.5"/><circle cx="40" cy="90" r="4.5"/><circle cx="58" cy="90" r="4.5"/></g>'+
+'<g stroke="var(--red)"><path d="M96 92 q2 -34 18 -42 q16 8 18 42 Z"/><path d="M114 50 q-4 -18 4 -26 q4 10 -1 20"/><path d="M100 92 h28"/></g>'+
+'<g stroke="var(--green)"><path d="M164 56 q18 -6 26 4 q4 22 -8 34 q-14 8 -22 -4 q-4 -22 4 -34 Z"/><path d="M174 66 v18 M166 74 h16"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="48" y="124">تجانس الشعب</text><text x="114" y="124">حكومة مركزية</text><text x="176" y="124">قوة عسكرية</text></g></svg>'},
+seg7:{cap:"الهُوية المصرية عبر العصور",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M14 118 L52 62 L90 118 Z" stroke="var(--ink)" fill="var(--peach)"/><path d="M52 62 L64 118 M36 96 h16 M44 82 h9" stroke="var(--ink)"/>'+
+'<g stroke="var(--ink)"><path d="M112 52 h72 q10 0 10 10 v46 q0 10 -10 10 h-72 q-8 0 -8 -8 V60 q0 -8 8 -8 Z" fill="var(--paper)"/><ellipse cx="112" cy="85" rx="8" ry="33"/></g>'+
+'<g stroke="var(--red)"><circle cx="150" cy="72" r="6"/><path d="M150 78 v14 M140 84 h20"/></g>'+
+'<path d="M128 100 q8 -8 16 0 t16 0" stroke="var(--blue)"/>'+
+'<path d="M128 62 h44 M128 110 h40" stroke="var(--ink)" stroke-dasharray="2 5"/>'+
+'<path d="M198 118 q-2 -24 8 -34 M206 84 l-6 6 M206 84 l6 8" stroke="var(--green)"/>'+
+'</g></svg>'},
+seg8:{cap:"راجع إجاباتك بنفسك",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M44 40 h84 q14 0 14 14 v56 q0 14 -14 14 H44 q-10 0 -10 -10 V50 q0 -10 10 -10 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M44 40 q-10 0 -10 10 v56 M44 40 v84" stroke="var(--ink)"/>'+
+'<path d="M58 60 h62 M58 74 h62 M58 88 h40" stroke="var(--blue)" stroke-dasharray="3 5"/>'+
+'<path d="M56 106 l10 10 22 -24" stroke="var(--green)" stroke-width="4"/>'+
+'<path d="M150 116 L188 44 l10 8 -36 72 -14 6 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M188 44 l10 8 M152 110 l8 6" stroke="var(--ink)"/>'+
+'<path d="M160 24 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z M196 88 l1.6 5 5 1.6 -5 1.6 -1.6 5 -1.6 -5 -5 -1.6 5 -1.6 Z" stroke="var(--red)"/>'+
+'</g></svg>'},
+"l2-0":{cap:"موقع متميز وموارد وفيرة تجذب الأطماع",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M72 30 Q106 18 138 28 L166 38 Q178 66 166 96 L158 128 L84 128 L70 94 Q60 58 72 30 Z" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M112 128 Q104 104 116 86 Q126 68 114 50 Q108 38 116 28" stroke="var(--blue)" stroke-width="3.4"/>'+
+'<path d="M148 112 v-16 M148 96 q-9 -4 -12 -12 M148 96 q9 -4 12 -12 M148 96 q-12 2 -18 -4 M148 96 q12 2 18 -4" stroke="var(--green)"/>'+
+'<g stroke="var(--red)"><path d="M30 26 q14 6 26 18 M56 44 l-13 1 M56 44 l-3 -13"/><path d="M196 24 q-14 8 -24 20 M172 44 l13 1 M172 44 l2 -13"/><path d="M34 118 q12 -8 26 -10 M60 108 l-12 -6 M60 108 l-6 12"/><path d="M192 116 q-12 -8 -26 -8 M166 108 l12 -7 M166 108 l7 12"/></g>'+
+'<circle cx="40" cy="52" r="10" stroke="var(--yellow)"/><path d="M40 36 v-6 M40 68 v6 M24 52 h-7 M56 52 h7" stroke="var(--yellow)"/>'+
+'</g></svg>'},
+"l2-1":{cap:"العجلات الحربية والأسلحة المتفوقة سر نجاح الهكسوس",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<g stroke="var(--ink)"><circle cx="80" cy="96" r="26"/><circle cx="80" cy="96" r="5"/><path d="M80 70 V122 M54 96 h52 M62 78 l36 36 M98 78 l-36 36"/></g>'+
+'<path d="M106 92 h44 M150 92 l16 -10 M150 92 l14 12" stroke="var(--red)"/>'+
+'<path d="M166 82 q12 -8 20 0 q6 8 -2 14 M186 82 l8 -8 M186 82 l10 -2" stroke="var(--ink)"/>'+
+'<path d="M108 70 l20 -8 M108 76 l22 -2" stroke="var(--blue)"/>'+
+'<path d="M46 40 q8 -6 16 0 M30 52 q8 -6 16 0" stroke="var(--blue)"/>'+
+'<path d="M120 116 h70" stroke="var(--ink)" stroke-dasharray="4 5"/>'+
+'</g></svg>'},
+"l2-2":{cap:"ثلاثة أجيال من المقاومة حتى التحرير",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M14 128 H206" stroke="var(--ink)"/>'+
+'<rect x="30" y="100" width="48" height="26" rx="3" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<rect x="86" y="76" width="48" height="50" rx="3" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<rect x="142" y="50" width="48" height="76" rx="3" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M166 50 V26 M166 28 l20 6 -20 6" stroke="var(--red)"/>'+
+'<path d="M52 92 q10 -10 20 -4 M104 68 q10 -10 20 -4" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="54" y="117">سقنن رع</text><text x="110" y="97">كامس</text><text x="166" y="97">أحمس</text>'+
+'<text x="110" y="144" font-size="11">طرد الهكسوس وتأسيس الدولة الحديثة</text></g></svg>'},
+"l2-3":{cap:"عبقرية المصريين: عجلة أخف وأسرع وأكفأ",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<g stroke="var(--ink)"><circle cx="56" cy="86" r="30"/><circle cx="56" cy="86" r="6"/><path d="M56 56 v60 M26 86 h60 M35 65 l42 42 M77 65 l-42 42"/><path d="M26 66 q30 -14 60 0" stroke-width="4"/></g>'+
+'<g stroke="var(--green)"><circle cx="164" cy="86" r="24"/><circle cx="164" cy="86" r="4"/><path d="M164 62 v48 M140 86 h48 M147 69 l34 34 M181 69 l-34 34"/></g>'+
+'<path d="M96 86 h34 M124 78 l10 8 -10 8" stroke="var(--red)"/>'+
+'<path d="M148 34 q8 -6 16 0 M168 28 q8 -6 16 0" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="56" y="136">عجلة الهكسوس الثقيلة</text><text x="164" y="136">العجلة المصرية المطوَّرة</text></g></svg>'},
+"l2-4":{cap:"من مقدونيا إلى الإسكندرية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M52 96 q0 -30 24 -34 q26 4 24 34 l-6 4 h-36 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M76 62 q0 -22 10 -30 q2 14 -2 26" stroke="var(--red)"/>'+
+'<path d="M64 100 h24" stroke="var(--ink)"/>'+
+'<path d="M106 84 h34 M132 76 l10 8 -10 8" stroke="var(--blue)"/>'+
+'<path d="M160 100 V52 M152 52 h16 M150 100 h20 M146 108 h28" stroke="var(--green)"/>'+
+'<path d="M168 26 l2.4 7 7 2.4 -7 2.4 -2.4 7 -2.4 -7 -7 -2.4 7 -2.4 Z" stroke="var(--red)"/>'+
+'<path d="M150 60 q9 -6 18 0" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="76" y="126">مقدونيا</text><text x="160" y="126">الإسكندرية</text></g></svg>'},
+"l2-5":{cap:"من دولة البطالمة إلى الولاية الرومانية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<g stroke="var(--ink)"><path d="M56 116 V60 M46 60 h20 M44 116 h24 M40 124 h32"/><path d="M50 68 h12 M50 78 h12 M50 88 h12 M50 98 h12 M50 108 h12" stroke-dasharray="2 4"/></g>'+
+'<path d="M56 60 q-4 -18 4 -26 q4 12 -1 22" stroke="var(--red)"/>'+
+'<g stroke="var(--blue)"><path d="M120 104 q22 12 44 0 l-8 -14 h-28 Z"/><path d="M142 90 V58 M142 60 l22 12 -22 6"/></g>'+
+'<path d="M112 128 q10 -8 20 0 t20 0 M160 128 q10 -8 20 0 t20 0" stroke="var(--blue)"/>'+
+'<path d="M188 46 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z" stroke="var(--red)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="56" y="140">دولة البطالمة</text><text x="150" y="144">معركة أكتيوم ٣٠ ق.م</text></g></svg>'},
+"l3-0":{cap:"من ولاية تابعة إلى مركز قيادي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M30 118 H190" stroke="var(--ink)"/>'+
+'<path d="M40 118 V96 M40 98 l16 5 -16 5" stroke="var(--ink)"/>'+
+'<path d="M90 118 V74 M90 76 l18 6 -18 6" stroke="var(--blue)"/>'+
+'<path d="M150 118 V44 M150 46 l22 7 -22 7" stroke="var(--red)"/>'+
+'<path d="M172 30 l2.6 7.4 7.4 2.6 -7.4 2.6 -2.6 7.4 -2.6 -7.4 -7.4 -2.6 7.4 -2.6 Z" stroke="var(--yellow)"/>'+
+'<path d="M58 108 q14 -10 26 -16 M108 92 q18 -16 34 -30" stroke="var(--green)" stroke-dasharray="4 4"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="48" y="140">ولاية</text><text x="98" y="140">دولة مستقلة</text><text x="166" y="140">مركز قيادي</text></g></svg>'},
+"l3-1":{cap:"مراحل مصر السياسية في العصر الوسيط",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="24" y="52" width="50" height="66" rx="4" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<rect x="85" y="52" width="50" height="66" rx="4" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<rect x="146" y="52" width="50" height="66" rx="4" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M76 84 h8 M137 84 h8" stroke="var(--red)"/>'+
+'<path d="M110 30 q6 -8 12 0 M98 34 q6 -8 12 0" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="49" y="78">ولاية</text><text x="49" y="94">إسلامية</text>'+
+'<text x="110" y="78">مركز الخلافة</text><text x="110" y="94">والقيادة</text>'+
+'<text x="171" y="78">ولاية</text><text x="171" y="94">عثمانية</text></g></svg>'},
+"l3-2":{cap:"العربية لغة الإدارة والعلم والثقافة",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M40 44 h84 q14 0 14 14 v56 q0 14 -14 14 H40 q-10 0 -10 -10 V54 q0 -10 10 -10 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M40 44 q-10 0 -10 10 v56 M40 44 v84" stroke="var(--ink)"/>'+
+'<path d="M54 64 h62 M54 78 h62 M54 92 h40" stroke="var(--blue)" stroke-dasharray="3 5"/>'+
+'<path d="M54 112 l8 8 18 -20" stroke="var(--green)" stroke-width="3.6"/>'+
+'<g stroke="var(--ink)"><path d="M160 120 V74 M160 76 q-14 -18 -6 -34 q4 16 10 22 q2 -14 12 -22 q0 18 -8 30"/><path d="M150 120 h20"/></g>'+
+'<path d="M188 46 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z" stroke="var(--red)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="170" y="140">القبائل العربية</text></g></svg>'},
+"l3-3":{cap:"الأزهر منارة العلم والثقافة",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M92 124 V84 q0 -22 18 -22 q18 0 18 22 v40 Z" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M110 62 q-10 -10 0 -20 q10 10 0 20" stroke="var(--ink)"/>'+
+'<path d="M110 42 v-10" stroke="var(--ink)"/>'+
+'<path d="M76 124 V70 M70 70 h12 M72 62 q4 -8 8 0 M144 124 V70 M138 70 h12 M140 62 q4 -8 8 0" stroke="var(--ink)"/>'+
+'<path d="M60 124 h100" stroke="var(--ink)"/>'+
+'<g stroke="var(--blue)"><path d="M168 108 h34 M170 108 v-26 q8 -10 16 0 v26"/><path d="M174 92 h10 M174 100 h10"/></g>'+
+'<path d="M52 40 q8 -6 16 0 M36 52 q8 -6 16 0" stroke="var(--yellow)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="142">الأزهر الشريف</text><text x="180" y="130">حلقة علم</text></g></svg>'},
+"l3-4":{cap:"عواصم جديدة: الفسطاط والقطائع والقاهرة",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M40 122 V92 h16 v-14 h10 v14 h14 v-22 q0 -14 12 -14 q12 0 12 14 v22 h12 v30 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M92 56 q-8 -8 0 -16 q8 8 0 16" stroke="var(--ink)"/>'+
+'<g stroke="var(--green)"><path d="M140 122 V84 M134 84 h12 M136 76 q4 -8 8 0 M170 122 V70 q0 -10 10 -10 q10 0 10 10 v52"/><path d="M170 86 h20 M170 100 h20"/></g>'+
+'<path d="M30 122 h170" stroke="var(--ink)"/>'+
+'<path d="M52 132 h30 M96 132 h30 M140 132 h44" stroke="var(--blue)" stroke-dasharray="3 5"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="70" y="146">الفسطاط والقطائع</text><text x="176" y="146">القاهرة</text></g></svg>'},
+"l3-5":{cap:"زراعة وصناعة وتجارة: قوة الاقتصاد",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<g stroke="var(--green)"><path d="M46 118 V66 M46 66 q-12 -2 -16 -14 q14 -2 16 14 M46 66 q12 -2 16 -14 q-14 -2 -16 14 M46 88 q-11 -2 -15 -12 q13 -2 15 12 M46 88 q11 -2 15 -12 q-13 -2 -15 12"/></g>'+
+'<g stroke="var(--ink)"><path d="M96 78 h24 l6 40 h-36 Z"/><path d="M100 78 q12 -10 20 0"/><path d="M103 92 h18 M103 102 h18" stroke-dasharray="2 4"/></g>'+
+'<g stroke="var(--blue)"><path d="M146 104 q18 10 36 0 l-7 -12 h-22 Z"/><path d="M164 92 V64 M164 66 l18 10 -18 5"/></g>'+
+'<path d="M138 122 q8 -6 16 0 t16 0 M178 122 q8 -6 16 0 t16 0" stroke="var(--blue)"/>'+
+'<path d="M28 128 h120" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="46" y="144">زراعة</text><text x="108" y="144">صناعة</text><text x="168" y="144">تجارة</text></g></svg>'},
+"l3-6":{cap:"مصر دولة محورية في العالم الإسلامي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="72" r="46" stroke="var(--ink)" stroke-dasharray="3 5"/>'+
+'<path d="M110 44 l7.6 20 20 7.6 -20 7.6 -7.6 20 -7.6 -20 -20 -7.6 20 -7.6 Z" stroke="var(--red)" fill="var(--yellow)"/>'+
+'<circle cx="64" cy="50" r="6" stroke="var(--blue)"/><circle cx="156" cy="50" r="6" stroke="var(--green)"/><circle cx="110" cy="120" r="6" stroke="var(--blue)"/><circle cx="64" cy="98" r="6" stroke="var(--green)"/><circle cx="156" cy="98" r="6" stroke="var(--blue)"/>'+
+'<path d="M70 52 l26 14 M150 52 l-26 14 M110 114 v-26 M70 94 l26 -12 M150 94 l-26 -12" stroke="var(--ink)" stroke-dasharray="2 4"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="144">مصر في المركز</text></g></svg>'},
+"l4-0":{cap:"تحولات كبرى في جميع المجالات",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="110" cy="72" r="20" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M110 44 v-12 M110 100 v12 M82 72 H70 M138 72 h12 M90 52 l-9 -9 M130 52 l9 -9 M90 92 l-9 9 M130 92 l9 9" stroke="var(--ink)"/>'+
+'<g stroke="var(--blue)"><rect x="30" y="24" width="34" height="30" rx="5"/><path d="M36 54 V38 h6 v-6 h4 v6 h6 v-6 h4 v6 h6 v16"/></g>'+
+'<g stroke="var(--green)"><circle cx="176" cy="40" r="15"/><path d="M170 40 h12 M176 34 v12"/></g>'+
+'<g stroke="var(--red)"><path d="M36 108 q10 -14 20 0 q-10 14 -20 0 Z M46 108 v16"/><circle cx="46" cy="98" r="6"/></g>'+
+'<g stroke="var(--ink)"><path d="M164 96 h30 v22 h-30 Z M164 96 q15 -14 30 0"/><path d="M172 104 h14 M172 110 h14"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="47" y="20">سياسية</text><text x="178" y="20">اقتصادية</text>'+
+'<text x="46" y="142">اجتماعية</text><text x="179" y="134">فكرية</text></g></svg>'},
+"l4-1":{cap:"الصدمة الحضارية: الحملة الفرنسية ١٧٩٨",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M40 112 q40 14 80 0 l-10 -18 H50 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M80 94 V48 M80 50 q22 6 34 22 q-17 4 -34 0" stroke="var(--ink)"/>'+
+'<path d="M30 122 q8 -6 16 0 t16 0 q8 -6 16 0 t16 0 M142 122 q8 -6 16 0 t16 0" stroke="var(--blue)"/>'+
+'<path d="M168 44 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 Z" stroke="var(--red)" fill="var(--yellow)"/>'+
+'<path d="M148 30 l6 6 M190 28 l-6 6 M192 66 l-7 -4" stroke="var(--red)"/>'+
+'<path d="M156 108 q7 -5 14 0 t14 0 q7 -5 14 0" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="80" y="142">الحملة الفرنسية</text><text x="170" y="142">صدمة حضارية</text></g></svg>'},
+"l4-2":{cap:"دولة قوية: جيش وإدارة وزراعة وبعثات",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="24" y="20" width="80" height="52" rx="6" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M50 60 V36 l14 -8 14 8 v24 M57 60 V46 q0 -6 7 -6 q7 0 7 6 v14" stroke="var(--ink)"/>'+
+'<rect x="116" y="20" width="80" height="52" rx="6" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M132 60 V36 h32 v24 M132 44 h32 M140 36 v24 M148 36 v24 M156 36 v24" stroke="var(--blue)"/>'+
+'<rect x="24" y="80" width="80" height="52" rx="6" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<g stroke="var(--green)"><path d="M64 124 V96 M64 96 q-10 -2 -13 -12 q12 -2 13 12 M64 96 q10 -2 13 -12 q-12 -2 -13 12 M64 110 q-9 -2 -12 -10 q11 -2 12 10 M64 110 q9 -2 12 -10 q-11 -2 -12 10"/></g>'+
+'<rect x="116" y="80" width="80" height="52" rx="6" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M136 116 q20 -4 34 -22 M170 94 l4 -8 6 7 M146 96 h16 M146 104 h10" stroke="var(--red)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="64" y="148">جيش حديث</text><text x="156" y="16">إدارة مركزية</text>'+
+'<text x="156" y="148">بعثات علمية</text></g></svg>'},
+"l4-3":{cap:"من الاستقلالية إلى التبعية ١٨٦٧–١٨٨٢",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M30 120 h44 v-24 h44 v-24 h44 v-24 h28" stroke="var(--ink)" stroke-dasharray="5 4"/>'+
+'<path d="M162 56 l10 -14 4 16" stroke="var(--red)"/>'+
+'<g stroke="var(--ink)"><path d="M36 44 l8 -14 8 14 8 -14 8 14 v8 H36 Z"/><path d="M36 52 h32"/></g>'+
+'<g stroke="var(--blue)"><path d="M92 96 q0 -12 12 -12 q12 0 12 12 v6 H92 Z"/><path d="M98 84 q6 -10 16 0"/></g>'+
+'<g stroke="var(--red)"><rect x="150" y="96" width="30" height="24" rx="4"/><path d="M158 96 v-8 q0 -8 7 -8 q7 0 7 8 v8"/><circle cx="165" cy="107" r="3"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="52" y="72">استقلال أكبر ١٨٦٧</text><text x="104" y="116">ديون</text><text x="165" y="140">احتلال ١٨٨٢</text></g></svg>'},
+"l4-4":{cap:"التصنيع المبكر ومعاهدة بلطة ليمان ١٨٣٨",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M34 116 V72 l20 -12 v12 l20 -12 v12 l20 -12 v56 Z" stroke="var(--ink)" fill="var(--mint)"/>'+
+'<path d="M100 116 V60 h12 v56 M104 52 q-6 -10 0 -18 M108 46 q-5 -8 1 -14" stroke="var(--ink)"/>'+
+'<path d="M44 92 h12 M64 92 h12 M44 104 h12 M64 104 h12" stroke="var(--blue)"/>'+
+'<g stroke="var(--red)"><path d="M140 60 h48 v56 h-48 Z" fill="var(--paper)"/><path d="M150 74 h28 M150 84 h28 M150 94 h18"/><path d="M144 106 l14 10 M158 106 l-14 10 M166 108 l12 8 M178 108 l-12 8"/><circle cx="174" cy="70" r="7" stroke-dasharray="2 3"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="66" y="140">مصانع محمد علي</text><text x="164" y="140">بلطة ليمان ١٨٣٨</text></g></svg>'},
+"l4-5":{cap:"صندوق الدَّين والمراقبة الثنائية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M84 116 q-26 -6 -26 -30 q0 -22 26 -26 q6 -16 26 -16 q20 0 26 16 q26 4 26 26 q0 24 -26 30 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M100 66 q-8 6 0 12 q10 6 2 14 M112 66 q8 6 0 12 q-10 6 -2 14 M96 96 h20" stroke="var(--red)"/>'+
+'<g stroke="var(--blue)"><circle cx="52" cy="40" r="10"/><circle cx="52" cy="40" r="3"/><path d="M40 30 q-8 -4 -12 2 M64 30 q8 -4 12 2"/></g>'+
+'<g stroke="var(--green)"><circle cx="168" cy="40" r="10"/><circle cx="168" cy="40" r="3"/><path d="M156 30 q-8 -4 -12 2 M180 30 q8 -4 12 2"/></g>'+
+'<path d="M62 44 q20 12 40 16 M158 44 q-20 12 -40 16" stroke="var(--ink)" stroke-dasharray="3 4"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="140">الديون الخارجية</text><text x="52" y="20">مراقبة</text><text x="168" y="20">ثنائية</text></g></svg>'},
+"l4-6":{cap:"التركيب الطبقي في المجتمع المصري",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 22 L186 122 H34 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M86 62 h48 M66 86 h88 M50 106 h120" stroke="var(--ink)"/>'+
+'<path d="M110 22 L86 62 h48 Z" fill="var(--yellow)"/>'+
+'<path d="M86 62 h48 L66 86 h88 Z" fill="var(--mint)" opacity=".6"/>'+
+'<path d="M66 86 h88 L50 106 h120 Z" fill="var(--peach)" opacity=".6"/>'+
+'<path d="M50 106 h120 L34 122 h152 Z" fill="var(--blue)" opacity=".35"/>'+
+'<g stroke="var(--ink)"><circle cx="196" cy="60" r="5"/><path d="M196 66 v12 M190 72 h12"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="50">الأولى</text><text x="110" y="79">الثانية</text>'+
+'<text x="110" y="100">الثالثة</text><text x="110" y="118">الدنيا</text>'+
+'<text x="190" y="92">كبار المُلاك</text></g></svg>'},
+"l4-7":{cap:"تيارات فكرية: إصلاح وليبرالية ووطنية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 96 q-20 -12 -40 -8 v34 q20 -4 40 8 q20 -12 40 -8 v-34 q-20 -4 -40 8 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M110 96 v34" stroke="var(--ink)"/>'+
+'<path d="M78 102 h22 M78 110 h22 M122 102 h22 M122 110 h22" stroke="var(--blue)" stroke-dasharray="2 4"/>'+
+'<g stroke="var(--green)"><path d="M60 74 q-14 -16 -6 -34 q18 4 20 22 q2 10 -6 16" /><path d="M54 74 v12"/></g>'+
+'<g stroke="var(--red)"><path d="M104 66 V38 M104 38 h26 v14 h-26"/></g>'+
+'<g stroke="var(--ink)"><path d="M156 78 q0 -18 12 -26 q12 8 12 26" /><path d="M168 52 v-8 M162 78 h12"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="52" y="100">إصلاح ديني</text><text x="117" y="26">وطني</text><text x="176" y="100">ليبرالي</text></g></svg>'},
+"l4-8":{cap:"قوة إقليمية تصطدم بالاستعمار ١٨٤٠",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<circle cx="100" cy="74" r="52" stroke="var(--ink)" stroke-dasharray="4 4"/>'+
+'<path d="M100 46 l6.4 17 17 6.4 -17 6.4 -6.4 17 -6.4 -17 -17 -6.4 17 -6.4 Z" stroke="var(--red)" fill="var(--yellow)"/>'+
+'<path d="M164 34 h40 v80 h-40 M164 54 h-14 M164 74 h-18 M164 94 h-14" stroke="var(--ink)"/>'+
+'<path d="M146 54 l-10 4 M142 74 h-12 M146 94 l-10 -4" stroke="var(--red)"/>'+
+'<path d="M176 30 q4 -8 12 -8 M190 30 q4 -8 12 -8" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="100" y="144">مصر قوة إقليمية</text><text x="184" y="128">نفوذ استعماري</text></g></svg>'},
+"l5-0":{cap:"مصر ساحة للتنافس الاستعماري",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 40 L84 104 h52 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<path d="M110 40 L97 104 M110 40 L123 104" stroke="var(--ink)"/>'+
+'<g stroke="var(--red)"><path d="M30 44 v40 M30 44 h26 l-6 8 6 8 h-26"/><path d="M56 84 q18 10 34 12"/></g>'+
+'<g stroke="var(--blue)"><path d="M190 44 v40 M190 44 h-26 l6 8 -6 8 h26"/><path d="M164 84 q-18 10 -34 12"/></g>'+
+'<circle cx="110" cy="128" r="10" stroke="var(--green)" fill="var(--yellow)"/>'+
+'<path d="M70 128 h22 M128 128 h22" stroke="var(--ink)" stroke-dasharray="3 4"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="43" y="32">فرنسا</text><text x="177" y="32">بريطانيا</text>'+
+'<text x="110" y="146">مصر</text></g></svg>'},
+"l5-1":{cap:"سياسة التقرب: منشورات ومجمع علمي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="30" y="34" width="70" height="86" rx="6" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M42 52 h46 M42 64 h46 M42 76 h46 M42 88 h30" stroke="var(--ink)" stroke-dasharray="3 4"/>'+
+'<path d="M42 106 q10 -8 20 0 q10 8 20 0" stroke="var(--red)"/>'+
+'<g stroke="var(--green)"><path d="M132 96 q0 -30 24 -30 q24 0 24 30 Z"/><circle cx="156" cy="56" r="8"/><circle cx="159.5" cy="53.5" r="6.6" fill="var(--paper)" stroke="none"/></g>'+
+'<path d="M132 108 h48 M136 108 v8 h40 v-8" stroke="var(--green)"/>'+
+'<g stroke="var(--blue)"><circle cx="122" cy="120" r="7"/><circle cx="142" cy="120" r="7"/><path d="M129 120 h6"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="65" y="26">منشورات تحترم الإسلام</text><text x="156" y="136">العلماء والمشايخ</text></g></svg>'},
+"l5-2":{cap:"حجر رشيد: نص واحد بثلاث كتابات",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M64 30 q46 -14 92 0 l0 92 q-46 12 -92 0 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M76 48 h68 M76 60 h68" stroke="var(--red)"/>'+
+'<path d="M76 76 h68 M76 88 h68" stroke="var(--green)"/>'+
+'<path d="M76 104 h68 M76 114 h48" stroke="var(--blue)"/>'+
+'<g stroke="var(--ink)"><path d="M178 44 l8 -12 8 12 M186 36 v24"/><path d="M174 60 h24"/></g>'+
+'<path d="M170 96 q14 -8 28 0 q-14 8 -28 0 Z M184 96 v18" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="20">حجر رشيد ١٧٩٩م</text>'+
+'<text x="60" y="140">هيروغليفية</text><text x="130" y="140">ديموطيقية</text><text x="192" y="140">يونانية</text></g></svg>'},
+"l5-3":{cap:"بلطة ليمان ١٨٣٨ ومؤتمر لندن ١٨٤٠",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="56" y="30" width="108" height="76" rx="6" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M70 48 h80 M70 60 h80 M70 72 h56" stroke="var(--ink)" stroke-dasharray="3 4"/>'+
+'<path d="M70 90 q14 -8 28 0 t28 0" stroke="var(--blue)"/>'+
+'<circle cx="148" cy="88" r="11" stroke="var(--red)" fill="var(--yellow)"/>'+
+'<path d="M144 88 l4 4 6 -8" stroke="var(--red)"/>'+
+'<g stroke="var(--ink)"><path d="M36 118 q30 -16 60 -4 M96 114 l10 2 -8 6"/></g>'+
+'<g stroke="var(--green)"><path d="M148 122 l8 -16 M156 106 l14 -8 M170 98 l6 4"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="22">معاهدات فُرضت على مصر</text>'+
+'<text x="110" y="140">قرارات القوى الكبرى</text></g></svg>'},
+"l5-4":{cap:"الديون والمراقبة الثنائية ١٨٧٦",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M96 56 q14 -12 28 0 q10 26 -4 44 q-10 10 -20 0 q-14 -18 4 -44 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M104 46 q6 -10 12 0 M110 44 v-8" stroke="var(--ink)"/>'+
+'<path d="M103 76 h14 M103 86 h14" stroke="var(--ink)"/>'+
+'<g stroke="var(--red)"><path d="M40 40 v26 M40 40 h22 l-5 7 5 7 h-22"/><path d="M48 88 q14 20 40 26"/></g>'+
+'<g stroke="var(--blue)"><path d="M180 40 v26 M180 40 h-22 l5 7 -5 7 h22"/><path d="M172 88 q-14 20 -40 26"/></g>'+
+'<circle cx="66" cy="60" r="7" stroke="var(--ink)"/><circle cx="154" cy="60" r="7" stroke="var(--ink)"/>'+
+'<circle cx="66" cy="60" r="2" fill="var(--ink)" stroke="var(--ink)"/><circle cx="154" cy="60" r="2" fill="var(--ink)" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="66" y="30">مراقب بريطاني</text><text x="154" y="30">مراقب فرنسي</text>'+
+'<text x="110" y="140">صندوق الدَّين</text></g></svg>'},
+"l5-5":{cap:"التل الكبير والاحتلال البريطاني ١٨٨٢",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M30 112 h80 v-30 h-12 v-12 h-14 v12 h-10 v-12 h-14 v12 h-12 v-12 h-14 v12 h-16 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<g stroke="var(--red)"><path d="M70 70 v-24 M70 46 h24 l-6 7 6 7 h-24"/></g>'+
+'<g stroke="var(--blue)"><path d="M126 96 q22 -10 44 -2 l-8 18 h-28 Z"/><path d="M148 94 v-26 M148 70 q12 2 18 10 q-9 3 -18 0"/></g>'+
+'<path d="M120 118 q10 -6 20 0 t20 0 q10 -6 20 0" stroke="var(--blue)"/>'+
+'<path d="M150 40 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 Z" stroke="var(--red)" fill="var(--yellow)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="70" y="136">معركة التل الكبير</text><text x="160" y="136">١٨٨٢م</text></g></svg>'},
+"l5-6":{cap:"احتلال غير مباشر: السلطة للمعتمد",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 18 q-3 10 0 18 M84 22 q-1 10 4 20 M136 22 q1 10 -4 20" stroke="var(--ink)" stroke-dasharray="2 4"/>'+
+'<rect x="96" y="6" width="28" height="14" rx="6" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<g stroke="var(--ink)"><path d="M88 62 q0 -20 22 -20 q22 0 22 20 Z"/><circle cx="110" cy="30" r="6"/></g>'+
+'<path d="M84 62 h52 M92 62 v10 h36 v-10" stroke="var(--ink)"/>'+
+'<g stroke="var(--red)"><path d="M150 96 v-30 M150 66 h26 l-6 8 6 8 h-26"/></g>'+
+'<path d="M60 96 h100 M60 96 v14 M160 96 v14 M60 110 h100" stroke="var(--blue)"/>'+
+'<path d="M96 96 v-10 M124 96 v-10" stroke="var(--blue)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="90">الخديو سلطة شكلية</text>'+
+'<text x="110" y="136">المعتمد البريطاني يحكم فعليًّا</text></g></svg>'},
+"l5-7":{cap:"محاكم مختلطة واقتصاد تابع",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<g stroke="var(--ink)"><path d="M70 36 v54 M44 48 h52 M70 36 l-8 -8 M70 36 l8 -8"/>'+
+'<path d="M44 48 l-12 22 q12 10 24 0 Z M96 48 l-12 22 q12 10 24 0 Z"/>'+
+'<path d="M56 96 h28 M62 96 v8 h16 v-8"/></g>'+
+'<g stroke="var(--green)"><path d="M160 116 V64 M160 64 q-12 -2 -15 -14 q14 -2 15 14 M160 64 q12 -2 15 -14 q-14 -2 -15 14"/>'+
+'<circle cx="145" cy="86" r="7" fill="var(--paper)"/><circle cx="175" cy="86" r="7" fill="var(--paper)"/><circle cx="160" cy="98" r="7" fill="var(--paper)"/></g>'+
+'<g stroke="var(--red)"><path d="M186 44 v24 M186 44 h-18 l4 6 -4 6 h18"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="70" y="126">ازدواجية قانونية</text><text x="160" y="136">التوسع في القطن</text></g></svg>'},
+"l5-8":{cap:"تعليم يخدم الاحتلال",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 60 q-22 -12 -44 -8 v42 q22 -4 44 8 q22 -12 44 -8 v-42 q-22 -4 -44 8 Z" stroke="var(--ink)" fill="var(--paper)"/>'+
+'<path d="M110 60 v42" stroke="var(--ink)"/>'+
+'<path d="M76 66 h22 M76 74 h22 M122 66 h22 M122 74 h22" stroke="var(--blue)" stroke-dasharray="2 4"/>'+
+'<g stroke="var(--ink)"><rect x="86" y="18" width="48" height="22" rx="4"/><path d="M92 29 h10 M104 29 h12 M122 29 h6 M92 35 h18 M116 35 h10"/></g>'+
+'<path d="M110 40 v14" stroke="var(--red)"/>'+
+'<g stroke="var(--red)"><circle cx="110" cy="122" r="9"/><path d="M110 116 v6 l4 3"/></g>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="10.5" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="14">خفض الإنفاق</text>'+
+'<text x="110" y="146">إعداد موظفين لا مواطنين واعين</text></g></svg>'}
+};
+var D=window.BAC_G2P1;
+var qL=parseInt(new URLSearchParams(location.search).get('lesson')||'',10);
+var LES=(qL>=1&&qL<=D.lessons.length)?D.lessons[qL-1]:null;
+var STG=LES?D.stages.filter(function(s){return s.id===LES.stage;})[0]:null;
+var IMG='../assets/book/taw-g2p1/L'+(qL||1)+'/',KEY=LES?('bac-g2p1-'+LES.id):'bac-g2p1-none';
+var S={view:'map',seg:0,sub:0,done:{},seenIntro:false};
+if(LES){try{var sv=JSON.parse(localStorage.getItem(KEY));if(sv&&sv.done){for(var k in sv)S[k]=sv[k];}}catch(e){}}
+if(typeof S.seg!=='number')S.seg=0;if(typeof S.sub!=='number')S.sub=0;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function ar(n){return (''+n).replace(/\d/g,function(c){return '٠١٢٣٤٥٦٧٨٩'[c];});}
+document.getElementById('nTitle').textContent=LES?LES.title:(D.course.title+' — '+D.course.track.split('—').pop().trim());
+function totals(){var b=0,c=0;LES.segments.forEach(function(s){b+=s.questions.length;c+=(s.check||[]).length;});return {b:b,c:c};}
+function paint(){
+  var t=totals(),pc=Math.round(Object.keys(S.done).length/(t.b+t.c)*100);
+  document.getElementById('fill').style.width=pc+'%';
+}
+function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done){var tot=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});if(tot)pc=Math.round(Object.keys(sv.done).length/tot*100);}}catch(e){}return pc;}
+function paintAll(){var pc=0;if(D.lessons.length){var sm=0;D.lessons.forEach(function(l){sm+=lessonPc(l);});pc=Math.round(sm/D.lessons.length);}document.getElementById('fill').style.width=pc+'%';}
+function zoom(src){var z=document.getElementById('zoom');document.getElementById('zoom-img').src=src;z.classList.add('on');}
+function chime(){
+  try{
+    var C=window.AudioContext||window.webkitAudioContext;
+    var ctx=chime.ctx||(chime.ctx=new C());
+    if(ctx.state==='suspended')ctx.resume();
+    var t=ctx.currentTime;
+    [523.25,659.25,783.99,1046.5].forEach(function(f,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t+i*0.12);
+      g.gain.linearRampToValueAtTime(0.16,t+i*0.12+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,t+i*0.12+0.4);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(t+i*0.12);o.stop(t+i*0.12+0.45);
+    });
+  }catch(e){}
+}
+function showPop(html,ms,cb){
+  var o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="pop">'+html+'</div>';
+  document.body.appendChild(o);
+  chime();
+  if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
+  return o;
+}
+var ROBOT='<svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"><rect x="8" y="14" width="32" height="24" rx="6"/><line x1="24" y1="7" x2="24" y2="14"/><circle cx="24" cy="5" r="2.4" fill="var(--ink)" stroke="none"/><circle cx="17" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><circle cx="31" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><line x1="18" y1="33" x2="30" y2="33"/></svg>';
+function segDone(i){
+  var sg=LES.segments[i],base=0;
+  for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
+  var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
+  ids=ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
+  return ids.every(function(id){return S.done[id];});
+}
+function renderMap(){
+  document.getElementById('mbar').hidden=true;
+  var m=document.getElementById('main');
+  var h='<div class="map">';
+  var offs=[0,-34,0,34];
+  LES.segments.forEach(function(sg,i){
+    var done=segDone(i),unlocked=(i===0)||segDone(i-1);
+    var cls=done?'done':(unlocked?'cur':'lock');
+    var inner=done?'✓':(unlocked?ar(i+1):'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>');
+    h+='<div class="node" style="transform:translateX('+offs[i%4]+'px)">';
+    h+='<button class="circle '+cls+'" data-node="'+i+'" '+(unlocked?'':'disabled')+'>'+inner+'</button>';
+    h+='<div class="nlabel">'+sg.label.split(':')[0]+'</div>';
+    h+='</div>';
+    if(i<LES.segments.length-1)h+='<div class="linkline"></div>';
+  });
+  h+='</div>';
+  m.innerHTML=h;
+  var map=m.querySelector('.map');
+  map.insertAdjacentHTML('beforeend',
+    dood('pyramid','top:120px;left:8px;opacity:.5','var(--ink)',64)+
+    dood('sun','top:210px;right:16px;opacity:.6','#e07b00',44)+
+    dood('felucca','top:330px;left:6px;opacity:.5','var(--ink)',72)+
+    dood('water','top:460px;right:8px;opacity:.5','var(--blue)',66)+
+    dood('column','top:560px;left:14px;opacity:.5','var(--ink)',58)+
+    dood('ankh','top:680px;right:20px;opacity:.5','var(--red)',46)+
+    dood('scroll','top:790px;left:16px;opacity:.5','var(--ink)',56));
+  paint();
+  m.querySelectorAll('[data-node]').forEach(function(b){b.onclick=function(){
+    S.view='lesson';S.seg=+b.dataset.node;S.sub=0;save();render();
+  };});
+  if(!S.seenIntro){
+    var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>ده الكتاب كامل قدامك — مش محذوف منه ولا سؤال ولا معلومة.<br>فركز عشان تبقى ذاكرت كل حاجة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>');
+    S.seenIntro=true;save();
+    o.querySelector('#introOk').onclick=function(){o.remove();};
+  }
+}
+function explainHTML(list){
+  return list.map(function(e,ix){
+    if(e.b){var sx=(window.BAC_SIMPLIFY||{})[e.b];return '<div class="card bk simp-c"'+(sx?' data-simp="'+e.b+'"':'')+'>'+D.B[e.b]+(sx?'<button class="simp-chip" type="button">'+SIMP_AV_SM+' اشرحها ببساطة</button>':'')+'</div>';}
+    if(e.illus){var il=ILLUST[e.illus];return '<div class="illus">'+(il?il.svg:'')+(il&&il.cap?'<div class="il-cap">'+il.cap+'</div>':'')+'</div>';}
+    return '<div class="frame'+(ix%2?' alt':'')+'"><img loading="lazy" src="'+IMG+e.img+'.jpg" onclick="zoom(this.src)" alt="من الكتاب">'+(e.cap?'<div class="cap">'+e.cap+'</div>':'')+'</div>';
+  }).join('');
+}
+function refHTML(ref){
+  if(ref&&ref.img)return '<img loading="lazy" src="'+IMG+ref.img+'.jpg" onclick="zoom(this.src)">';
+  var arr=Array.isArray(ref)?ref:[ref];
+  return '<div class="bk">'+arr.map(function(k){return D.B[k];}).join('')+'</div>';
+}
+function mcqHTML(q,id,letters){
+  var done=S.done[id];
+  var h='<div class="q"><h3>'+q.q+'</h3>';
+  h+=q.options.map(function(o,i){
+    var cls='opt';
+    if(done&&i===q.a)cls+=' ok';
+    if(done&&done.picked===i&&i!==q.a)cls+=' no';
+    return '<button class="'+cls+'" data-mq="'+id+'" data-i="'+i+'" '+(done?'disabled':'')+'><span class="k">'+letters[i]+'</span> '+o+(done&&i===q.a?' ✓':'')+'</button>';
+  }).join('');
+  if(done){
+    if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="../assets/img/mr-moamen-thumbsup.png" alt="">أحسنت! إجابة صحيحة ✓</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="../assets/img/mr-moamen-serious.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
+    if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
+  }
+  return h+'</div>';
+}
+function openHTML(q,id){
+  var done=S.done[id];
+  var mod=q.mod?'<div class="mod">'+q.mod+'</div>':refHTML(q.ans);
+  var h='<div class="q" id="'+id+'"><span class="src">'+q.src+'</span><h3>'+q.q+'</h3>';
+  if(!done){
+    h+='<textarea id="ta-'+id+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
+    h+='<button class="btn btn-reveal" data-rev="'+id+'">اعرض نموذج الإجابة</button>';
+    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h">نموذج الإجابة — قارنها بما كتبت</div>'+mod+'</div>';
+    h+='<button class="btn btn-done" data-ok="'+id+'" hidden id="ok-'+id+'">✓ راجعت إجابتي</button>';
+  }else{
+    h+='<div class="feed ok">تمت المراجعة ✓</div>';
+    h+='<details class="why"><summary>نموذج الإجابة</summary>'+mod+'</details>';
+  }
+  return h+'</div>';
+}
+function segIds(i){
+  var sg=LES.segments[i],base=0;
+  for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
+  var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
+  return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
+}
+var SIMP_AV='<img src="../assets/img/mr-moamen-avatar.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+var SIMP_AV_SM='<img src="../assets/img/mr-moamen-avatar.png" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:-3px">';
+function simpOff(){try{return localStorage.getItem('bac-simp-off')==='1';}catch(e){return false;}}
+function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
+var POSES={pointing:'../assets/img/mr-moamen-pointing.png',waving:'../assets/img/mr-moamen-waving.png'};
+function simpPose(){var k=localStorage.getItem('bac-simp-met')?'pointing':'waving';localStorage.setItem('bac-simp-met','1');return POSES[k];}
+function showSimp(id,manual){
+  var txt=(window.BAC_SIMPLIFY||{})[id];if(!txt)return;
+  var bub=document.getElementById('charWrap');
+  document.getElementById('chFig').src=simpPose();
+  document.getElementById('sbTxt').textContent=txt;
+  document.getElementById('sbMode').textContent=simpModeLabel();
+  bub.hidden=false;
+  clearTimeout(showSimp.t);
+  showSimp.t=setTimeout(function(){bub.hidden=true;},manual?12000:8000);
+}
+document.getElementById('sbX').onclick=function(){document.getElementById('charWrap').hidden=true;clearTimeout(showSimp.t);};
+document.getElementById('sbMode').onclick=function(){
+  try{localStorage.setItem('bac-simp-off',simpOff()?'0':'1');}catch(e){}
+  this.textContent=simpModeLabel();
+};
+function setupSimp(m){
+  var bub=document.getElementById('charWrap');bub.hidden=true;clearTimeout(showSimp.t);
+  if(setupSimp.io){setupSimp.io.disconnect();setupSimp.io=null;}
+  if(S.sub!==0)return;
+  var els=m.querySelectorAll('[data-simp]');
+  els.forEach(function(el){
+    var ch=el.querySelector('.simp-chip');
+    if(ch)ch.onclick=function(ev){ev.stopPropagation();showSimp(el.dataset.simp,true);};
+  });
+  setupSimp.io=new IntersectionObserver(function(en){
+    en.forEach(function(x){if(x.isIntersecting&&!simpOff())showSimp(x.target.dataset.simp,false);});
+  },{threshold:0.65});
+  els.forEach(function(el){setupSimp.io.observe(el);});
+}
+function cheerFor(seg){
+  if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس';
+  if(seg>=5)return 'كمل يا بطل! عديت النص';
+  if(seg>=2)return 'كمل، شغلك حلو';
+  return 'عاش يا بطل! بداية جامدة';
+}
+function starify(m){
+  m.querySelectorAll('.bk .rh').forEach(function(r){
+    if(!r.querySelector('.rh-star'))r.insertAdjacentHTML('afterbegin','<span class="rh-star">'+ST+'</span>');
+  });
+}
+function renderLesson(){
+  document.getElementById('mbar').hidden=true;
+  var m=document.getElementById('main');
+  if(S.seg>=LES.segments.length){
+    m.innerHTML='<div class="done-screen"><img class="done-ch" src="../assets/img/mr-moamen-celebrating.png" alt="مستر مؤمن"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>أحسنت! أنهيت '+LES.title.split(':')[0]+'</h2><p>قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا من الكتاب و'+ar(totals().c)+' سؤال فهم سريع.<br>انتقل إلى الدرس التالي من زر «الدروس» أسفل الشاشة.</p></div><div class="navrow"><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
+    paint();chime();window.scrollTo(0,0);
+    document.getElementById('toMap').onclick=function(){S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
+    return;
+  }
+  var sg=LES.segments[S.seg];
+  var base=0;for(var i=0;i<S.seg;i++)base+=LES.segments[i].questions.length;
+  var h='<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span> '+sg.label+' — '+(S.sub===0?'الشرح':'الأسئلة')+'</div>';
+  if(S.sub===0){
+    h+=explainHTML(sg.explain);
+  }else{
+    var letters=['أ','ب','ج','د'];
+    if(sg.check&&sg.check.length){
+      h+='<div class="sec-h">أسئلة سريعة على ما قرأته</div>';
+      h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
+    }
+    if(sg.questions.length){
+      h+='<div class="sec-h">أسئلة الكتاب</div>';
+      h+=sg.questions.map(function(q,i){
+        var id='q'+(base+i);
+        return q.t==='mcq'?mcqHTML(q,id,letters):openHTML(q,id);
+      }).join('');
+    }
+  }
+  var allDone=segIds(S.seg).every(function(id){return S.done[id];});
+  var isLast=(S.seg===LES.segments.length-1&&S.sub===1);
+  h+='<div class="lock">'+(S.sub===1&&!allDone?'أجب على كل الأسئلة لفتح الجزء التالي':'')+'</div>';
+  m.innerHTML=h;starify(m);paint();window.scrollTo(0,0);setupSimp(m);
+  var mb=document.getElementById('mbar');mb.hidden=false;
+  var nb=document.getElementById('nextBtn');
+  nb.innerHTML=S.sub===0?'انتقل للأسئلة ◂':(isLast?'إنهاء الدرس':'الجزء التالي ◂');
+  nb.disabled=(S.sub===1&&!allDone);
+  m.querySelectorAll('[data-mq]').forEach(function(b){b.onclick=function(){
+    S.done[b.dataset.mq]={picked:+b.dataset.i};save();render();
+    var el=b.closest('.q');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+  };});
+  m.querySelectorAll('[data-rev]').forEach(function(b){b.onclick=function(){
+    var id=b.dataset.rev;
+    document.getElementById('ans-'+id).hidden=false;
+    document.getElementById('ok-'+id).hidden=false;
+    b.hidden=true;
+  };});
+  m.querySelectorAll('[data-ok]').forEach(function(b){b.onclick=function(){
+    S.done[b.dataset.ok]={open:true};save();render();
+  };});
+  document.getElementById('prevBtn').onclick=function(){
+    if(S.sub===1){S.sub=0;}
+    else{S.view='map';}
+    save();render();
+  };
+  document.getElementById('nextBtn').onclick=function(){
+    var nb=this;if(nb.disabled)return;
+    if(S.sub===0){S.sub=1;save();render();return;}
+    var finishedSeg=S.seg;
+    S.seg++;S.sub=0;save();
+    showPop('<div class="pop-h">'+ROBOT+'<span>'+cheerFor(finishedSeg)+'</span></div>',1500,function(){render();});
+  };
+}
+function renderList(){
+  document.getElementById('mbar').hidden=true;
+  var m=document.getElementById('main');
+  var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 l5 5 L20 6.5"/></svg>';
+  var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5 V7.8 a4 4 0 0 1 8 0 v2.7"/></svg>';
+  var offs=[0,-56,28,-28,56,0];
+  var h='<div class="path">';
+  var openUnits=true,foundHere=false,oi=0;
+  D.stages.forEach(function(st){
+    var ls=D.lessons.map(function(l,i){return {l:l,i:i};}).filter(function(x){return x.l.stage===st.id;});
+    if(!ls.length)return;
+    if(!openUnits){
+      h+='<div class="ubanner locked"><h2>'+LOCK+' الوحدة '+ar(st.n)+': '+st.title+'</h2><p>هتظهر دروسها هنا أول ما تخلّص اللي قبلها</p></div>';
+      return;
+    }
+    h+='<div class="ubanner"><h2>الوحدة '+ar(st.n)+': '+st.title+'</h2></div>';
+    var unitDone=ls.every(function(x){return lessonPc(x.l)===100;});
+    ls.forEach(function(x){
+      var pc=lessonPc(x.l),done=pc===100;
+      var here=!done&&!foundHere;if(here)foundHere=true;
+      var cls=done?'done':(here?'here':'');
+      var inner=done?CHK:ar(x.i+1);
+      h+='<div class="pnode '+cls+'" style="transform:translateX('+offs[oi++%6]+'px)">';
+      h+='<button class="c" data-l="'+(x.i+1)+'">'+inner+'</button>';
+      if(here)h+='<span class="heretag">أنت هنا</span>';
+      h+='<div class="t">'+x.l.title+'</div></div>';
+    });
+    openUnits=unitDone;
+  });
+  h+='</div>';
+  m.innerHTML=h;
+  m.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){location.href='bac.html?lesson='+b.dataset.l;};});
+  paintAll();
+}
+function backBtn(){
+  var b=document.getElementById('backBtn');
+  if(!LES){b.onclick=function(){location.href='track.html';};return;}
+  if(S.view==='map'){b.onclick=function(){location.href='track.html';};}
+  else{b.onclick=function(){S.view='map';save();render();};}
+}
+function render(){
+  if(!LES){renderList();backBtn();return;}
+  if(S.view==='map')renderMap();else renderLesson();
+  backBtn();
+}
+render();
+
+</script></body></html>
