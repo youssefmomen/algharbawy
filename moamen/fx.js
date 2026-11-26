@@ -22,7 +22,7 @@ var S={
  no:function(){tone(392,0,.2,'triangle',.11,330);tone(330,.14,.3,'triangle',.09,294);},
  done:function(){[523.25,659.25,783.99,1046.5].forEach(function(f,i){tone(f,i*.11,.3,'sine',.2);});tone(1568,.5,.5,'sine',.08);}
 };
-window.mmSound=function(n){if(S[n])S[n]();};
+var lastDone=0;window.mmSound=function(n){if(n==='done')lastDone=Date.now();if(S[n])S[n]();};
 /* toggle */
 var btn;
 function paintBtn(){if(btn){btn.setAttribute('aria-pressed',on?'true':'false');btn.setAttribute('aria-label',on?'الصوت شغال، اضغط لإيقافه':'الصوت متوقف، اضغط لتشغيله');btn.title=btn.getAttribute('aria-label');}}
@@ -69,7 +69,7 @@ function check(n){
  if(f&&Date.now()-lastOpt<900){if(f.classList.contains('ok'))S.ok();else S.no();lastOpt=0;}
  if(f&&Date.now()-lastOpt>=900){f.classList.add('mm-re');}
  var d=n.matches&&n.matches('.done-screen')?n:(n.querySelector&&n.querySelector('.done-screen'));
- if(d&&Date.now()-lastClick<1500){S.done();confetti();}
+ if(d&&Date.now()-lastClick<1500){if(Date.now()-lastDone>1500)window.mmSound('done');confetti();}
 }
 function init(){
  document.documentElement.classList.add('fx');
