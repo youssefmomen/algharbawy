@@ -198,8 +198,8 @@ main{max-width:720px;margin:0 auto}
 </div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script src="assets/data/25-bac-tarikh-g2p1.js?v=9"></script>
-<script src="assets/data/25-bac-simplify.js?v=1"></script>
+<script src="assets/data/25-bac-tarikh-g2p1.js?v=10"></script>
+<script src="assets/data/25-bac-simplify.js?v=2"></script>
 <script>
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
@@ -218,6 +218,70 @@ function dood(name,style,color,size){
 var ST='<svg viewBox="0 0 100 100"><path d="M50 8 L57 39 L88 40 L63 58 L71 89 L50 69 L29 89 L37 58 L12 40 L43 39 Z"/></svg>';
 var T='fill="none" stroke-linecap="round" stroke-linejoin="round"';
 var ILLUST={
+"l6-1":{cap:"كسر العزلة المعرفية",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<rect x="58" y="34" width="104" height="88" rx="6" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M72 52 h76 M72 66 h76 M72 80 h52" stroke="var(--ink)"/>'+
+'<circle cx="72" cy="104" r="9" stroke="var(--green)"/><path d="M66 104 l5 5 9 -10" stroke="var(--green)"/>'+
+'<path d="M110 20 v-8 M88 24 l-6 -7 M132 24 l6 -7" stroke="var(--yellow)"/>'+
+'<path d="M168 60 q20 4 26 18 M168 76 q14 4 18 14" stroke="var(--blue)"/>'+
+'<path d="M52 60 q-20 4 -26 18 M52 76 q-14 4 -18 14" stroke="var(--blue)"/>'+
+'<path d="M46 130 H174" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">المجمع العلمي والمطابع</text></g></svg>'},
+"l6-3":{cap:"الترجمة بين التحديث والتراث",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 44 q-34 -14 -64 -6 v76 q30 -8 64 6 q34 -14 64 -6 v-76 q-30 -8 -64 6 Z" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M110 44 v76" stroke="var(--ink)"/>'+
+'<g font-family="Amiri,serif" font-size="26" font-weight="700" text-anchor="middle">'+
+'<text x="78" y="92" fill="var(--green)" stroke="none">ع</text>'+
+'<text x="142" y="92" fill="var(--blue)" stroke="none">A</text></g>'+
+'<path d="M96 128 q14 10 28 0" stroke="var(--red)"/>'+
+'<path d="M40 30 q10 -12 24 -10 M180 30 q-10 -12 -24 -10" stroke="var(--yellow)"/>'+
+'</g></svg>'},
+"l6-5":{cap:"مصر للمصريين",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M56 130 V30" stroke="var(--ink)"/>'+
+'<path d="M56 34 q26 -12 52 0 q26 12 52 0 v44 q-26 12 -52 0 q-26 -12 -52 0 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
+'<circle cx="112" cy="56" r="12" stroke="var(--red)"/>'+
+'<path d="M30 130 h64 M170 130 h24" stroke="var(--ink)"/>'+
+'<path d="M96 118 q6 -14 16 -16 q10 2 16 16" stroke="var(--green)"/>'+
+'<circle cx="112" cy="96" r="5" stroke="var(--green)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="112" y="146">تلاحم الجيش والشعب</text></g></svg>'},
+"l6-6":{cap:"الصحافة والخطاب الجماهيري",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M64 96 L132 62 v58 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M64 96 v14 q0 8 10 8 h10" stroke="var(--ink)"/>'+
+'<rect x="58" y="88" width="14" height="18" rx="4" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M148 68 q14 4 18 16 M148 84 q8 2 10 10" stroke="var(--blue)"/>'+
+'<rect x="150" y="98" width="48" height="34" rx="4" stroke="var(--ink)" fill="#fff"/>'+
+'<path d="M158 108 h32 M158 116 h32 M158 124 h20" stroke="var(--ink)"/>'+
+'<path d="M40 130 H200" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">جريدة اللواء والحزب الوطني</text></g></svg>'},
+"l6-7":{cap:"الهلال مع الصليب",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M96 40 a38 38 0 1 0 0 76 a30 30 0 1 1 0 -76 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M140 62 v44 M122 76 h36" stroke="var(--red)"/>'+
+'<path d="M46 130 H190" stroke="var(--ink)"/>'+
+'<path d="M70 122 q8 -10 16 0 M150 122 q8 -10 16 0" stroke="var(--green)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">الوحدة الوطنية في ثورة ١٩١٩</text></g></svg>'},
+"l6-9":{cap:"الوعي سلاح حقيقي",svg:
+'<svg viewBox="0 0 220 150"><g '+T+' stroke-width="2.6">'+
+'<path d="M110 30 a30 30 0 0 1 18 54 q-8 6 -8 16 h-20 q0 -10 -8 -16 a30 30 0 0 1 18 -54 Z" stroke="var(--ink)" fill="var(--yellow)"/>'+
+'<path d="M102 106 h16 M104 114 h12" stroke="var(--ink)"/>'+
+'<path d="M110 12 v-6 M74 26 l-7 -6 M146 26 l7 -6 M66 60 h-10 M154 60 h10" stroke="var(--blue)"/>'+
+'<path d="M46 134 H174" stroke="var(--ink)"/>'+
+'</g>'+
+'<g font-family="Amiri,serif" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">'+
+'<text x="110" y="146">من الاستيعاب إلى التبلور</text></g></svg>'},
+
 seg0:{cap:"أركان الدولة الأربعة",svg:
 '<svg viewBox="0 0 220 160"><g '+T+' stroke-width="2.6">'+
 '<path d="M104 14 L26 44 H194 Z" stroke="var(--ink)" fill="var(--peach)"/>'+
