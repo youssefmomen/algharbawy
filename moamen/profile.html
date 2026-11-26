@@ -6,7 +6,8 @@
 <div class="msg" id="m" role="status"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">صورتك</h2><div class="pho"><div class="cur" id="cur"></div><div class="bt"><button class="pbtn g" id="up" type="button">ارفع صورتك</button><button class="pbtn g" id="rm" type="button" hidden>شيل الصورة</button></div></div><input type="file" id="fi" accept="image/*" hidden><div class="msg" id="pm" role="status"></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">أو اختار شكل مستر مؤمن</h2><div class="av" id="av"></div></div>
-<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px">تقدمي في الدروس</h2><div class="pl" id="pl"></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px">مساري</h2><div class="trk" id="trk" role="group" aria-label="اختار مسارك"></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px" id="plh">تقدمي في الدروس</h2><div class="pl" id="pl"></div>
 <button class="pbtn g" id="out" type="button" hidden style="margin-top:18px">تسجيل الخروج</button></div></div>
 <div class="crop" id="crop" hidden><div class="box"><h3>اظبط صورتك</h3><canvas id="cv" width="256" height="256"></canvas><input type="range" id="zm" min="100" max="300" value="100" aria-label="تكبير"><div class="bt"><button class="pbtn" id="cok" type="button">حفظ</button><button class="pbtn g" id="cno" type="button">إلغاء</button></div></div></div>
 <footer><div class="fl"><a href="index.html">الرئيسية</a><a href="track.html?t=bac2">الدروس</a><a href="profile.html">حسابي</a><a href="login.html">دخول</a></div>© منصة مستر مؤمن</footer>
@@ -15,8 +16,8 @@
 (function(){
 function $(i){return document.getElementById(i);}
 var A="٠١٢٣٤٥٦٧٨٩",ar=function(n){return String(n).replace(/\d/g,function(d){return A[d];});};
-function stats(){var s=MM.stats();$('s1').textContent=ar(s.points);$('s2').textContent=ar(s.streak);$('s3').textContent=ar(s.items);}
-function lessons(){var D=window.BAC_G2P1,h='';if(!D)return;D.lessons.forEach(function(l,i){var tot=0,dn=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});
+function stats(){var s=MM.stats();if(MM.track()!=='bac2')s={points:0,streak:0,items:0};$('s1').textContent=ar(s.points);$('s2').textContent=ar(s.streak);$('s3').textContent=ar(s.items);}
+function lessons(){var D=window.BAC_G2P1,h='';var T=MM.track();$('plh').textContent='تقدمي في '+MM.tracks[T].name;if(T!=='bac2'){$('pl').innerHTML='<div class="hint">المسار ده لسه قيد التجهيز. أول ما ينزل هتلاقي دروسه وتقدمك هنا.</div>';return;}if(!D)return;D.lessons.forEach(function(l,i){var tot=0,dn=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});
  try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done)dn=Object.keys(sv.done).length;}catch(e){}
  var pc=tot?Math.min(100,Math.round(dn/tot*100)):0;
  h+='<a href="bac.html?lesson='+(i+1)+'"><b>'+l.title+'</b><div class="pb"><i style="width:'+pc+'%"></i></div><span>'+ar(pc)+'٪ · '+ar(dn)+' من '+ar(tot)+' سؤال</span></a>';});$('pl').innerHTML=h;}
@@ -27,6 +28,7 @@ function draw(u,p){
  $('guestbox').hidden=true;$('acbox').hidden=false;$('out').hidden=false;
  var em=u.email||'';$('who').textContent=(p&&p.name?p.name:'طالب')+' · '+(/@phone\.mrmoamen\.app$/.test(em)?em.split('@')[0]:em);
  if(document.activeElement!==$('nn'))$('nn').value=(p&&p.name)||u.displayName||'';
+ var tc='';Object.keys(MM.tracks).forEach(function(k){tc+='<button type="button" data-t="'+k+'" class="'+(k===MM.track()?'on':'')+'" aria-pressed="'+(k===MM.track())+'">'+MM.tracks[k].name+(MM.tracks[k].live?'':' <small>(قريبًا)</small>')+'</button>';});$('trk').innerHTML=tc;$('trk').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.setTrack(b.dataset.t).then(function(){draw(MM.user(),MM.profile());if(window.mmSound)mmSound('pop');}).catch(function(){pmsg('معرفتش أغيّر المسار. جرّب تاني.');});};});
  var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=(p&&p.avatarId)||'waving',h='';$('cur').className='cur'+(ph?'':' pose');$('cur').innerHTML='<img alt="" src="'+(ph?p.avatarData:MM.img(POSE(cur)))+'">';$('rm').hidden=!ph;Object.keys(MM.poses).forEach(function(k){h+='<button type="button" data-k="'+k+'" class="'+(k===cur?'on':'')+'"><img src="'+MM.img(k)+'" alt=""><span>'+MM.poses[k]+'</span></button>';});$('av').innerHTML=h;
  $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.saveProfile({avatarId:b.dataset.k,avatarData:''}).then(function(){if(window.mmSound)mmSound('pop');});};});
 }
