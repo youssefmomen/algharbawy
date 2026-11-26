@@ -29,10 +29,9 @@ nav ul{display:flex;gap:26px;list-style:none;font-weight:700;font-size:15px}
 .bubble::after{content:"";position:absolute;bottom:-7.1px;left:41.5px;width:17px;height:17px;background:inherit;transform:rotate(45deg)}
 .strip{border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);background:var(--bg)}
 .strip .wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 20px}
-.strip .wrap>div{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:16px 8px;cursor:pointer;background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink)}
+.strip .wrap>div{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:18px 8px;cursor:pointer;background:var(--paper);border:3px solid var(--ink);border-top:7px solid var(--accent);border-radius:16px;box-shadow:5px 5px 0 var(--ink)}
+.strip .wrap>div:nth-child(even){border-top-color:var(--primary)}
 .strip .wrap>div::after{content:none}
-.strip i{font-style:normal;display:grid;place-items:center;width:44px;height:44px;border:3px solid var(--ink);border-radius:12px;background:var(--accent)}
-.strip i.alt{background:var(--sky)}
 .strip .tx{min-width:0}
 .strip b{display:block;font-size:17px;color:var(--primary);font-weight:900;white-space:nowrap}
 .strip span{display:block;font-size:12px;font-weight:700;opacity:.7;white-space:nowrap}
