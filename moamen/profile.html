@@ -1,6 +1,6 @@
 <!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="acct.css"><link rel="stylesheet" href="fx.css"><script src="acct.js"></script><script src="fx.js" defer></script><title>حسابي | منصة مستر مؤمن</title></head><body><nav><div class="wrap"><a class="brand" href="index.html"><span class="dm"><b>م</b></span>منصة مستر مؤمن</a><ul><li>الرئيسية</li><li>المسارات</li><li>المواد</li><li>عن مستر مؤمن</li></ul><a class="btn" href="track.html?t=bac2">ابدأ مذاكرة</a></div></nav>
 <div class="acc"><div class="panel" id="box"><h1>حسابي</h1><p class="sub" id="who">ثواني...</p>
-<div id="guestbox" hidden><div class="hint">إنت داخل كضيف. تقدمك محفوظ على الجهاز ده بس. اعمل حساب علشان يتحفظ وتكمل من أي جهاز.</div><a class="pbtn" href="login.html?mode=up&next=profile.html" style="text-align:center;text-decoration:none">اعمل حساب أو سجّل دخول</a></div>
+<div id="guestbox" hidden><div class="hint">لازم تسجل دخولك علشان تشوف تقدمك. تقدمك بيتحفظ في حسابك بس.</div><a class="pbtn" href="login.html?mode=up&next=profile.html" style="text-align:center;text-decoration:none">اعمل حساب أو سجّل دخول</a></div>
 <div class="sts"><div><b id="s1">٠</b><span>نقاطي</span></div><div><b id="s2">٠</b><span>أيام متتالية</span></div><div><b id="s3">٠</b><span>أسئلة خلّصتها</span></div></div>
 <div id="acbox" hidden><div class="who"><div class="fld"><label for="nn">اسمك</label><input id="nn" maxlength="60"></div><button class="pbtn" id="sv" type="button">حفظ</button></div>
 <div class="msg" id="m" role="status"></div>
@@ -20,7 +20,7 @@ function lessons(){var D=window.BAC_G2P1,h='';if(!D)return;D.lessons.forEach(fun
  h+='<a href="bac.html?lesson='+(i+1)+'"><b>'+l.title+'</b><div class="pb"><i style="width:'+pc+'%"></i></div><span>'+ar(pc)+'٪ · '+ar(dn)+' من '+ar(tot)+' سؤال</span></a>';});$('pl').innerHTML=h;}
 function draw(u,p){
  stats();lessons();
- if(!u){$('guestbox').hidden=false;$('acbox').hidden=true;$('out').hidden=true;$('who').textContent='ضيف';return;}
+ if(!u){$('guestbox').hidden=false;$('acbox').hidden=true;$('out').hidden=true;$('who').textContent='مش مسجل دخول';return;}
  $('guestbox').hidden=true;$('acbox').hidden=false;$('out').hidden=false;
  var em=u.email||'';$('who').textContent=(p&&p.name?p.name:'طالب')+' · '+(/@phone\.mrmoamen\.app$/.test(em)?em.split('@')[0]:em);
  if(document.activeElement!==$('nn'))$('nn').value=(p&&p.name)||u.displayName||'';
@@ -30,8 +30,8 @@ function draw(u,p){
 $('sv').onclick=function(){var n=$('nn').value.trim();if(!n){$('m').textContent='اكتب اسمك.';return;}MM.saveProfile({name:n}).then(function(){$('m').className='msg ok';$('m').textContent='اتحفظ ✓';if(window.mmSound)mmSound('ok');}).catch(function(){$('m').className='msg';$('m').textContent='معرفتش أحفظ. جرّب تاني.';});};
 $('out').onclick=function(){MM.signOut().then(function(){location.href='index.html';});};
 draw(null,null);
-MM.load().then(function(ok){if(!ok){$('who').textContent='ضيف (مفيش اتصال بالحسابات دلوقتي)';return;}});
-MM.onChange(function(u,p){draw(u,p);});
+MM.load();
+MM.onChange(function(u,p){if(u)MM.hydrate().then(function(){draw(u,p);});else draw(u,p);});
 setTimeout(function(){if(!MM.user()&&!localStorage.getItem('mm-account')){draw(null,null);}},800);
 })();
 </script></body></html>
