@@ -8,7 +8,7 @@ function top(){if(!location.hash)window.scrollTo(0,0);}
 top();window.addEventListener('DOMContentLoaded',top);window.addEventListener('load',function(){top();setTimeout(top,60);});window.addEventListener('pageshow',function(e){if(e.persisted)top();});
 var SDK=['https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js','firebase-config.js'];
 var PFX='bac-g2p1-',DOM='@phone.mrmoamen.app',FLAG='mm-account';
-var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',lightbulb:'فكرة',tablet:'تابلت',magnifier:'مُدقّق'};
+var POSES={waving:'مرحبًا',thumbsup:'برافو',pointing:'ركّز',celebrating:'احتفال',trophy:'بطل',tablet:'تابلت',magnifier:'مُدقّق'};
 var auth=null,db=null,loading=null,user=null,pending=null,profile=null,listeners=[];
 function img(p){return 'assets/img/mr-moamen-'+p+'.png';}
 function one(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
