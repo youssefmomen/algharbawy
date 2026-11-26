@@ -4,9 +4,11 @@
 <div class="sts"><div><b id="s1">٠</b><span>نقاطي</span></div><div><b id="s2">٠</b><span>أيام متتالية</span></div><div><b id="s3">٠</b><span>أسئلة خلّصتها</span></div></div>
 <div id="acbox" hidden><div class="who"><div class="fld"><label for="nn">اسمك</label><input id="nn" maxlength="60"></div><button class="pbtn" id="sv" type="button">حفظ</button></div>
 <div class="msg" id="m" role="status"></div>
-<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">اختار شكل مستر مؤمن اللي معاك</h2><div class="av" id="av"></div></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">صورتك</h2><div class="pho"><div class="cur" id="cur"></div><div class="bt"><button class="pbtn g" id="up" type="button">ارفع صورتك</button><button class="pbtn g" id="rm" type="button" hidden>شيل الصورة</button></div></div><input type="file" id="fi" accept="image/*" hidden><div class="msg" id="pm" role="status"></div>
+<h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:8px">أو اختار شكل مستر مؤمن</h2><div class="av" id="av"></div></div>
 <h2 style="font-family:Lalezar;font-weight:400;color:#1f4d3a;margin-top:12px">تقدمي في الدروس</h2><div class="pl" id="pl"></div>
 <button class="pbtn g" id="out" type="button" hidden style="margin-top:18px">تسجيل الخروج</button></div></div>
+<div class="crop" id="crop" hidden><div class="box"><h3>اظبط صورتك</h3><canvas id="cv" width="256" height="256"></canvas><input type="range" id="zm" min="100" max="300" value="100" aria-label="تكبير"><div class="bt"><button class="pbtn" id="cok" type="button">حفظ</button><button class="pbtn g" id="cno" type="button">إلغاء</button></div></div></div>
 <footer><div class="fl"><a href="index.html">الرئيسية</a><a href="track.html?t=bac2">الدروس</a><a href="profile.html">حسابي</a><a href="login.html">دخول</a></div>© منصة مستر مؤمن</footer>
 <script>document.write('<script src="assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>
@@ -18,15 +20,30 @@ function lessons(){var D=window.BAC_G2P1,h='';if(!D)return;D.lessons.forEach(fun
  try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done)dn=Object.keys(sv.done).length;}catch(e){}
  var pc=tot?Math.min(100,Math.round(dn/tot*100)):0;
  h+='<a href="bac.html?lesson='+(i+1)+'"><b>'+l.title+'</b><div class="pb"><i style="width:'+pc+'%"></i></div><span>'+ar(pc)+'٪ · '+ar(dn)+' من '+ar(tot)+' سؤال</span></a>';});$('pl').innerHTML=h;}
+function POSE(k){return MM.poses[k]?k:'waving';}
 function draw(u,p){
  stats();lessons();
  if(!u){$('guestbox').hidden=false;$('acbox').hidden=true;$('out').hidden=true;$('who').textContent='مش مسجل دخول';return;}
  $('guestbox').hidden=true;$('acbox').hidden=false;$('out').hidden=false;
  var em=u.email||'';$('who').textContent=(p&&p.name?p.name:'طالب')+' · '+(/@phone\.mrmoamen\.app$/.test(em)?em.split('@')[0]:em);
  if(document.activeElement!==$('nn'))$('nn').value=(p&&p.name)||u.displayName||'';
- var cur=(p&&p.avatarId)||'waving',h='';Object.keys(MM.poses).forEach(function(k){h+='<button type="button" data-k="'+k+'" class="'+(k===cur?'on':'')+'"><img src="'+MM.img(k)+'" alt=""><span>'+MM.poses[k]+'</span></button>';});$('av').innerHTML=h;
- $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.saveProfile({avatarId:b.dataset.k}).then(function(){if(window.mmSound)mmSound('pop');});};});
+ var ph=p&&typeof p.avatarData==='string'&&p.avatarData.indexOf('data:image/jpeg')===0;var cur=(p&&p.avatarId)||'waving',h='';$('cur').className='cur'+(ph?'':' pose');$('cur').innerHTML='<img alt="" src="'+(ph?p.avatarData:MM.img(POSE(cur)))+'">';$('rm').hidden=!ph;Object.keys(MM.poses).forEach(function(k){h+='<button type="button" data-k="'+k+'" class="'+(k===cur?'on':'')+'"><img src="'+MM.img(k)+'" alt=""><span>'+MM.poses[k]+'</span></button>';});$('av').innerHTML=h;
+ $('av').querySelectorAll('button').forEach(function(b){b.onclick=function(){MM.saveProfile({avatarId:b.dataset.k,avatarData:''}).then(function(){if(window.mmSound)mmSound('pop');});};});
 }
+/* photo: pick, crop to a square, shrink to 256px JPEG, store in the account */
+var im=null,sc=1,ox=0,oy=0,base=1,cv=$('cv'),cx=cv.getContext('2d');
+function pmsg(t,ok){$('pm').className='msg'+(ok?' ok':'');$('pm').textContent=t;}
+function paint(){cx.fillStyle='#fff';cx.fillRect(0,0,256,256);if(!im)return;var w=im.width*base*sc,h=im.height*base*sc;ox=Math.min(0,Math.max(256-w,ox));oy=Math.min(0,Math.max(256-h,oy));cx.drawImage(im,ox,oy,w,h);}
+$('up').onclick=function(){$('fi').value='';$('fi').click();};
+$('fi').onchange=function(){var f=this.files&&this.files[0];if(!f)return;if(!/^image\//.test(f.type)){pmsg('اختار صورة بس.');return;}
+ var u=URL.createObjectURL(f),i=new Image();i.onload=function(){im=i;base=256/Math.min(i.width,i.height);sc=1;$('zm').value=100;ox=(256-i.width*base)/2;oy=(256-i.height*base)/2;paint();$('crop').hidden=false;URL.revokeObjectURL(u);};i.onerror=function(){pmsg('الصورة دي مش بتفتح. جرّب صورة تانية.');};i.src=u;};
+$('zm').oninput=function(){var n=this.value/100,cxm=128-ox,cym=128-oy,k=n/sc;ox=128-cxm*k;oy=128-cym*k;sc=n;paint();};
+var dr=null;cv.onpointerdown=function(e){dr={x:e.clientX,y:e.clientY,ox:ox,oy:oy};cv.setPointerCapture(e.pointerId);};
+cv.onpointermove=function(e){if(!dr)return;var r=256/cv.getBoundingClientRect().width;ox=dr.ox+(e.clientX-dr.x)*r;oy=dr.oy+(e.clientY-dr.y)*r;paint();};
+cv.onpointerup=cv.onpointercancel=function(){dr=null;};
+$('cno').onclick=function(){$('crop').hidden=true;im=null;};
+$('cok').onclick=function(){var d=cv.toDataURL('image/jpeg',0.8);$('crop').hidden=true;pmsg('ثواني...',true);MM.saveProfile({avatarData:d}).then(function(){pmsg('اتحفظت صورتك.',true);if(window.mmSound)mmSound('ok');}).catch(function(){pmsg('معرفتش أحفظ الصورة. جرّب تاني.');});};
+$('rm').onclick=function(){MM.saveProfile({avatarData:''}).then(function(){pmsg('اتشالت الصورة.',true);}).catch(function(){pmsg('معرفتش أشيل الصورة. جرّب تاني.');});};
 $('sv').onclick=function(){var n=$('nn').value.trim();if(!n){$('m').textContent='اكتب اسمك.';return;}MM.saveProfile({name:n}).then(function(){$('m').className='msg ok';$('m').textContent='اتحفظ ✓';if(window.mmSound)mmSound('ok');}).catch(function(){$('m').className='msg';$('m').textContent='معرفتش أحفظ. جرّب تاني.';});};
 $('out').onclick=function(){MM.signOut().then(function(){location.href='index.html';});};
 draw(null,null);
