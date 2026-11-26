@@ -962,7 +962,7 @@ function mcqHTML(q,id,letters){
   }).join('');
   if(done){
     if(done.picked===q.a)h+='<div class="feed ok"><img class="feed-ch" src="assets/img/mr-moamen-thumbsup.png" alt="">أحسنت! إجابة صحيحة ✓</div>';
-    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-waving.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
+    else h+='<div class="feed no"><img class="feed-ch" src="assets/img/mr-moamen-thinking.png" alt="">الإجابة الصحيحة بالأخضر — راجعها كويس</div>';
     if(q.why)h+='<details class="why"><summary>المرجع من الكتاب</summary>'+refHTML(q.why)+'</details>';
   }
   return h+'</div>';
@@ -974,7 +974,7 @@ function openHTML(q,id){
   if(!done){
     h+='<textarea id="ta-'+id+'" placeholder="اكتب إجابتك هنا أولًا…"></textarea>';
     h+='<button class="btn btn-reveal" data-rev="'+id+'">اعرض نموذج الإجابة</button>';
-    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h">نموذج الإجابة — قارنها بما كتبت</div>'+mod+'</div>';
+    h+='<div class="ans" id="ans-'+id+'" hidden><div class="h"><img class="feed-ch" src="assets/img/mr-moamen-notebook.png" alt="" style="height:44px;width:auto;display:inline-block;vertical-align:-14px;margin:-12px 0 -8px 4px">نموذج الإجابة — قارنها بما كتبت</div>'+mod+'</div>';
     h+='<button class="btn btn-done" data-ok="'+id+'" hidden id="ok-'+id+'">✓ راجعت إجابتي</button>';
   }else{
     h+='<div class="feed ok">تمت المراجعة ✓</div>';
@@ -1051,7 +1051,7 @@ function renderLesson(){
   }else{
     var letters=['أ','ب','ج','د'];
     if(sg.check&&sg.check.length){
-      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-moamen-lightbulb.png" alt="">أسئلة سريعة على ما قرأته</div>';
+      h+='<div class="sec-h"><img class="sec-ch" src="assets/img/mr-moamen-pointing.png" alt="">أسئلة سريعة على ما قرأته</div>';
       h+=sg.check.map(function(q,i){return mcqHTML(q,'c'+S.seg+'_'+i,q.options.length===2?['صح','خطأ']:letters);}).join('');
     }
     if(sg.questions.length){
