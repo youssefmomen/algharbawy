@@ -1,14 +1,14 @@
 <!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="acct.css"><link rel="stylesheet" href="fx.css"><script src="acct.js"></script><script src="fx.js" defer></script><title>دخول | منصة مستر مؤمن</title></head><body><nav><div class="wrap"><a class="brand" href="index.html"><span class="dm"><b>م</b></span>منصة مستر مؤمن</a><ul><li>الرئيسية</li><li>المسارات</li><li>المواد</li><li>عن مستر مؤمن</li></ul><a class="btn" href="track.html?t=bac2">ابدأ مذاكرة</a></div></nav>
-<div class="acc"><div class="auth-grid"><div class="panel"><h1 id="ttl">أهلًا بيك</h1><p class="sub">احفظ تقدمك وكمل من أي جهاز. ولو مش عايز، تقدر تذاكر كضيف.</p>
+<div class="acc"><div class="auth-grid"><div class="panel"><h1 id="ttl">أهلًا بيك</h1><p class="sub">تقدمك بيتحفظ في حسابك بس، وتكمل من أي جهاز.</p>
 <div class="seg"><button type="button" id="tin" class="on">دخول</button><button type="button" id="tup">حساب جديد</button></div>
-<form id="f" novalidate><div class="fld" id="nm" hidden><label for="n">اسمك</label><input id="n" autocomplete="name" maxlength="60" placeholder="مثال: أحمد محمد"></div>
+<div class="hint" id="need" hidden>لازم تسجل دخولك الأول علشان نفتح الدرس ونحفظ تقدمك. التسجيل بياخد دقيقة.</div><form id="f" novalidate><div class="fld" id="nm" hidden><label for="n">اسمك</label><input id="n" autocomplete="name" maxlength="60" placeholder="مثال: أحمد محمد"></div>
 <div class="fld"><label for="u">رقم الموبايل أو الإيميل</label><input id="u" dir="ltr" autocomplete="username" inputmode="email" placeholder="01012345678"><small id="uh" hidden>لو سجلت برقم الموبايل، متنساش كلمة السر: مفيش استرجاع ليها.</small></div>
 <div class="fld"><label for="p">كلمة السر</label><input id="p" type="password" dir="ltr" autocomplete="current-password" minlength="6" placeholder="٦ حروف أو أرقام على الأقل"></div>
 <div class="msg" id="m" role="alert"></div>
 <button class="pbtn" id="go" type="submit">دخول</button></form>
 <button class="pbtn g" id="gg" type="button">كمّل بحساب جوجل</button>
-<a class="lnk" id="guest" href="track.html">كمّل كضيف من غير حساب</a></div>
-<div class="auth-char"><div class="bubble">سجّل وخلّي تقدمك محفوظ!</div><img src="assets/img/mr-moamen-waving.png" alt="مستر مؤمن"></div></div></div>
+<a class="lnk" id="guest" href="index.html">الرجوع للصفحة الرئيسية</a></div>
+<div class="auth-char"><div class="bubble" id="bb">سجّل وخلّي تقدمك محفوظ!</div><img src="assets/img/mr-moamen-waving.png" alt="مستر مؤمن"></div></div></div>
 <footer>© منصة مستر مؤمن</footer>
 <script>
 (function(){
@@ -24,6 +24,7 @@ $('f').onsubmit=function(ev){ev.preventDefault();var u=$('u').value,p=$('p').val
  if(up&&!n){msg('اكتب اسمك الأول.');return;}if(!u.trim()||!p){msg('اكتب رقم الموبايل (أو الإيميل) وكلمة السر.');return;}
  $('go').disabled=true;msg('ثواني...',true);(up?MM.signUp(n,u,p):MM.signIn(u,p)).then(done).catch(fail);};
 $('gg').onclick=function(){$('gg').disabled=true;MM.google().then(done).catch(fail);};
+if(q.get('need')==='1'){document.getElementById('need').hidden=false;document.getElementById('bb').textContent='سجّل دخولك الأول وهنكمل الدرس سوا!';}
 MM.load();
 })();
 </script></body></html>
