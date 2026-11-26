@@ -699,7 +699,7 @@ function showPop(html,ms,cb){
   if(ms)setTimeout(function(){o.remove();if(cb)cb();},ms);
   return o;
 }
-var ROBOT='<svg viewBox="0 0 48 48" width="42" height="42" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"><rect x="8" y="14" width="32" height="24" rx="6"/><line x1="24" y1="7" x2="24" y2="14"/><circle cx="24" cy="5" r="2.4" fill="var(--ink)" stroke="none"/><circle cx="17" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><circle cx="31" cy="26" r="2.6" fill="var(--ink)" stroke="none"/><line x1="18" y1="33" x2="30" y2="33"/></svg>';
+var ROBOT='<img src="../assets/img/mr-moamen-avatar.png" alt="مستر مؤمن" width="52" height="52" style="flex:none;width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:var(--mint)">';
 function segDone(i){
   var sg=LES.segments[i],base=0;
   for(var j=0;j<i;j++)base+=LES.segments[j].questions.length;
