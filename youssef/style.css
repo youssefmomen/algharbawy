@@ -93,7 +93,7 @@ footer .fl{display:flex;gap:18px;justify-content:center;margin-bottom:10px;font-
 .th{padding:34px 0 28px}
 .th .wrap{display:grid;grid-template-columns:1.4fr .6fr;gap:20px;align-items:center;padding-top:0;padding-bottom:0}
 .th h1{font-weight:900;font-size:40px;line-height:1.4}
-.th h1 em{font-style:normal;color:var(--accent)}
+.th h1 em{font-style:normal;color:var(--ink)}
 .th .char{position:relative;text-align:center}
 .th .char svg{height:210px;margin:auto;display:block}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
