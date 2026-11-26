@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#5b4bdb">
+<title>صانع القوالب - ابني موقعك من غير كود</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="logo">🎨 صانع القوالب</div>
+    <div class="top-actions">
+      <button class="ib" id="undo" title="ارجع خطوة">↶</button>
+      <button class="ib" id="redo" title="اعمل تاني">↷</button>
+      <span class="devs" id="devs">
+        <button data-dev="m" class="on" title="موبايل">📱</button>
+        <button data-dev="t" title="تابلت">▭</button>
+        <button data-dev="d" title="كمبيوتر">🖥</button>
+      </span>
+      <button class="btn-save" id="quickSave">💾 احفظ</button>
+    </div>
+  </header>
+  <main class="work">
+    <section class="stage" id="stage">
+      <div class="frame-wrap" id="fw"><iframe id="frame" title="معاينة"></iframe></div>
+    </section>
+    <aside class="panel" id="panel">
+      <nav class="tabs" id="tabs">
+        <button data-tab="sec" class="on">🧱 الأقسام</button>
+        <button data-tab="design">🎨 التصميم</button>
+        <button data-tab="sound">🎵 صوت</button>
+        <button data-tab="tpl">📚 القوالب</button>
+        <button data-tab="save">💾 حفظ</button>
+      </nav>
+      <div class="pbody" id="pbody"></div>
+    </aside>
+  </main>
+  <nav class="bottom" id="bottom">
+    <button data-tab="view" class="on"><i>👁</i>معاينة</button>
+    <button data-tab="sec"><i>🧱</i>الأقسام</button>
+    <button data-tab="design"><i>🎨</i>التصميم</button>
+    <button data-tab="sound"><i>🎵</i>صوت</button>
+    <button data-tab="tpl"><i>📚</i>القوالب</button>
+    <button data-tab="save"><i>💾</i>حفظ</button>
+  </nav>
+</div>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" hidden>
+<script src="templates.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
