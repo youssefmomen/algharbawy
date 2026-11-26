@@ -153,3 +153,7 @@ img[src*="mr-moamen"]{-webkit-user-drag:none}
 /* no text selection anywhere except form fields */
 html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea,select,[contenteditable="true"],[contenteditable="true"] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* light design only: stop forced dark mode */
+:root{color-scheme:light only}
+html{color-scheme:light only}
