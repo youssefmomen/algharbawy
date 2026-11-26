@@ -675,6 +675,7 @@ function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('bac-g2
 function paintAll(){var pc=0;if(D.lessons.length){var sm=0;D.lessons.forEach(function(l){sm+=lessonPc(l);});pc=Math.round(sm/D.lessons.length);}document.getElementById('fill').style.width=pc+'%';}
 function zoom(src){var z=document.getElementById('zoom');document.getElementById('zoom-img').src=src;z.classList.add('on');}
 function chime(){
+  if(window.mmSound){window.mmSound("done");return;}
   try{
     var C=window.AudioContext||window.webkitAudioContext;
     var ctx=chime.ctx||(chime.ctx=new C());
