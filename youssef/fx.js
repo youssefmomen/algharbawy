@@ -89,15 +89,26 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
-/* Mr. Youssef mascot: tap gives a happy bounce + a fresh bubble line (no hover effects) */
+/* Mr. Youssef mascot: tap swaps pose (random, never the same twice in a row) + a fresh bubble line; every page load also picks a random pose (no repeat of the last one). */
 (function(){
-var SEL='#heroPose,#trackPose,.auth-char img,.pop-ch',
- rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var POSES=[['waving','wave'],['pointing','pointup'],['thumbsup','thumbsup'],['celebrating','celebrating'],['explaining','explaining'],['book','book'],['encouraging','encouraging'],['thinking','thinking']];
+function cur(im){var m=(im.getAttribute('src')||'').match(/mr-youssef-([a-z-]+)\.png/);for(var i=0;i<POSES.length;i++)if(m&&POSES[i][1]===m[1])return i;return -1;}
+function pick(not){var i;do{i=Math.floor(Math.random()*POSES.length);}while(i===not&&POSES.length>1);return i;}
+function setPose(im,i){im.setAttribute('src','assets/img/mr-youssef-'+POSES[i][1]+'.png');try{sessionStorage.setItem('my-pose',String(i));}catch(e){}return i;}
 function hop(im){if(rm||!im.animate)return;im.animate([{scale:'1'},{scale:'1.05'},{scale:'.99'},{scale:'1'}],{duration:420,easing:'ease-out'});}
 var cats=['greet','start'],ci=0;
-document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(!im)return;hop(im);
+document.querySelectorAll('#heroPose,#trackPose').forEach(function(im){
+ var last=-1;try{last=parseInt(sessionStorage.getItem('my-pose'),10);if(isNaN(last))last=-1;}catch(e){}
+ var i=setPose(im,pick(last));
  var b=im.parentNode&&im.parentNode.querySelector('.bubble');
- if(b&&window.mmBubble){var t=mmBubble('waving',cats[ci++%cats.length],'char');if(t)b.textContent=t;}
+ if(b&&window.mmBubble){var t=mmBubble(POSES[i][0],'greet','char');if(t)b.textContent=t;}
+});
+document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('#heroPose,#trackPose,.auth-char img');if(!im)return;hop(im);
+ var isMain=im.id==='heroPose'||im.id==='trackPose';
+ var i=isMain?setPose(im,pick(cur(im))):cur(im);
+ var b=im.parentNode&&im.parentNode.querySelector('.bubble');
+ if(b&&window.mmBubble){var t=mmBubble(i>=0?POSES[i][0]:'waving',cats[ci++%cats.length],'char');if(t)b.textContent=t;}
  if(window.mmSound)mmSound('pop');});
 document.querySelectorAll('#heroPose,#trackPose,.auth-char img').forEach(function(im){im.style.cursor='pointer';im.setAttribute('role','button');im.setAttribute('aria-label','مستر يوسف');});
 })();
