@@ -1378,6 +1378,8 @@ function paint(){
   document.getElementById('fill').style.width=pc+'%';
 }
 function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done){var tot=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});if(tot)pc=Math.round(Object.keys(sv.done).length/tot*100);}}catch(e){}return pc;}
+function isTeacher(){try{var p=window.MM&&MM.profile&&MM.profile();var r=p&&p.role;return r==='teacher'||r==='admin';}catch(e){return false;}}
+function lessonUnlocked(i){if(isTeacher())return true;if(i<=0)return true;return lessonPc(D.lessons[i-1])===100;}
 function paintAll(){var pc=0;if(D.lessons.length){var sm=0;D.lessons.forEach(function(l){sm+=lessonPc(l);});pc=Math.round(sm/D.lessons.length);}document.getElementById('fill').style.width=pc+'%';}
 function zoom(src){var z=document.getElementById('zoom');document.getElementById('zoom-img').src=src;z.classList.add('on');}
 function chime(){
@@ -1636,11 +1638,12 @@ function renderList(){
     var unitDone=ls.every(function(x){return lessonPc(x.l)===100;});
     ls.forEach(function(x){
       var pc=lessonPc(x.l),done=pc===100;
-      var here=!done&&!foundHere;if(here)foundHere=true;
-      var cls=done?'done':(here?'here':'');
-      var inner=done?CHK:ar(x.i+1);
+      var un=lessonUnlocked(x.i);
+      var here=un&&!done&&!foundHere;if(here)foundHere=true;
+      var cls=done?'done':(here?'here':(un?'':'lock'));
+      var inner=done?CHK:(un?ar(x.i+1):LOCK);
       h+='<div class="pnode '+cls+'" style="transform:translateX('+offs[oi++%6]+'px)">';
-      h+='<button class="c" data-l="'+(x.i+1)+'">'+inner+'</button>';
+      h+=un?'<button class="c" data-l="'+(x.i+1)+'">'+inner+'</button>':'<button class="c" disabled aria-label="الدرس مقفول">'+inner+'</button>';
       if(here)h+='<span class="heretag">أنت هنا</span>';
       h+='<div class="t">'+x.l.title+'</div></div>';
     });
@@ -1657,11 +1660,21 @@ function backBtn(){
   if(S.view==='map'){b.onclick=function(){location.href='track.html';};}
   else{b.onclick=function(){S.view='map';save();render();};}
 }
+function renderLocked(){
+  document.getElementById('mbar').hidden=true;
+  var m=document.getElementById('main');
+  var prev=D.lessons[qL-2];
+  m.innerHTML='<div class="done-screen"><div class="big"><svg viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5 V7.8 a4 4 0 0 1 8 0 v2.7"/></svg></div><h2>الدرس ده لسه مقفول</h2><p>لازم تخلّص «'+(prev?prev.title:'الدرس اللي قبله')+'» كله — الشرح وكل الأسئلة — الأول، وبعدها الدرس ده هيتفتح لوحده.</p></div><div class="navrow"><button class="next" id="toList">ارجع للدروس ◂</button></div>';
+  paintAll();window.scrollTo(0,0);
+  document.getElementById('toList').onclick=function(){location.href='bac.html';};
+}
 function render(){
   if(!LES){renderList();backBtn();return;}
+  if(!lessonUnlocked(qL-1)){renderLocked();backBtn();return;}
   if(S.view==='map')renderMap();else renderLesson();
   backBtn();
 }
+if(window.MM&&MM.onChange)MM.onChange(function(){render();});
 render();
 
 </script></body></html>
