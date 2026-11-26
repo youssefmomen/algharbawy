@@ -156,6 +156,16 @@ body{padding-top:78px!important;padding-bottom:96px!important}
 .pnode.lock .t{color:#9a8f78}
 .pnode .c svg{width:30px;height:30px}
 .heretag{position:absolute;top:-14px;right:-34px;background:var(--red);color:#fffdf6;font-size:11px;font-weight:800;border-radius:99px;padding:3px 9px;border:2px solid var(--ink);white-space:nowrap}
+.simp-c{position:relative}
+.simp-chip{position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;background:var(--yellow);border:2px solid var(--ink);border-radius:99px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:800;cursor:pointer;box-shadow:2px 2px 0 rgba(34,48,60,.25);color:var(--ink)}
+.simp-chip svg{width:17px;height:17px}
+.simp-bub{position:fixed;bottom:92px;left:10px;z-index:58;width:min(64vw,320px);background:var(--paper);border:2.5px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 rgba(34,48,60,.25);padding:8px 8px 22px 10px;display:flex;gap:8px;align-items:flex-start}
+.simp-bub[hidden]{display:none}
+.sb-av{width:46px;height:46px;flex:0 0 46px;border-radius:50%;border:2px solid var(--ink);background:var(--mint);overflow:hidden;display:grid;place-items:center}
+.sb-av svg{width:40px;height:40px}
+.sb-txt{font-size:12.5px;font-weight:700;line-height:1.85;max-height:150px;overflow-y:auto;margin-bottom:14px}
+.sb-x{position:absolute;top:5px;left:6px;width:24px;height:24px;border-radius:8px;border:2px solid var(--ink);background:var(--paper);font-size:13px;font-weight:800;line-height:1;cursor:pointer;color:var(--ink);padding:0}
+.sb-mode{position:absolute;bottom:4px;left:8px;font-size:10.5px;font-weight:800;color:var(--blue);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'Cairo',sans-serif;padding:0}
 @media (min-width:860px){
 main{max-width:720px;margin:0 auto}
 .nhd{padding:0 max(10px, calc(50% - 350px))}
@@ -173,9 +183,16 @@ main{max-width:720px;margin:0 auto}
 <main id="main"></main>
 <footer></footer>
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
+<div class="simp-bub" id="simpBub" hidden>
+<button class="sb-x" id="sbX" type="button" aria-label="إغلاق">✕</button>
+<span class="sb-av" id="sbAv"></span>
+<span class="sb-txt" id="sbTxt"></span>
+<button class="sb-mode" id="sbMode" type="button"></button>
+</div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
 <script src="assets/data/25-bac-tarikh-g2p1.js?v=9"></script>
+<script src="assets/data/25-bac-simplify.js?v=1"></script>
 <script>
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
@@ -720,7 +737,7 @@ function renderMap(){
 }
 function explainHTML(list){
   return list.map(function(e,ix){
-    if(e.b)return '<div class="card bk">'+D.B[e.b]+'</div>';
+    if(e.b){var sx=(window.BAC_SIMPLIFY||{})[e.b];return '<div class="card bk simp-c"'+(sx?' data-simp="'+e.b+'"':'')+'>'+D.B[e.b]+(sx?'<button class="simp-chip" type="button">'+SIMP_AV_SM+' اشرحها ببساطة</button>':'')+'</div>';}
     if(e.illus){var il=ILLUST[e.illus];return '<div class="illus">'+(il?il.svg:'')+(il&&il.cap?'<div class="il-cap">'+il.cap+'</div>':'')+'</div>';}
     return '<div class="frame'+(ix%2?' alt':'')+'"><img loading="lazy" src="'+IMG+e.img+'.jpg" onclick="zoom(this.src)" alt="من الكتاب">'+(e.cap?'<div class="cap">'+e.cap+'</div>':'')+'</div>';
   }).join('');
@@ -767,6 +784,39 @@ function segIds(i){
   var ids=(sg.check||[]).map(function(_,k){return 'c'+i+'_'+k;});
   return ids.concat(sg.questions.map(function(_,k){return 'q'+(base+k);}));
 }
+var SIMP_AV='<svg viewBox="0 0 48 48"><circle cx="24" cy="17" r="9.5" fill="#f0c09a" stroke="#22303c" stroke-width="2.2"/><path d="M15 12 q9 -8 18 0 q-2 -5 -9 -5 q-7 0 -9 5 Z" fill="#2a2521"/><rect x="16.5" y="14.5" width="15" height="6" rx="2.4" fill="none" stroke="#141a20" stroke-width="2"/><path d="M7 45 q4-14 17-14 q13 0 17 14 Z" fill="#2c3e57" stroke="#22303c" stroke-width="2.2"/></svg>';
+var SIMP_AV_SM='<svg viewBox="0 0 48 48"><circle cx="24" cy="17" r="9.5" fill="#f0c09a" stroke="#22303c" stroke-width="2.6"/><path d="M15 12 q9 -8 18 0 q-2 -5 -9 -5 q-7 0 -9 5 Z" fill="#2a2521"/><rect x="16.5" y="14.5" width="15" height="6" rx="2.4" fill="none" stroke="#141a20" stroke-width="2.2"/><path d="M7 45 q4-14 17-14 q13 0 17 14 Z" fill="#2c3e57" stroke="#22303c" stroke-width="2.6"/></svg>';
+document.getElementById('sbAv').innerHTML=SIMP_AV;
+function simpOff(){try{return localStorage.getItem('bac-simp-off')==='1';}catch(e){return false;}}
+function simpModeLabel(){return simpOff()?'تشغيل الظهور التلقائي':'إيقاف الظهور التلقائي';}
+function showSimp(id,manual){
+  var txt=(window.BAC_SIMPLIFY||{})[id];if(!txt)return;
+  var bub=document.getElementById('simpBub');
+  document.getElementById('sbTxt').textContent=txt;
+  document.getElementById('sbMode').textContent=simpModeLabel();
+  bub.hidden=false;
+  clearTimeout(showSimp.t);
+  showSimp.t=setTimeout(function(){bub.hidden=true;},manual?12000:8000);
+}
+document.getElementById('sbX').onclick=function(){document.getElementById('simpBub').hidden=true;clearTimeout(showSimp.t);};
+document.getElementById('sbMode').onclick=function(){
+  try{localStorage.setItem('bac-simp-off',simpOff()?'0':'1');}catch(e){}
+  this.textContent=simpModeLabel();
+};
+function setupSimp(m){
+  var bub=document.getElementById('simpBub');bub.hidden=true;clearTimeout(showSimp.t);
+  if(setupSimp.io){setupSimp.io.disconnect();setupSimp.io=null;}
+  if(S.sub!==0)return;
+  var els=m.querySelectorAll('[data-simp]');
+  els.forEach(function(el){
+    var ch=el.querySelector('.simp-chip');
+    if(ch)ch.onclick=function(ev){ev.stopPropagation();showSimp(el.dataset.simp,true);};
+  });
+  setupSimp.io=new IntersectionObserver(function(en){
+    en.forEach(function(x){if(x.isIntersecting&&!simpOff())showSimp(x.target.dataset.simp,false);});
+  },{threshold:0.65});
+  els.forEach(function(el){setupSimp.io.observe(el);});
+}
 function cheerFor(seg){
   if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس';
   if(seg>=5)return 'كمل يا بطل! عديت النص';
@@ -809,7 +859,7 @@ function renderLesson(){
   var allDone=segIds(S.seg).every(function(id){return S.done[id];});
   var isLast=(S.seg===LES.segments.length-1&&S.sub===1);
   h+='<div class="lock">'+(S.sub===1&&!allDone?'أجب على كل الأسئلة لفتح الجزء التالي':'')+'</div>';
-  m.innerHTML=h;starify(m);paint();window.scrollTo(0,0);
+  m.innerHTML=h;starify(m);paint();window.scrollTo(0,0);setupSimp(m);
   var mb=document.getElementById('mbar');mb.hidden=false;
   var nb=document.getElementById('nextBtn');
   nb.innerHTML=S.sub===0?'انتقل للأسئلة ◂':(isLast?'إنهاء الدرس':'الجزء التالي ◂');
