@@ -32,7 +32,7 @@ def slim(sec):
     if sec.get('children'):
         out['children'] = sec['children']
     out['count'] = count(sec, by_id)
-    out['live'] = own
+    out['live'] = bool(sec.get('live')) or own
     return out
 
 meta = {

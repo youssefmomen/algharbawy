@@ -176,7 +176,8 @@
   var foot=document.getElementById("footer");
   if(foot)foot.innerHTML='<div class="wrap"><div class="foot-big gold">'+esc(data.siteTitle)+'</div><div class="foot-row"><span>'+esc(data.siteTagline)+'</span><span>'+
    topSections.concat(data.tracks||[]).map(function(s){return '<a href="'+(s.href||('section.html?id='+encodeURIComponent(s.id)))+'" style="margin-inline-start:18px">'+esc(s.title)+'</a>';}).join("")+
-   '</span><span>© '+year+' '+esc(data.siteTitle)+'</span></div></div>';
+   '</span><span>© '+year+' '+esc(data.siteTitle)+' · ضمن مجموعة الغرباوي التعليمية</span></div></div>'+
+   '<div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">مؤسسة الغرباوي · تعليم العربية</a><a href="moamen/">منصة مستر مؤمن · البكالوريا</a></div>';
 
   // ---------- الصفحات ----------
   if(page==="home"){
