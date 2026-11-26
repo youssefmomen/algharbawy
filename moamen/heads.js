@@ -11,13 +11,8 @@ document.head.appendChild(css);
 function dest(h){
  if(h.closest('a'))return null;
  for(var i=0;i<RULES.length;i++){var r=RULES[i];if(h.matches(r.sel)){return typeof r.href==='function'?r.href():r.href;}}
- var c=h.parentElement,n=0;
- while(c&&c!==document.body&&n++<3){
-  var a=c.querySelector('a[href]:not([href^="#"]):not(.btn)');
-  if(!a)a=c.querySelector('a[href]:not([href^="#"])');
-  if(a&&!h.contains(a))return a.getAttribute('href');
-  c=c.parentElement;
- }
+ var c=h.closest('.unit,.mod,.card,.f,article');
+ if(c){var a=c.querySelector('a[href]:not([href^="#"])');if(a&&!h.contains(a))return a.getAttribute('href');}
  return null;
 }
 function mark(){
