@@ -37,7 +37,7 @@
 .duo-fb{flex:1;display:flex;align-items:center;gap:12px;font-weight:900;font-size:18px;line-height:1.6}
 .duo-fb .ic{flex:none;width:44px;height:44px;display:grid;place-items:center;border:3px solid var(--ink);border-radius:50%;background:var(--paper);font-size:22px}
 .duo-fb small{display:block;font-weight:700;font-size:14px;opacity:.85}
-.duo-fb img{flex:none;height:64px;margin:-24px 0 -14px}
+.duo-foot .in>img{flex:none;height:64px;margin:-24px 0 -14px}
 .duo-btn{flex:none;background:var(--accent);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:12px 30px;font-family:inherit;font-weight:900;font-size:18px;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
 .duo-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
 .duo-btn.okb{background:#3aa655;color:#fff}
@@ -68,7 +68,7 @@
  .duo-q{font-size:20px}
  .duo-opt{font-size:16px;padding:12px 14px}
  .duo-fb{font-size:15px}
- .duo-fb img{display:none}
+ .duo-foot .in>img{display:none}
  .duo-btn{padding:10px 20px;font-size:16px}
  .duo-match{gap:8px}
  .duo-m{font-size:14px}
