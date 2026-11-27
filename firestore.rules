@@ -157,16 +157,35 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
-    // المحتوى المنشور: يقرأه الجميع (الطلاب بدون حساب)؛ الكتابة للمالك أو مساعد عنده صلاحية نشر
+    // مفاتيح نصوص الموقع المحمية: لا يكتبها إلا المالك أو مساعد عنده صلاحية texts
+    function protectedKeys() { return ['texts', 'replace', 'imgs', 'customCss']; }
+    function canTexts() { return isAdmin() || (signedIn() && staffPerms().texts == true); }
+    function newProtected() { return request.resource.data.keys().hasAny(protectedKeys()); }
+    function touchedProtected() { return request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedKeys()); }
+
+    // المحتوى المنشور: يقرأه الجميع (الطلاب بدون حساب)؛ الكتابة للمالك أو مساعد عنده صلاحية نشر،
+    // ومفاتيح نصوص الموقع تتطلب صلاحية texts
     match /cmsLive/{id} {
       allow read: if true;
-      allow write: if isAdmin() || (signedIn() && staffPerms().publish == true);
+      allow create: if isAdmin() || (signedIn() && staffPerms().publish == true && (canTexts() || !newProtected()));
+      allow update: if isAdmin() || (signedIn() && staffPerms().publish == true && (canTexts() || !touchedProtected()));
+      allow delete: if isAdmin();
     }
 
-    // مسودة المحتوى: يقرأها المالك وأي مساعد؛ الكتابة للمالك أو مساعد عنده صلاحية تعديل
+    // مسودة المحتوى: يقرأها المالك وأي مساعد؛ الكتابة للمالك أو مساعد عنده صلاحية تعديل،
+    // ومفاتيح نصوص الموقع تتطلب صلاحية texts
     match /cmsDraft/{id} {
       allow get, list: if isAdmin() || isStaff();
-      allow write: if isAdmin() || (signedIn() && staffPerms().edit == true);
+      allow create: if isAdmin() || (signedIn() && staffPerms().edit == true && (canTexts() || !newProtected()));
+      allow update: if isAdmin() || (signedIn() && staffPerms().edit == true && (canTexts() || !touchedProtected()));
+      allow delete: if isAdmin();
+    }
+
+    // سجل النشر: نسخ تلقائية قبل كل نشر؛ يقرأه المالك والمساعدون، وينشئه/يحذفه من عنده صلاحية نشر
+    match /cmsHistory/{id} {
+      allow get, list: if isAdmin() || isStaff();
+      allow create, delete: if isAdmin() || (signedIn() && staffPerms().publish == true);
+      allow update: if false;
     }
   }
 }
