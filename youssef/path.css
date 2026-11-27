@@ -1,0 +1,44 @@
+/* مسار الترم والطريق — منصة مستر يوسف (واجهة اختيار الترم ← الشرح/المراجعة ← مسار العُقد) */
+#pathApp{max-width:760px;margin:0 auto;padding:0 16px 30px}
+.pf-lead{font-size:14px;font-weight:700;color:#4a5a66;margin:2px 0 18px;line-height:1.9}
+.pf-cards{display:flex;flex-direction:column;gap:16px}
+.pf-card{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:18px;box-shadow:5px 5px 0 var(--ink);display:flex;gap:14px;align-items:center;text-decoration:none;color:var(--ink);transition:transform .12s}
+.pf-card:hover{transform:translateY(-2px)}
+.pf-card .ic{flex:none;width:58px;height:58px;border-radius:16px;border:3px solid var(--ink);display:grid;place-items:center;font-size:26px;box-shadow:3px 3px 0 var(--ink)}
+.pf-card h2{font-size:18px;font-weight:900;margin-bottom:2px}
+.pf-card p{font-size:12.5px;font-weight:600;color:#4a5a66;line-height:1.7;margin:0}
+.pf-card .go{margin-inline-start:auto;flex:none;background:var(--accent);border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:900;font-size:13px;box-shadow:3px 3px 0 var(--ink);white-space:nowrap}
+.pf-card.soon{opacity:.55;pointer-events:none}
+.pf-card.soon .go{background:#e9e4d2}
+.pf-tag{display:inline-block;background:var(--mint);border:2px solid var(--ink);border-radius:999px;font-size:11px;font-weight:800;padding:2px 10px;margin-bottom:4px}
+.pf-tag.blue{background:var(--sky)}
+.pf-stars{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:800;box-shadow:3px 3px 0 var(--ink);margin-bottom:14px}
+.pf-unit{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:10px 16px;margin:18px 0 12px;box-shadow:4px 4px 0 var(--ink);font-weight:900;font-size:14.5px}
+.pf-unit .n{background:var(--accent);border:2px solid var(--ink);border-radius:10px;min-width:30px;height:30px;display:grid;place-items:center;font-size:13px;flex:none}
+.pf-unit .st{margin-inline-start:auto;font-size:11px;font-weight:800;color:#4a5a66;flex:none}
+.pf-unit.locked{opacity:.65}
+.pf-path{display:flex;flex-direction:column;align-items:center}
+.pf-node{display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--ink);text-align:center}
+.pf-node .cir{width:62px;height:62px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:21px;font-weight:900;box-shadow:0 4px 0 var(--ink);background:#fff}
+.pf-node.done .cir{background:var(--mint)}
+.pf-node.open .cir{background:var(--accent)}
+.pf-node.lock{pointer-events:none}
+.pf-node.lock .cir{background:#eee9d9;color:#9aa5ad;box-shadow:0 4px 0 #b9b29f}
+.pf-node .lb{font-size:12.5px;font-weight:800;max-width:220px;line-height:1.55}
+.pf-node .st{font-size:11px;font-weight:700;color:#4a5a66}
+.pf-link{width:3px;height:24px;background:repeating-linear-gradient(var(--ink) 0 5px,transparent 5px 11px)}
+.pf-qb{background:var(--primary);color:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px 20px;box-shadow:5px 5px 0 var(--ink);text-align:center;margin-top:16px;width:100%;max-width:420px}
+.pf-qb b{font-size:16.5px;font-weight:900;display:block;margin-bottom:3px}
+.pf-qb>span{font-size:12px;font-weight:600;opacity:.92;display:block;line-height:1.7}
+.pf-qb .chs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.pf-qb .chs a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:12px;padding:7px 13px;font-size:12px;font-weight:800;text-decoration:none;box-shadow:2px 2px 0 var(--ink)}
+.pf-qb.locked{opacity:.7}
+.pf-qb.locked .chs a{pointer-events:none;background:#e9e4d2}
+.pf-back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:7px 14px;font-weight:800;font-size:13px;color:var(--ink);text-decoration:none;box-shadow:3px 3px 0 var(--ink);margin-bottom:14px}
+.pf-alt{display:block;text-align:center;margin-top:22px;font-size:12.5px;font-weight:700;color:var(--primary);text-decoration:underline}
+@media (max-width:480px){
+  .pf-card{padding:14px}
+  .pf-card .ic{width:48px;height:48px;font-size:22px}
+  .pf-card h2{font-size:16px}
+  .pf-card .go{padding:7px 12px;font-size:12px}
+}
