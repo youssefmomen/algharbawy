@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>صانع الملازم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Reem+Kufi:wght@400;700&family=Changa:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Harmattan:wght@400;700&family=Readex+Pro:wght@400;600;700&family=Baloo+Bhaijaan+2:wght@400;700;800&family=Markazi+Text:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Lemonada:wght@400;700&family=Scheherazade+New:wght@400;700&family=Mada:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:Cairo,Tajawal,sans-serif;background:#e9edf3;color:#1b2430;font-size:15px}
+button,input,select,textarea{font-family:inherit;font-size:15px}
+#app{display:flex;flex-direction:column;height:100%}
+.top{background:#1e4f9e;color:#fff;padding:8px 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.top b{font-size:17px;margin-inline-end:auto}
+.top button{background:#fff;color:#1e4f9e;border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+.top button.pdf{background:#ffd23f;color:#222}
+.tabs{display:none;background:#fff;border-bottom:1px solid #d5dbe5}
+.tabs button{flex:1;padding:10px;border:0;background:none;font-weight:700;color:#556;border-bottom:3px solid transparent}
+.tabs button.on{color:#1e4f9e;border-color:#1e4f9e}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(380px,460px) 1fr}
+#ed{overflow:auto;background:#f6f8fb;padding:10px;border-inline-end:1px solid #d5dbe5}
+#pv{overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.pvw{position:relative;box-shadow:0 2px 12px #0003;background:#fff;flex:none;cursor:pointer}
+.pvw .sheet{position:absolute;top:0;left:0;transform-origin:top left}
+.pvw .warn{position:absolute;top:6px;right:6px;background:#d33;color:#fff;border-radius:8px;padding:4px 8px;font-size:12px;z-index:3;font-weight:700}
+.pvw.sel{outline:3px solid #ffb400}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:1px solid #b9c5d8;background:#fff;border-radius:10px;padding:6px 11px;font-weight:700;cursor:pointer;color:#234}
+.chip.on{background:#1e4f9e;color:#fff;border-color:#1e4f9e}
+.chip.bad{border-color:#d33;color:#d33}.chip.on.bad{background:#d33;color:#fff}
+.chip.add{background:#e7f5ea;border-color:#7cc08b;color:#17692d}
+.card{background:#fff;border:1px solid #d5dbe5;border-radius:12px;padding:10px;margin-bottom:10px}
+.card.flash{outline:3px solid #ffb400}
+.card h4{margin:0 0 8px;font-size:15px;color:#1e4f9e;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.card h4 .sp{flex:1}
+.mini{border:1px solid #c5cfdf;background:#f2f5fa;border-radius:8px;padding:5px 9px;cursor:pointer;font-size:13px;font-weight:600}
+.mini.del{color:#c22;border-color:#e3b0b0}
+label.f{display:block;margin:6px 0 2px;font-size:13px;color:#456;font-weight:600}
+.card input[type=text],.card input[type=number],.card textarea,.card select,.pan input[type=text],.pan input[type=number],.pan select{width:100%;padding:8px;border:1px solid #c5cfdf;border-radius:8px;background:#fff}
+textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.row.wrap>*{flex:0 1 auto}
+.adds{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.adds button{background:#1e4f9e;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}
+.adds button.g{background:#17803a}.adds button.o{background:#c76a00}
+.pan{background:#fff;border:1px solid #d5dbe5;border-radius:12px;padding:10px;margin-bottom:10px}
+.pan h3{margin:0 0 6px;font-size:16px;color:#1e4f9e}
+.sw{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.sw button{border:2px solid #fff;outline:1px solid #bbb;width:34px;height:34px;border-radius:50%;cursor:pointer}
+.tb{border-collapse:collapse;width:100%}.tb td{padding:2px}.tb input{padding:5px!important}
+.hint{font-size:12.5px;color:#678;margin:4px 0}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:50;padding:12px}
+.modal.on{display:flex}.modal>div{background:#fff;border-radius:14px;padding:14px;width:100%;max-width:520px;max-height:92vh;overflow:auto}
+.sheet{width:794px;height:1123px;position:relative;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:var(--fs);direction:rtl;display:flex;flex-direction:column;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet .hdbar{background:linear-gradient(90deg,var(--pri2),var(--pri));color:#fff;height:50px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:700;font-size:17px;flex:none;position:relative;z-index:1}
+.sheet .hl{color:#ffd23f}
+.sheet .bd{flex:1;min-height:0;position:relative;padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start;overflow:hidden;z-index:1}
+.sheet .deco{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.sheet .deco span{position:absolute;font-family:var(--fh);font-weight:800;color:var(--pri);opacity:.08;line-height:1}
+.sheet .ftbar{height:46px;flex:none;background:var(--soft);border-top:2px solid var(--pri);display:flex;align-items:center;gap:12px;padding:0 18px;font-size:12.5px;font-weight:700;z-index:1}
+.sheet .ftbar .pg{background:var(--pri);color:#fff;border-radius:14px;padding:3px 14px}
+.sheet .ftbar .tx{flex:1;text-align:center}
+.sheet .ftbar img{height:36px;width:36px;object-fit:contain}
+.it{grid-column:1/-1;position:relative}
+.it.half{grid-column:span 1}
+.it.h{background:linear-gradient(90deg,var(--hc),var(--hc));color:#fff;font-family:var(--fh);font-weight:800;font-size:1.12em;padding:8px 14px;border-radius:9px;border-right:14px solid #ffd23f;display:flex;align-items:center;gap:8px}
+.it.h.pri{--hc:var(--pri)}.it.h.acc{--hc:var(--acc)}
+.it.h .hn{background:#fff;color:var(--hc);width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.85em}
+.it.q{border:1.5px solid var(--soft2);background:#fff;border-radius:9px;padding:8px 10px 8px 10px;display:block}
+.it.q .qn{display:inline-block;background:var(--pri);color:#fff;font-size:.78em;font-weight:700;border-radius:6px;padding:0 7px;margin-inline-start:6px;vertical-align:baseline}
+.it .t{white-space:pre-wrap;line-height:1.7}
+.it.q .qt{font-weight:700;white-space:pre-wrap;line-height:1.7}
+.it.q .chs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+.it.q .chs span{border:1.2px solid var(--pri);color:var(--pri);border-radius:6px;padding:1px 10px;font-weight:600;font-size:.92em;background:#fff}
+.it.q .an{margin-top:6px;background:#e6f4ea;border-right:3px solid var(--acc);border-radius:6px;padding:4px 8px;line-height:1.65;white-space:pre-wrap;font-size:.95em}
+.it.q .an b{color:var(--acc)}
+.it.q .fl{display:flex;gap:8px;align-items:flex-start}
+.it .im{display:block;max-width:100%;border-radius:6px;margin:6px auto}
+.it.q .lines{margin-top:8px}.it.q .lines i{display:block;border-bottom:1px dotted #8a96a8;height:20px}
+.it.box{border-radius:9px;padding:8px 12px;line-height:1.7;white-space:pre-wrap;border:1.5px solid}
+.it.box.note{background:#fff8d6;border-color:#f2d049}.it.box.tip{background:#e6f4ea;border-color:var(--acc)}.it.box.warn{background:#fde8e8;border-color:#d96b6b}
+.it.box b{margin-inline-end:6px}
+.it table{width:100%;border-collapse:collapse;font-size:.92em}
+.it th{background:var(--pri);color:#fff;padding:5px 8px;border:1px solid var(--pri)}
+.it td{padding:5px 8px;border:1px solid var(--soft2);background:#fff;line-height:1.6;white-space:pre-wrap}
+.it tr:nth-child(even) td{background:var(--soft)}
+.it figure{margin:0;text-align:center}.it figcaption{font-size:.85em;color:#556}
+.it.dia{display:flex;flex-direction:column;align-items:center;gap:0}
+.dia .c{background:var(--pri);color:#fff;font-weight:800;border-radius:9px;padding:6px 26px;font-family:var(--fh)}
+.dia .ln{width:2px;height:12px;background:var(--pri)}
+.dia .ch{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;border-top:2px solid var(--pri);padding-top:12px;width:100%}
+.dia .ch div{border:2px solid var(--pri);background:#fff;border-radius:9px;padding:6px 10px;text-align:center;line-height:1.6;flex:1;min-width:120px;max-width:250px;white-space:pre-wrap}
+.cover{background:linear-gradient(160deg,var(--pri),var(--pri2));color:#fff;align-items:center;justify-content:flex-start;text-align:center}
+.cover .deco span{color:#fff;opacity:.13}
+.cover .ct{position:relative;z-index:1;margin-top:70px;width:100%;padding:0 50px}
+.cover .ct small{font-size:20px;font-weight:700;display:block;margin-bottom:12px}
+.cover .ct h1{display:inline-block;margin:6px 0;background:#fff;color:#111;font-family:var(--fh);font-weight:800;font-size:46px;padding:4px 26px;line-height:1.5}
+.cover .pic{position:relative;z-index:1;flex:1;min-height:0;width:100%;display:flex;align-items:flex-end;justify-content:center;margin-top:10px}
+.cover .pic img{max-height:100%;max-width:70%;object-fit:contain}
+.cover .tag{position:absolute;z-index:2;bottom:120px;left:50%;transform:translateX(-50%);background:#fff;color:#111;border-radius:6px;padding:10px 34px;font-family:var(--fh);text-align:center;min-width:330px;box-shadow:0 4px 14px #0004}
+.cover .tag b{display:block;font-size:42px;font-weight:800;color:var(--pri2);line-height:1.4}.cover .tag span{font-size:20px;font-weight:700;color:var(--pri)}.cover .tag small{display:block;font-size:20px;font-weight:700;letter-spacing:.5px}
+.cover .cf{position:relative;z-index:2;width:100%;padding:16px 40px;display:flex;gap:14px;align-items:center;justify-content:center;font-weight:800}
+.cover .cf img{height:64px;width:64px;background:#fff;padding:3px;border-radius:6px}
+.cover .cf .ph{font-size:30px;direction:ltr}
+.cover .cf .lb{font-size:15px;text-align:right;max-width:170px;line-height:1.5}
+#printRoot{display:none}
+@media (max-width:860px){
+ .top b{display:none}
+ .top{justify-content:center}
+ .top button{flex:1}
+ .tabs{display:flex}
+ .main{grid-template-columns:1fr}
+ #ed,#pv{display:none}
+ body[data-tab=ed] #ed{display:block}
+ body[data-tab=pv] #pv{display:flex}
+ .top button{padding:7px 9px;font-size:13.5px}
+}
+@page{size:A4;margin:0}
+@media print{
+ html,body{height:auto;background:#fff}
+ #app,.modal{display:none!important}
+ #printRoot{display:block}
+ #printRoot .sheet{page-break-after:always;break-after:page;margin:0}
+ #printRoot .sheet:last-child{page-break-after:auto;break-after:auto}
+}
+</style>
+</head>
+<body data-tab="ed">
+<div id="app">
+ <div class="top"><b>📘 صانع الملازم</b>
+  <button id="bNew">ملزمة جديدة</button><button id="bFile">حفظ/فتح ملف</button><button class="pdf" id="bPdf">تصدير PDF</button></div>
+ <div class="tabs"><button data-t="ed" class="on">التحرير</button><button data-t="de">التصميم والفوتر</button><button data-t="pv">المعاينة</button></div>
+ <div class="main"><div id="ed"></div><div id="pv"></div></div>
+</div>
+<div id="printRoot"></div>
+<div class="modal" id="mod"><div id="modb"></div></div>
+<input type="file" id="fileImg" accept="image/*" hidden>
+<input type="file" id="fileJson" accept=".json,application/json" hidden>
+<script>
+const QR="data:image/png;base64,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";
+const FONTS=['Cairo','Tajawal','Almarai','Mada','Readex Pro','Changa','Baloo Bhaijaan 2','Amiri','Noto Naskh Arabic','Scheherazade New','Markazi Text','Harmattan','El Messiri','Reem Kufi','Aref Ruqaa','Lemonada'];
+const PRESETS=[['أزرق الملزمة','#1e63b8','#0f3f8a','#17803a','#e8f1fb'],['أخضر','#17803a','#0d5a26','#c76a00','#e7f5ea'],['بنفسجي','#6a3fb5','#43237f','#d4467a','#f0eafa'],['برتقالي','#d9640b','#9c4204','#1e63b8','#fdeee0'],['عنابي','#a02845','#6b1229','#17803a','#fbe9ee'],['أسود وذهبي','#2a2a2a','#000000','#b8860b','#f6f0dc']];
+const TYPES={q:'سؤال',h:'عنوان قسم',p:'نص',box:'صندوق تنبيه',tbl:'جدول',img:'صورة',dia:'مخطط'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ad=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const hl=s=>esc(s).replace(/\*(.+?)\*/g,'<span class="hl">$1</span>');
+let S,cur=0,sel=-1,view='ed';
+function sample(){return{v:1,
+ meta:{header:'المراجعة النهائية: *النحو* | الصف الثاني الإعدادي • 2027',cover:true,kicker:'اللغة العربية • الصف الثاني الإعدادي • 2027',title1:'المراجعة النهائية',title2:'النحو',teacher:'مستر يوسف',role:'مدرس اللغة العربية',lab:'ملزمة',coverImg:'',deco:true},
+ th:{pri:'#1e63b8',pri2:'#0f3f8a',acc:'#17803a',bg:'#ffffff',ink:'#1b2430',soft:'#e8f1fb',f:'Cairo',fh:'Cairo',fs:14},
+ ft:{phone:'01145083012',showPhone:true,showQr:true,qr:QR,label:'الدروس والتدريبات على موقع مستر يوسف',pageNo:true},
+ numMode:'page',
+ pages:[
+ {cols:1,items:[
+ {t:'h',text:'الفعل الماضي: مبني دائمًا',num:'١',col:'pri'},
+ {t:'p',text:'يُبنى الفعل الماضي على حركة تناسب ما يتصل به. علامة بنائه تتغير، لكنه يظل مبنيًّا.'},
+ {t:'tbl',head:true,rows:[['البناء على','متى؟','مثال'],['الفتح','لم يتصل به شيء، أو اتصلت به تاء التأنيث أو ألف الاثنين','فهمَ الطالبُ • كتبتْ الطالبةُ • كتبا'],['السكون','اتصل به ضمير رفع متحرك (تاء الفاعل، نا، نون النسوة)','كتبتُ • كتبنا • كتبنَ'],['الضم','اتصلت به واو الجماعة','كتبوا الدرسَ']]},
+ {t:'box',kind:'note',label:'تنبيه ذهبي:',text:'الفعل الماضي مبني دائمًا، وإنما تتغير علامة بنائه حسب ما يتصل به.'},
+ {t:'h',text:'الخلاصة: كيف نعرف حالة الفعل؟',num:'٢',col:'pri'},
+ {t:'dia',text:'الفعل\nالماضي: مبني على الفتح أو السكون أو الضم\nالمضارع: معرب، إلا مع نون التوكيد أو نون النسوة\nالأمر: مبني على ما يُجزم به مضارعه'}]},
+ {cols:2,items:[
+ {t:'h',text:'أسئلة على الفعل الماضي (٤ أسئلة)',num:'',col:'acc'},
+ {t:'q',text:'عيّن الفعل الماضي وبيّن علامة بنائه: «كتبوا الدرس».',ch:'',ans:'كتبوا: فعل ماضٍ مبني على الضم لاتصاله بواو الجماعة.',showAns:true,w:'auto',img:'',imgW:60,imgPos:'below',lines:0},
+ {t:'q',text:'اختر الإجابة الصحيحة: الفعل «ذهبتُ» مبني على:',ch:'الفتح\nالسكون\nالضم',ans:'السكون لاتصاله بتاء الفاعل.',showAns:true,w:'auto',img:'',imgW:60,imgPos:'below',lines:0},
+ {t:'q',text:'أعرب ما تحته خط: «فهمَ الطالبُ الدرسَ».',ch:'',ans:'فهمَ: فعل ماضٍ مبني على الفتح، لم يتصل به شيء.',showAns:true,w:'auto',img:'',imgW:60,imgPos:'below',lines:0},
+ {t:'q',text:'صوّب الخطأ: «الطالباتُ كتبوا الواجب».',ch:'',ans:'الطالباتُ كتبْنَ الواجب؛ لأن نون النسوة تتصل بالفعل مع جمع المؤنث.',showAns:true,w:'auto',img:'',imgW:60,imgPos:'below',lines:0}]}
+ ]};}
+function load(){try{const j=localStorage.getItem('molzama1');if(j){S=JSON.parse(j);return}}catch(e){}S=sample()}
+function save(){try{localStorage.setItem('molzama1',JSON.stringify(S))}catch(e){alert('المساحة المحلية امتلأت. احفظ الملف على جهازك واستخدم صورًا أصغر.')}}
+function norm(){const d=sample();S.meta=Object.assign({},d.meta,S.meta);S.th=Object.assign({},d.th,S.th);S.ft=Object.assign({},d.ft,S.ft);S.numMode=S.numMode||'page';if(!S.pages||!S.pages.length)S.pages=[{cols:1,items:[]}];if(cur>=S.pages.length)cur=0}
+/* ===== الرسم ===== */
+function cssVars(){const t=S.th;return `--pri:${t.pri};--pri2:${t.pri2};--acc:${t.acc};--bg:${t.bg};--ink:${t.ink};--soft:${t.soft};--soft2:${t.pri}55;--f:'${t.f}',Cairo,sans-serif;--fh:'${t.fh}',Cairo,sans-serif;--fs:${t.fs}px`}
+function decoHTML(){if(!S.meta.deco)return '';const L='أبجدهوزحطيكلمنسعفصقرشتثخذضظغ';const pos=[[10,4,150],[88,6,120],[78,40,90],[6,52,110],[48,70,100],[16,86,130],[84,82,140]];return '<div class="deco">'+pos.map((p,i)=>`<span style="left:${p[0]}%;top:${p[1]}%;font-size:${p[2]}px">${L[(i*3)%L.length]}</span>`).join('')+'</div>'}
+function itemHTML(it,p,i,ctr){const w=it.w&&it.w!=='auto'?it.w:(S.pages[p].cols===2&&it.t==='q'?'half':'full');const cls=`it ${it.t} ${w==='half'?'half':''}`;const at=`data-p="${p}" data-i="${i}"`;
+ const img=it.img?`<img class="im" src="${it.img}" style="width:${it.imgW||60}%">`:'';
+ if(it.t==='h')return `<div class="${cls} ${it.col==='acc'?'acc':'pri'}" ${at}>${it.num?`<span class="hn">${esc(it.num)}</span>`:''}<span>${hl(it.text)}</span></div>`;
+ if(it.t==='p')return `<div class="${cls}" ${at}><div class="t">${hl(it.text)}</div></div>`;
+ if(it.t==='box')return `<div class="${cls} ${it.kind||'note'}" ${at}>${it.label?`<b>${esc(it.label)}</b>`:''}${esc(it.text)}</div>`;
+ if(it.t==='tbl'){const r=it.rows||[];return `<div class="${cls}" ${at}><table>${r.map((row,ri)=>`<tr>${row.map(c=>ri===0&&it.head?`<th>${esc(c)}</th>`:`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`}
+ if(it.t==='img')return `<div class="${cls}" ${at}><figure>${it.img?`<img class="im" src="${it.img}" style="width:${it.imgW||60}%">`:'<div style="border:2px dashed #99a;padding:30px;text-align:center;color:#778">اختر صورة</div>'}${it.text?`<figcaption>${esc(it.text)}</figcaption>`:''}</figure></div>`;
+ if(it.t==='dia'){const l=(it.text||'').split('\n').filter(x=>x.trim());const c=l.shift()||'';const ch=l.length?`<div class="ln"></div><div class="ch">${l.map(x=>`<div>${esc(x)}</div>`).join('')}</div>`:'';return `<div class="${cls}" ${at}><div class="c">${esc(c)}</div>${ch}</div>`}
+ if(it.t==='q'){const n=ctr.n;const chs=(it.ch||'').split('\n').filter(x=>x.trim());
+  const chh=chs.length?`<div class="chs">${chs.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:'';
+  const an=it.showAns&&it.ans?`<div class="an"><b>الإجابة:</b> ${esc(it.ans)}</div>`:'';
+  const ln=it.lines>0?`<div class="lines">${'<i></i>'.repeat(it.lines)}</div>`:'';
+  let inner;
+  if(it.imgPos==='side'&&it.img)inner=`<div class="fl"><div style="flex:1"><div class="qt"><span class="qn">س${ad(n)}</span>${esc(it.text)}</div>${chh}</div><img class="im" src="${it.img}" style="width:${it.imgW||40}%;margin:0">${''}</div>${an}${ln}`;
+  else inner=`<div class="qt"><span class="qn">س${ad(n)}</span>${esc(it.text)}</div>${it.imgPos==='above'?img:''}${chh}${it.imgPos!=='above'?img:''}${an}${ln}`;
+  return `<div class="${cls}" ${at}>${inner}</div>`}
+ return ''}
+function sheetHTML(p){
+ if(p==='cover'){const m=S.meta,f=S.ft;return `<div class="sheet cover" style="${cssVars()}">${decoHTML()}<div class="ct"><small>${esc(m.kicker)}</small><div><h1>${esc(m.title1)}</h1></div><div><h1>${esc(m.title2)}</h1></div></div><div class="pic">${m.coverImg?`<img src="${m.coverImg}">`:''}</div><div class="tag"><small>${esc(m.lab)}</small><b>${esc(m.teacher)}</b><span>${esc(m.role)}</span></div><div class="cf">${f.showQr&&f.qr?`<img src="${f.qr}">`:''}${f.showPhone?`<div class="lb">${esc(f.label)}</div><div class="ph">${esc(f.phone)}</div>`:''}</div></div>`}
+ const pg=S.pages[p],f=S.ft;let ctr={n:0};if(S.numMode==='cont'){for(let k=0;k<p;k++)S.pages[k].items.forEach(x=>{if(x.t==='q')ctr.n++})}
+ const items=pg.items.map((it,i)=>{if(it.t==='q')ctr.n++;return itemHTML(it,p,i,ctr)}).join('');
+ const total=S.pages.length;
+ return `<div class="sheet" style="${cssVars()}">${decoHTML()}<div class="hdbar">${hl(pg.header||S.meta.header)}</div><div class="bd">${items}</div><div class="ftbar">${f.pageNo?`<span class="pg">صفحة ${ad(p+1)} من ${ad(total)}</span>`:''}<span class="tx">${f.showPhone?`${esc(f.phone)} • ${esc(f.label)}`:esc(f.label)}</span>${f.showQr&&f.qr?`<img src="${f.qr}">`:''}</div></div>`}
+let pvT;function schedPv(){clearTimeout(pvT);pvT=setTimeout(renderPv,120);save()}
+function renderPv(){const box=$('#pv');const W=Math.max(260,box.clientWidth-24);const sc=Math.min(1,W/794);
+ const list=(S.meta.cover?['cover']:[]).concat(S.pages.map((_,i)=>i));
+ const keep=box.scrollTop;
+ box.innerHTML=list.map(p=>`<div class="pvw ${p===cur?'sel':''}" data-pv="${p}" style="width:${794*sc}px;height:${1123*sc}px">${sheetHTML(p)}</div>`).join('');
+ box.querySelectorAll('.pvw .sheet').forEach(s=>{s.style.transform=`scale(${sc})`});
+ const bad=overPages();box.querySelectorAll('.pvw').forEach(w=>{if(bad.includes(+w.dataset.pv))w.insertAdjacentHTML('afterbegin','<div class="warn">المحتوى زائد عن الصفحة</div>')});
+ box.scrollTop=keep;
+ document.querySelectorAll('#ed .chip[data-pg]').forEach(c=>c.classList.toggle('bad',bad.includes(+c.dataset.pg)))}
+function overPages(){const m=document.createElement('div');m.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden';document.body.appendChild(m);const r=[];S.pages.forEach((_,p)=>{m.innerHTML=sheetHTML(p);const b=m.querySelector('.bd');if(b.scrollHeight>b.clientHeight+2)r.push(p)});m.remove();return r}
+/* ===== المحرر ===== */
+const F=(label,k,v,ty,p,i,extra)=>`<label class="f">${label}</label>`+(ty==='ta'?`<textarea data-p="${p}" data-i="${i}" data-k="${k}">${esc(v)}</textarea>`:`<input type="text" data-p="${p}" data-i="${i}" data-k="${k}" value="${esc(v)}">`);
+function itemEditor(it,i){const p=cur;const imgBtn=`<div class="row" style="margin-top:6px"><button class="mini" data-act="pick" data-i="${i}">${it.img?'تغيير الصورة':'إضافة صورة'}</button>${it.img?`<button class="mini del" data-act="rmimg" data-i="${i}">حذف الصورة</button>`:''}</div>`;
+ const pos=`<div class="row"><div><label class="f">عرض الصورة %</label><input type="number" min="10" max="100" data-p="${p}" data-i="${i}" data-k="imgW" data-n="1" value="${it.imgW||60}"></div>`;
+ let b='';
+ if(it.t==='q')b=F('نص السؤال','text',it.text,'ta',p,i)+F('الاختيارات (اختياري، كل اختيار في سطر)','ch',it.ch,'ta',p,i)+F('الإجابة النموذجية','ans',it.ans,'ta',p,i)+`<label class="f"><input type="checkbox" data-p="${p}" data-i="${i}" data-k="showAns" ${it.showAns?'checked':''}> أظهر الإجابة في الملزمة</label>`+`<div class="row"><div><label class="f">أسطر لكتابة الطالب</label><input type="number" min="0" max="8" data-p="${p}" data-i="${i}" data-k="lines" data-n="1" value="${it.lines||0}"></div><div><label class="f">عرض السؤال</label><select data-p="${p}" data-i="${i}" data-k="w"><option value="auto" ${it.w==='auto'?'selected':''}>حسب الصفحة</option><option value="full" ${it.w==='full'?'selected':''}>عرض كامل</option><option value="half" ${it.w==='half'?'selected':''}>نصف عرض</option></select></div></div>`+(it.img?`<div class="row"><div><label class="f">مكان الصورة</label><select data-p="${p}" data-i="${i}" data-k="imgPos"><option value="below" ${it.imgPos==='below'?'selected':''}>تحت السؤال</option><option value="above" ${it.imgPos==='above'?'selected':''}>فوق الاختيارات</option><option value="side" ${it.imgPos==='side'?'selected':''}>بجانب السؤال</option></select></div><div><label class="f">عرض الصورة %</label><input type="number" min="10" max="100" data-p="${p}" data-i="${i}" data-k="imgW" data-n="1" value="${it.imgW||60}"></div></div>`:'')+imgBtn;
+ if(it.t==='h')b=F('نص العنوان (ضع النجمة حول الكلمة لتلوينها بالأصفر)','text',it.text,'i',p,i)+`<div class="row"><div>${F('رقم داخل دائرة (اختياري)','num',it.num,'i',p,i)}</div><div><label class="f">لون الشريط</label><select data-p="${p}" data-i="${i}" data-k="col"><option value="pri" ${it.col!=='acc'?'selected':''}>اللون الأساسي</option><option value="acc" ${it.col==='acc'?'selected':''}>لون الأسئلة</option></select></div></div>`;
+ if(it.t==='p')b=F('النص','text',it.text,'ta',p,i);
+ if(it.t==='box')b=`<div class="row"><div>${F('عنوان قصير','label',it.label,'i',p,i)}</div><div><label class="f">النوع</label><select data-p="${p}" data-i="${i}" data-k="kind"><option value="note" ${it.kind==='note'?'selected':''}>تنبيه أصفر</option><option value="tip" ${it.kind==='tip'?'selected':''}>معلومة خضراء</option><option value="warn" ${it.kind==='warn'?'selected':''}>تحذير أحمر</option></select></div></div>`+F('النص','text',it.text,'ta',p,i);
+ if(it.t==='dia')b=F('المخطط: السطر الأول هو العنوان الرئيسي، وكل سطر بعده فرع','text',it.text,'ta',p,i);
+ if(it.t==='img')b=imgBtn+pos+'</div>'+F('تعليق تحت الصورة (اختياري)','text',it.text,'i',p,i);
+ if(it.t==='tbl'){const r=it.rows;b=`<label class="f"><input type="checkbox" data-p="${p}" data-i="${i}" data-k="head" ${it.head?'checked':''}> الصف الأول عنوان</label><table class="tb">${r.map((row,ri)=>`<tr>${row.map((c,ci)=>`<td><input type="text" data-p="${p}" data-i="${i}" data-r="${ri}" data-c="${ci}" value="${esc(c)}"></td>`).join('')}</tr>`).join('')}</table><div class="row" style="margin-top:6px"><button class="mini" data-act="addrow" data-i="${i}">+ صف</button><button class="mini" data-act="addcol" data-i="${i}">+ عمود</button><button class="mini del" data-act="delrow" data-i="${i}">- صف</button><button class="mini del" data-act="delcol" data-i="${i}">- عمود</button></div>`}
+ if(['p','box','tbl','img','dia'].includes(it.t))b+=`<label class="f">عرض العنصر</label><select data-p="${p}" data-i="${i}" data-k="w"><option value="full" ${it.w!=='half'?'selected':''}>عرض كامل</option><option value="half" ${it.w==='half'?'selected':''}>نصف عرض</option></select>`
+ const pgs=S.pages.map((_,k)=>`<option value="${k}" ${k===p?'selected':''}>صفحة ${ad(k+1)}</option>`).join('');
+ const n=S.pages[p].items.length;
+ return `<div class="card" data-card="${i}"><h4>${TYPES[it.t]} ${ad(i+1)}<span class="sp"></span><button class="mini" data-act="up" data-i="${i}" ${i?'':'disabled'}>▲ فوق</button><button class="mini" data-act="dn" data-i="${i}" ${i<n-1?'':'disabled'}>▼ تحت</button></h4>${b}<div class="row" style="margin-top:8px;align-items:end"><div><label class="f">انقل إلى</label><select data-act="mv" data-i="${i}">${pgs}</select></div><button class="mini" data-act="dup" data-i="${i}">نسخ</button><button class="mini del" data-act="del" data-i="${i}">حذف</button></div></div>`}
+function renderEd(){const pg=S.pages[cur];
+ let h=`<div class="chips">${S.pages.map((_,i)=>`<button class="chip ${i===cur?'on':''}" data-pg="${i}">${ad(i+1)}</button>`).join('')}<button class="chip add" data-act="addpage">+ صفحة</button></div>`;
+ h+=`<div class="pan"><h3>الصفحة ${ad(cur+1)}</h3>${F('عنوان الشريط العلوي لهذه الصفحة (اتركه فارغًا لاستخدام العنوان العام)','header',pg.header||'','i','',  '')}
+ <div class="row"><div><label class="f">ترتيب الأسئلة</label><select data-pgk="cols"><option value="1" ${pg.cols!==2?'selected':''}>عمود واحد</option><option value="2" ${pg.cols===2?'selected':''}>عمودان</option></select></div></div>
+ <div class="row wrap" style="margin-top:8px;flex-wrap:wrap"><button class="mini" data-act="fit">توزيع تلقائي على الصفحات</button><button class="mini" data-act="bulk">إضافة أسئلة دفعة واحدة</button><button class="mini" data-act="pl" ${cur?'':'disabled'}>تقديم الصفحة</button><button class="mini" data-act="pr" ${cur<S.pages.length-1?'':'disabled'}>تأخير الصفحة</button><button class="mini" data-act="dpage">نسخ الصفحة</button><button class="mini del" data-act="rmpage">حذف الصفحة</button></div></div>`;
+ h+=`<div class="adds">${Object.keys(TYPES).map(k=>`<button class="${k==='q'?'g':k==='tbl'||k==='dia'?'o':''}" data-add="${k}">+ ${TYPES[k]}</button>`).join('')}</div>`;
+ h+=pg.items.map((it,i)=>itemEditor(it,i)).join('')||'<p class="hint">الصفحة فارغة. أضف سؤالًا أو عنوانًا من الأزرار بالأعلى.</p>';
+ $('#ed').innerHTML=h}
+function renderDe(){const t=S.th,m=S.meta,f=S.ft;const T=(l,o,k)=>`<label class="f">${l}</label><input type="text" data-o="${o}" data-k="${k}" value="${esc(S[o][k])}">`;
+ const C=(l,k)=>`<div><label class="f">${l}</label><input type="color" style="width:100%;height:38px" data-o="th" data-k="${k}" value="${t[k]}"></div>`;
+ const fo=(k)=>FONTS.map(x=>`<option ${t[k]===x?'selected':''}>${x}</option>`).join('');
+ $('#ed').innerHTML=`<div class="pan"><h3>الألوان</h3><div class="sw">${PRESETS.map((p,i)=>`<button data-preset="${i}" title="${p[0]}" style="background:${p[1]}"></button>`).join('')}</div>
+ <div class="row">${C('اللون الأساسي','pri')}${C('الأساسي الداكن','pri2')}${C('لون الإجابات والأسئلة','acc')}</div><div class="row">${C('خلفية الصفحة','bg')}${C('لون النص','ink')}${C('لون الجداول الفاتح','soft')}</div></div>
+ <div class="pan"><h3>الخطوط</h3><label class="f">خط النصوص</label><select data-o="th" data-k="f">${fo('f')}</select><label class="f">خط العناوين</label><select data-o="th" data-k="fh">${fo('fh')}</select><label class="f">حجم النص (${t.fs}px)</label><input type="range" min="10" max="20" step="0.5" data-o="th" data-k="fs" data-n="1" value="${t.fs}" style="width:100%"></div>
+ <div class="pan"><h3>العنوان العام والغلاف</h3>${T('الشريط العلوي لكل الصفحات','meta','header')}<p class="hint">ضع نجمتين حول الكلمة لتظهر بالأصفر مثل *النحو*.</p>
+ <label class="f"><input type="checkbox" data-o="meta" data-k="cover" ${m.cover?'checked':''}> أضف صفحة غلاف</label><label class="f"><input type="checkbox" data-o="meta" data-k="deco" ${m.deco?'checked':''}> حروف زخرفية في الخلفية</label>
+ ${T('سطر صغير فوق العنوان','meta','kicker')}${T('العنوان الأول','meta','title1')}${T('العنوان الثاني','meta','title2')}${T('كلمة قبل الاسم','meta','lab')}${T('الاسم','meta','teacher')}${T('الوصف تحت الاسم','meta','role')}
+ <div class="row" style="margin-top:8px"><button class="mini" data-act="pickcover">${m.coverImg?'تغيير صورة الغلاف':'إضافة صورة الغلاف'}</button>${m.coverImg?'<button class="mini del" data-act="rmcover">حذف الصورة</button>':''}</div></div>
+ <div class="pan"><h3>الرقم و QR في كل صفحة</h3><label class="f"><input type="checkbox" data-o="ft" data-k="showPhone" ${f.showPhone?'checked':''}> أظهر رقم التليفون</label>${T('الرقم','ft','phone')}${T('النص بجانب الرقم','ft','label')}
+ <label class="f"><input type="checkbox" data-o="ft" data-k="showQr" ${f.showQr?'checked':''}> أظهر رمز QR</label><div class="row" style="margin-top:6px"><button class="mini" data-act="pickqr">تغيير صورة QR</button><button class="mini" data-act="resetqr">رجوع لرمز مستر يوسف</button></div>
+ <label class="f"><input type="checkbox" data-o="ft" data-k="pageNo" ${f.pageNo?'checked':''}> رقم الصفحة</label>
+ <label class="f">ترقيم الأسئلة</label><select data-top="numMode"><option value="page" ${S.numMode==='page'?'selected':''}>يبدأ من ١ في كل صفحة</option><option value="cont" ${S.numMode==='cont'?'selected':''}>متصل عبر الملزمة</option></select></div>`}
+function setTab(t){document.body.dataset.tab=t==='de'?'ed':t;view=t==='de'?'de':t==='pv'?view:t;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(t==='de')renderDe();else if(t==='ed'){view='ed';renderEd()}if(t==='pv')renderPv()}
+/* ===== أحداث ===== */
+const ed=$('#ed');
+function mkItem(t){const b={w:'auto'};return Object.assign(b,{q:{t:'q',text:'',ch:'',ans:'',showAns:true,img:'',imgW:60,imgPos:'below',lines:0},h:{t:'h',text:'عنوان جديد',num:'',col:'pri'},p:{t:'p',text:''},box:{t:'box',kind:'note',label:'تنبيه:',text:''},tbl:{t:'tbl',head:true,rows:[['عنوان 1','عنوان 2'],['','']],w:'full'},img:{t:'img',img:'',imgW:60,text:''},dia:{t:'dia',text:'الفكرة الرئيسية\nفرع أول\nفرع ثان'}}[t])}
+ed.addEventListener('input',e=>{const el=e.target;let v=el.type==='checkbox'?el.checked:el.value;if(el.dataset.n)v=+v;
+ if(el.dataset.o){S[el.dataset.o][el.dataset.k]=v;if(el.dataset.k==='fs'){const l=el.previousElementSibling;l.textContent='حجم النص ('+v+'px)'}schedPv();return}
+ if(el.dataset.top){S[el.dataset.top]=v;schedPv();return}
+ if(el.dataset.pgk){S.pages[cur][el.dataset.pgk]=el.dataset.pgk==='cols'?+v:v;schedPv();return}
+ if(el.dataset.act==='mv')return;
+ if(el.dataset.k==='header'&&el.dataset.p===''){S.pages[cur].header=v;schedPv();return}
+ if(el.dataset.p===undefined)return;const it=S.pages[+el.dataset.p].items[+el.dataset.i];
+ if(el.dataset.r!==undefined)it.rows[+el.dataset.r][+el.dataset.c]=v;else it[el.dataset.k]=v;schedPv()});
+ed.addEventListener('change',e=>{const el=e.target;if(el.dataset.act==='mv'){move(+el.dataset.i,+el.value)}else if(el.dataset.k==='showAns'||el.dataset.k==='cover'||el.dataset.k==='w'||el.dataset.k==='imgPos'||el.dataset.k==='kind'){if(el.dataset.o==='meta'&&el.dataset.k==='cover'){S.meta.cover=el.checked}}});
+function move(i,to){const a=S.pages[cur].items;const [x]=a.splice(i,1);S.pages[to].items.push(x);cur=to;sel=-1;renderEd();schedPv()}
+let imgTarget=null;
+ed.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const P=S.pages[cur];const i=+b.dataset.i;
+ if(b.dataset.pg!==undefined){cur=+b.dataset.pg;renderEd();renderPv();return}
+ if(b.dataset.add){P.items.push(mkItem(b.dataset.add));renderEd();schedPv();const c=ed.querySelectorAll('.card');if(c.length)c[c.length-1].scrollIntoView({block:'center'});return}
+ if(b.dataset.preset!==undefined){const p=PRESETS[+b.dataset.preset];Object.assign(S.th,{pri:p[1],pri2:p[2],acc:p[3],soft:p[4]});renderDe();schedPv();return}
+ const a=b.dataset.act;if(!a)return;
+ const sw=(x,y)=>{[P.items[x],P.items[y]]=[P.items[y],P.items[x]];renderEd();schedPv()};
+ if(a==='up')sw(i,i-1);else if(a==='dn')sw(i,i+1);
+ else if(a==='del'){if(confirm('حذف هذا العنصر؟')){P.items.splice(i,1);renderEd();schedPv()}}
+ else if(a==='dup'){P.items.splice(i+1,0,JSON.parse(JSON.stringify(P.items[i])));renderEd();schedPv()}
+ else if(a==='addpage'){S.pages.push({cols:P.cols,items:[]});cur=S.pages.length-1;renderEd();schedPv()}
+ else if(a==='dpage'){S.pages.splice(cur+1,0,JSON.parse(JSON.stringify(P)));cur++;renderEd();schedPv()}
+ else if(a==='rmpage'){if(S.pages.length>1&&confirm('حذف الصفحة كلها؟')){S.pages.splice(cur,1);cur=Math.max(0,cur-1);renderEd();schedPv()}else if(S.pages.length<2)alert('لا يمكن حذف الصفحة الوحيدة')}
+ else if(a==='pl'){[S.pages[cur-1],S.pages[cur]]=[S.pages[cur],S.pages[cur-1]];cur--;renderEd();schedPv()}
+ else if(a==='pr'){[S.pages[cur+1],S.pages[cur]]=[S.pages[cur],S.pages[cur+1]];cur++;renderEd();schedPv()}
+ else if(a==='pick'){imgTarget={t:'item',i};$('#fileImg').click()}
+ else if(a==='rmimg'){P.items[i].img='';renderEd();schedPv()}
+ else if(a==='pickcover'){imgTarget={t:'cover'};$('#fileImg').click()}
+ else if(a==='rmcover'){S.meta.coverImg='';renderDe();schedPv()}
+ else if(a==='pickqr'){imgTarget={t:'qr'};$('#fileImg').click()}
+ else if(a==='resetqr'){S.ft.qr=QR;schedPv();alert('تمت إعادة الرمز الأصلي')}
+ else if(a==='addrow'){const r=P.items[i].rows;r.push(r[0].map(()=>''));renderEd();schedPv()}
+ else if(a==='addcol'){P.items[i].rows.forEach(r=>r.push(''));renderEd();schedPv()}
+ else if(a==='delrow'){const r=P.items[i].rows;if(r.length>1)r.pop();renderEd();schedPv()}
+ else if(a==='delcol'){const r=P.items[i].rows;if(r[0].length>1)r.forEach(x=>x.pop());renderEd();schedPv()}
+ else if(a==='fit')autoFit();
+ else if(a==='bulk')bulkDlg()});
+ed.addEventListener('change',e=>{if(e.target.dataset.o==='meta'&&e.target.dataset.k==='cover'){renderPv()}});
+$('#fileImg').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!imgTarget)return;const d=await shrink(f,imgTarget.t==='qr'?600:1500);
+ if(imgTarget.t==='item'){S.pages[cur].items[imgTarget.i].img=d;renderEd()}else if(imgTarget.t==='cover'){S.meta.coverImg=d;renderDe()}else{S.ft.qr=d}
+ schedPv()});
+function shrink(f,max){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');const png=/png|svg|gif|webp/.test(f.type);if(!png){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL(png?'image/png':'image/jpeg',.88))};im.src=r.result};r.readAsDataURL(f)})}
+/* ===== توزيع ===== */
+function autoFit(){const m=document.createElement('div');m.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden';document.body.appendChild(m);
+ let moved=0;for(let p=0;p<S.pages.length&&p<80;p++){m.innerHTML=sheetHTML(p);const bd=m.querySelector('.bd');const H=bd.clientHeight;const els=[...bd.querySelectorAll('.it')];let cut=-1;
+  for(let i=0;i<els.length;i++){if(els[i].offsetTop+els[i].offsetHeight>H-14+0){cut=i;break}}
+  if(cut>0){const rest=S.pages[p].items.splice(cut);let nx=S.pages[p+1];S.pages.splice(p+1,0,{cols:S.pages[p].cols,header:S.pages[p].header,items:rest});moved+=rest.length}}
+ m.remove();renderEd();schedPv();alert(moved?'تم توزيع '+ad(moved)+' عنصر على صفحات جديدة.':'كل الصفحات تتسع لمحتواها.')}
+function bulkDlg(){$('#modb').innerHTML=`<h3 style="margin:0 0 6px;color:#1e4f9e">إضافة أسئلة دفعة واحدة</h3><p class="hint">اكتب كل سؤال في سطر. لإضافة الإجابة ضع علامة | بعد السؤال. يمكنك لصق الأسئلة من أي مكان.</p><textarea id="bt" style="width:100%;min-height:150px;padding:8px;border:1px solid #c5cfdf;border-radius:8px" placeholder="ما إعراب كلمة (الطالبُ)؟ | فاعل مرفوع بالضمة"></textarea><div class="row" style="margin-top:8px"><div><label class="f">عدد الأسئلة في كل صفحة</label><input id="bn" type="number" min="1" max="30" value="6" style="width:100%;padding:8px;border:1px solid #c5cfdf;border-radius:8px"></div><div><label class="f">ترتيب الأسئلة</label><select id="bc" style="width:100%;padding:8px;border:1px solid #c5cfdf;border-radius:8px"><option value="2">عمودان</option><option value="1">عمود واحد</option></select></div></div><label class="f"><input type="checkbox" id="bh" checked> ضع عنوانًا فوق كل صفحة</label><input id="bht" type="text" value="أسئلة التدريب" style="width:100%;padding:8px;border:1px solid #c5cfdf;border-radius:8px"><div class="row" style="margin-top:10px"><button class="mini" id="bok" style="background:#17803a;color:#fff;padding:10px">أنشئ الصفحات</button><button class="mini" id="bno" style="padding:10px">إلغاء</button></div>`;$('#mod').classList.add('on');
+ $('#bno').onclick=()=>$('#mod').classList.remove('on');
+ $('#bok').onclick=()=>{const L=$('#bt').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!L.length)return;const n=Math.max(1,+$('#bn').value||6),cols=+$('#bc').value;const first=!S.pages[cur].items.length;
+  for(let k=0;k<L.length;k+=n){const items=[];if($('#bh').checked)items.push({t:'h',text:$('#bht').value,num:'',col:'acc'});L.slice(k,k+n).forEach(s=>{const [q,a]=s.split('|');items.push({t:'q',text:q.trim(),ch:'',ans:(a||'').trim(),showAns:!!(a&&a.trim()),w:'auto',img:'',imgW:60,imgPos:'below',lines:0})});
+   if(k===0&&first)Object.assign(S.pages[cur],{cols,items});else{S.pages.splice(cur+1+Math.floor(k/n)-(first?1:0),0,{cols,items})}}
+  $('#mod').classList.remove('on');renderEd();schedPv()}}
+/* ===== أعلى الصفحة ===== */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+function printNow(){const root=$('#printRoot');root.innerHTML=(S.meta.cover?sheetHTML('cover'):'')+S.pages.map((_,i)=>sheetHTML(i)).join('');(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(()=>window.print(),250))}
+$('#bPdf').onclick=()=>{$('#modb').innerHTML=`<h3 style="margin:0 0 8px;color:#1e4f9e">تصدير PDF بجودة عالية</h3><p style="line-height:1.9;margin:0 0 8px">سيفتح لك نافذة الطباعة. اختر <b>حفظ كملف PDF</b> (أو Save as PDF) وحجم الورق <b>A4</b>، وأوقف خيار الرؤوس والتذييلات إن وجد، ثم احفظ.</p><p class="hint">على الآيفون: بعد ظهور المعاينة افتح مشاركة ثم احفظ في الملفات. الملف يخرج بخطوط متجهة حادة تصلح للطباعة.</p><div class="row"><button class="mini" id="pgo" style="background:#17803a;color:#fff;padding:10px">فتح نافذة الحفظ</button><button class="mini" id="pno" style="padding:10px">إلغاء</button></div>`;$('#mod').classList.add('on');$('#pno').onclick=()=>$('#mod').classList.remove('on');$('#pgo').onclick=()=>{$('#mod').classList.remove('on');printNow()}};
+$('#bNew').onclick=()=>{if(confirm('بدء ملزمة جديدة؟ سيُمسح العمل الحالي، احفظ ملفك أولًا.')){S=sample();S.pages=[{cols:1,items:[]}];S.meta.cover=false;cur=0;renderEd();schedPv()}};
+$('#bFile').onclick=()=>{$('#modb').innerHTML=`<h3 style="margin:0 0 8px;color:#1e4f9e">حفظ وفتح الملزمة</h3><p class="hint">الملزمة تُحفظ تلقائيًا على هذا الجهاز. لنسخة احتياطية أو لنقلها لجهاز آخر استخدم الملف.</p><div class="row"><button class="mini" id="jsv" style="padding:10px">تنزيل ملف الملزمة</button><button class="mini" id="jop" style="padding:10px">فتح ملف</button></div><div class="row" style="margin-top:8px"><button class="mini" id="jex" style="padding:10px">استرجاع المثال الجاهز</button><button class="mini" id="jno" style="padding:10px">إغلاق</button></div>`;$('#mod').classList.add('on');
+ $('#jno').onclick=()=>$('#mod').classList.remove('on');
+ $('#jsv').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='molzama.json';a.click()};
+ $('#jop').onclick=()=>$('#fileJson').click();
+ $('#jex').onclick=()=>{if(confirm('سيحل المثال محل العمل الحالي. متأكد؟')){S=sample();cur=0;$('#mod').classList.remove('on');renderEd();schedPv()}}};
+$('#fileJson').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=JSON.parse(r.result);norm();cur=0;$('#mod').classList.remove('on');renderEd();schedPv()}catch(x){alert('الملف غير صالح')}};r.readAsText(f);e.target.value=''});
+$('#pv').addEventListener('click',e=>{const w=e.target.closest('.pvw');if(!w)return;const p=w.dataset.pv;if(p==='cover'){setTab('de');return}cur=+p;const it=e.target.closest('.it');setTab('ed');if(it){const c=ed.querySelector(`[data-card="${it.dataset.i}"]`);if(c){c.scrollIntoView({block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1400)}}else renderPv()});
+window.addEventListener('resize',()=>{clearTimeout(pvT);pvT=setTimeout(renderPv,200)});
+load();norm();renderEd();(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>renderPv());renderPv();
+</script>
+</body>
+</html>
