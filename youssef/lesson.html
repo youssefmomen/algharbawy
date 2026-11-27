@@ -235,7 +235,9 @@ main{max-width:720px;margin:0 auto}
 <script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g8ar:{src:"ar-g8",simp:"ar-g8-simplify",glob:"AR_G8",extra:["ar-g8-pre","ar-g8-nahw","ar-g8-u1","ar-g8-u1b","ar-g8-u1c","ar-g8-u1d","ar-g8-u2","ar-g8-u2b","ar-g8-u2c","ar-g8-u3","ar-g8-u3b","ar-g8-u3c","ar-g8-bal","ar-g8-bal2","ar-g8-imla","ar-g8-tabeer","ar-g8-tahaddath","ar-g8-qb1","ar-g8-qb1b","ar-g8-qb1c"],grade:"تانية إعدادي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",extra:["ar-g7az-mot","ar-g7az-fonon","ar-g7az-exams","ar-g7az-nahw-e","ar-g7az-nahw-a","ar-g7az-nahw-b","ar-g7az-nahw-c","ar-g7az-nahw-d","ar-g7az-unit1","ar-g7az-unit2","ar-g7az-rev"],grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
 <script>document.write('<script src="assets/data/'+TC.src+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>document.write('<script src="assets/data/'+TC.simp+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');(TC.extra||[]).forEach(function(x){document.write('<script src="assets/data/'+x+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');});</script>
+<script src="cms.js?v=20261127a"></script>
 <script>
+function BOOT(){
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
 sun:'<circle cx="50" cy="44" r="15"/><path d="M50 18 v-9 M50 70 v9 M24 44 h-11 M76 44 h11 M31 25 l-7 -7 M69 25 l7 -7 M31 63 l-7 7 M69 63 l7 7"/>',
@@ -1469,4 +1471,7 @@ render();
 if(window.MM&&MM.onChange)MM.onChange(function(){paintScore(false);});
 var _nt=document.getElementById('nTitle');if(_nt){_nt.addEventListener('click',function(){backBtn();});}
 
+
+window.zoom=zoom;}
+if(window.MMCMS){MMCMS.ready(TRK).then(BOOT,function(){BOOT();});}else{BOOT();}
 </script></body></html>

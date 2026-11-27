@@ -128,6 +128,16 @@ service cloud.firestore {
       allow delete: if (isTeacher() && resource.data.teacherId == request.auth.uid) || isAdmin();
     }
 
+    // محتوى الموقع المنشور (لوحة تحكم المحتوى): قراءة عامة للزوار، والنشر للمدير فقط
+    match /cmsLive/{track} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    // مسودات محتوى الموقع: يعدّلها المدير أو المعلم المقبول، ولا تظهر للطلاب
+    match /cmsDraft/{track} {
+      allow read, write: if isAdmin() || isTeacher();
+    }
+
     // النتائج: الطالب يكتب نتيجته فقط، ويقرأها هو أو المعلم صاحب النشاط أو المدير
     match /results/{id} {
       allow get, list: if signedIn() && (

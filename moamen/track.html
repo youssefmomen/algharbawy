@@ -5,7 +5,9 @@
 <div class="demo"><img src="assets/img/mr-moamen-tablet.png"><div class="bb"><b>اشرحها ببساطة:</b> في كل درس هتلاقي شرح بالعامية بعد الأجزاء الصعبة، وبعدها أسئلة تتأكد بيها إنك فاهم.</div></div>
 </div></section><style>.ls.lock{opacity:.62;cursor:not-allowed;box-shadow:3px 3px 0 #b7ab90;border-color:#b7ab90}.ls.lock .n{background:#efe6cf;border-color:#b7ab90;color:#9a8f78}.ls.lock .n svg{width:20px;height:20px}.ls.lock .chip{background:#efe6cf;border-color:#b7ab90;color:#8a8068}</style><div class="grp"><span class="grp-t">مجموعة الغرباوي التعليمية</span><a class="on">منصة مستر مؤمن · البكالوريا</a><a href="../index.html">مؤسسة الغرباوي · تعليم العربية</a><a href="https://youssefmomen.github.io/algharbawy/youssef/">منصة مستر يوسف · اللغة العربية</a></div><footer><div class="fl"><a href="index.html">الرئيسية</a><a href="track.html?t=bac2">الدروس</a><a href="profile.html">حسابي</a><a href="login.html">دخول</a><a href="https://youssefmomen.github.io/algharbawy/youssef/">منصة مستر يوسف</a></div>© منصة مستر مؤمن · ضمن مجموعة الغرباوي التعليمية</footer>
 <script>document.write('<script src="assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script src="cms.js?v=20261127a"></script>
 <script>
+function BOOT(){
 var D=window.BAC_G2P1||{stages:[],lessons:[]},A="٠١٢٣٤٥٦٧٨٩",ar=function(n){return String(n).replace(/\d/g,function(d){return A[d]})};
 var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5 V7.8 a4 4 0 0 1 8 0 v2.7"/></svg>';
 function lessonPc(l){var pc=0;try{var sv=JSON.parse(localStorage.getItem('bac-g2p1-'+l.id));if(sv&&sv.done){var tot=0;l.segments.forEach(function(sg){tot+=sg.questions.length+(sg.check||[]).length;});if(tot)pc=Math.round(Object.keys(sv.done).length/tot*100);}}catch(e){}return pc;}
@@ -22,4 +24,6 @@ var h="";D.stages.forEach(function(st){if(!D.lessons.some(function(l){return l.s
 document.getElementById("units").innerHTML=h||'<div class="hint">مقدرناش نحمّل الدروس. اتأكد من الإنترنت وجرّب تاني.<br><button type="button" class="pbtn" onclick="location.reload()" style="margin-top:10px;max-width:220px">إعادة المحاولة</button></div>';}
 renderUnits();
 if(window.MM&&MM.onChange)MM.onChange(function(){renderUnits();});
+}
+if(window.MMCMS){MMCMS.ready('bac2').then(BOOT,function(){BOOT();});}else{BOOT();}
 </script></body></html>

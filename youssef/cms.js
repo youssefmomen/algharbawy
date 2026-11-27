@@ -13,8 +13,8 @@ function hash(s){s=String(s==null?'':s);var h=5381;for(var i=0;i<s.length;i++)h=
 function entryKey(e){return e?(e.b||e.img||e.illus||e.v||''):'';}
 
 /* تطبيق الوثيقة على بيانات الصف D (window.AR_G1 / AR_G8 / AR_G7AZ). ترجع قائمة التعديلات اللي مالقتش مكانها. */
-function apply(D,ov){
-  var missed=[];
+function apply(D,ov,opts){
+  var missed=[];var ED=!!(opts&&opts.editor);
   if(!D||!ov||typeof ov!=='object')return missed;
   D.B=D.B||{};
   /* ١) النصوص: دمج كتل HTML المعدّلة/الجديدة */
@@ -44,7 +44,7 @@ function apply(D,ov){
       D.lessons.push(nl);});
     var lDec=D.lessons.map(function(l,ix){return {l:l,ix:ix,ord:(l._cmsOrder!=null?l._cmsOrder:ix)};});
     lDec.sort(function(a,b){return a.ord-b.ord||a.ix-b.ix;});
-    D.lessons=lDec.map(function(x){return x.l;}).filter(function(l){return !l._cmsHidden;});
+    D.lessons=lDec.map(function(x){return x.l;});if(!ED)D.lessons=D.lessons.filter(function(l){return !l._cmsHidden;});
   }
 
   function findLesson(id){return (D.lessons||[]).filter(function(l){return l.id===id;})[0];}
@@ -91,7 +91,7 @@ function apply(D,ov){
         var arr=sg[g];if(!Array.isArray(arr))return;
         var dec=arr.map(function(q,ix){return {q:q,ix:ix,ord:(q._cmsOrder!=null?q._cmsOrder:ix)};});
         dec.sort(function(a,b){return a.ord-b.ord||a.ix-b.ix;});
-        sg[g]=dec.map(function(x){return x.q;}).filter(function(q){return !q._cmsHidden;});
+        sg[g]=dec.map(function(x){return x.q;});if(!ED)sg[g]=sg[g].filter(function(q){return !q._cmsHidden;});
       });
     });
   });
@@ -112,7 +112,7 @@ function apply(D,ov){
     var sp2=sgp[sk],L2=findLesson(sp2.lesson);
     var sg2=L2?findSeg(L2,sp2.seg,sp2.segFp):null;
     if(!sg2){missed.push(sk);continue;}
-    if(sp2.hidden){L2.segments=L2.segments.filter(function(x){return x!==sg2;});continue;}
+    if(sp2.hidden){if(ED){sg2._cmsHidden=true;}else{L2.segments=L2.segments.filter(function(x){return x!==sg2;});}continue;}
     if(sp2.label)sg2.label=sp2.label;
     if(Array.isArray(sg2.explain)&&Array.isArray(sp2.hideEntries)&&sp2.hideEntries.length)
       sg2.explain=sg2.explain.filter(function(e){return sp2.hideEntries.indexOf(entryKey(e))<0;});
