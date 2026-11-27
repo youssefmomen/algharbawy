@@ -41,6 +41,7 @@ label.f{display:block;margin:6px 0 2px;font-size:13px;color:#456;font-weight:600
 .card input[type=text],.card input[type=number],.card textarea,.card select,.pan input[type=text],.pan input[type=number],.pan select{width:100%;padding:8px;border:1px solid #c5cfdf;border-radius:8px;background:#fff}
 textarea{min-height:64px;resize:vertical}
 .row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.cbg{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:6px 0}.cbg button{height:34px;border-radius:8px;border:2px solid #fff;outline:1px solid #b8c2d4;cursor:pointer}
 .poses{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}.poses button{border:2px solid #c5cfdf;background:#e9f0fb;border-radius:10px;padding:2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;height:78px;justify-content:flex-end;overflow:hidden}.poses button.on{border-color:#1e63b8;background:#cfe0fa}.poses img{height:50px;object-fit:contain;object-position:top}.poses small{font-size:11px;font-weight:700}.poses span{font-size:20px;margin:auto}
 .row.wrap>*{flex:0 1 auto}
 .adds{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
@@ -144,6 +145,7 @@ const QR="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIYAAACICAIAAACtEQS2AAAA
 const FONTS=['Cairo','Tajawal','Almarai','Mada','Readex Pro','Changa','Baloo Bhaijaan 2','Amiri','Noto Naskh Arabic','Scheherazade New','Markazi Text','Harmattan','El Messiri','Reem Kufi','Aref Ruqaa','Lemonada'];
 const PRESETS=[['أزرق الملزمة','#1e63b8','#0f3f8a','#17803a','#e8f1fb'],['أخضر','#17803a','#0d5a26','#c76a00','#e7f5ea'],['بنفسجي','#6a3fb5','#43237f','#d4467a','#f0eafa'],['برتقالي','#d9640b','#9c4204','#1e63b8','#fdeee0'],['عنابي','#a02845','#6b1229','#17803a','#fbe9ee'],['أسود وذهبي','#2a2a2a','#000000','#b8860b','#f6f0dc']];
 const POSES=[['','بدون صورة'],['mr-youssef.png','عادي'],['mr-youssef-wave.png','تحية'],['mr-youssef-explaining.png','يشرح'],['mr-youssef-pointup.png','انتبه'],['mr-youssef-book.png','كتاب'],['mr-youssef-thinking.png','يفكر'],['mr-youssef-thumbsup.png','ممتاز'],['mr-youssef-encouraging.png','يشجع'],['mr-youssef-celebrating.png','احتفال']];
+const CBG=[['#1e63b8','#0f3f8a','أزرق ملكي'],['#0ea5e9','#1e3a8a','سماوي'],['#06b6d4','#0f766e','تركواز'],['#17a34a','#064e3b','أخضر'],['#84cc16','#166534','ليموني'],['#f59e0b','#b45309','عسلي'],['#f97316','#9a3412','برتقالي'],['#ef4444','#7f1d1d','أحمر'],['#ec4899','#831843','وردي'],['#a855f7','#4c1d95','بنفسجي'],['#6366f1','#1e1b4b','نيلي'],['#2a2a2a','#000000','أسود'],['#fbbf24','#1e1b4b','ذهبي وليلي'],['#f472b6','#6366f1','غروب'],['#22d3ee','#a3e635','نعناع'],['#fde68a','#fb923c','دافئ']];
 const POSEDIR='../youssef/assets/img/';
 const TYPES={q:'سؤال',h:'عنوان قسم',p:'نص',box:'صندوق تنبيه',tbl:'جدول',img:'صورة',dia:'مخطط'};
 const $=s=>document.querySelector(s);
@@ -152,7 +154,7 @@ const ad=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const hl=s=>esc(s).replace(/\*(.+?)\*/g,'<span class="hl">$1</span>');
 let S,cur=0,sel=-1,view='ed';
 function sample(){return{v:1,
- meta:{header:'المراجعة النهائية: *النحو* | الصف الثاني الإعدادي • 2027',cover:true,kicker:'اللغة العربية • الصف الثاني الإعدادي • 2027',title1:'المراجعة النهائية',title2:'النحو',teacher:'مستر يوسف',role:'مدرس اللغة العربية',lab:'ملزمة',coverImg:POSEDIR+'mr-youssef.png',deco:true,cdeco:true,cb1:'',cb2:'',imgW:70,imgY:0},
+ meta:{header:'المراجعة النهائية: *النحو* | الصف الثاني الإعدادي • 2027',cover:true,kicker:'اللغة العربية • الصف الثاني الإعدادي • 2027',title1:'المراجعة النهائية',title2:'النحو',teacher:'مستر يوسف',role:'مدرس اللغة العربية',lab:'ملزمة',coverImg:POSEDIR+'mr-youssef.png',deco:true,cdeco:true,cb1:'',cb2:'',cbm:'',cbAng:'160',imgW:70,imgY:0},
  th:{pri:'#1e63b8',pri2:'#0f3f8a',acc:'#17803a',bg:'#ffffff',ink:'#1b2430',soft:'#e8f1fb',f:'Cairo',fh:'Cairo',fs:14},
  ft:{phone:'01145083012',showPhone:true,showQr:true,qr:QR,label:'الدروس والتدريبات على موقع مستر يوسف',pageNo:true},
  numMode:'page',
@@ -195,7 +197,7 @@ function itemHTML(it,p,i,ctr){const w=it.w&&it.w!=='auto'?it.w:(S.pages[p].cols=
   return `<div class="${cls}" ${at}>${inner}</div>`}
  return ''}
 function sheetHTML(p){
- if(p==='cover'){const m=S.meta,f=S.ft;const bg=(m.cb1||m.cb2)?`background:linear-gradient(160deg,${m.cb1||S.th.pri},${m.cb2||m.cb1||S.th.pri2});`:'';return `<div class="sheet cover" style="${cssVars()};${bg}">${decoHTML(1)}<div class="ct"><small>${esc(m.kicker)}</small><div><h1>${esc(m.title1)}</h1></div><div><h1>${esc(m.title2)}</h1></div></div><div class="pic">${m.coverImg?`<img src="${m.coverImg}" style="max-width:${m.imgW||70}%;transform:translateY(${m.imgY||0}px)">`:''}</div><div class="tag"><small>${esc(m.lab)}</small><b>${esc(m.teacher)}</b><span>${esc(m.role)}</span></div><div class="cf">${f.showQr&&f.qr?`<img src="${f.qr}">`:''}${f.showPhone?`<div class="lb">${esc(f.label)}</div><div class="ph">${esc(f.phone)}</div>`:''}</div></div>`}
+ if(p==='cover'){const m=S.meta,f=S.ft;let bg='';if(m.cb1||m.cb2){const a=m.cbAng||'160',c1=m.cb1||S.th.pri,c2=m.cb2||m.cb1||S.th.pri2;bg=m.cbm==='solid'?`background:${c1};`:a==='radial'?`background:radial-gradient(circle at 50% 35%,${c1},${c2});`:`background:linear-gradient(${a}deg,${c1},${c2});`}return `<div class="sheet cover" style="${cssVars()};${bg}">${decoHTML(1)}<div class="ct"><small>${esc(m.kicker)}</small><div><h1>${esc(m.title1)}</h1></div><div><h1>${esc(m.title2)}</h1></div></div><div class="pic">${m.coverImg?`<img src="${m.coverImg}" style="max-width:${m.imgW||70}%;transform:translateY(${m.imgY||0}px)">`:''}</div><div class="tag"><small>${esc(m.lab)}</small><b>${esc(m.teacher)}</b><span>${esc(m.role)}</span></div><div class="cf">${f.showQr&&f.qr?`<img src="${f.qr}">`:''}${f.showPhone?`<div class="lb">${esc(f.label)}</div><div class="ph">${esc(f.phone)}</div>`:''}</div></div>`}
  const pg=S.pages[p],f=S.ft;let ctr={n:0};if(S.numMode==='cont'){for(let k=0;k<p;k++)S.pages[k].items.forEach(x=>{if(x.t==='q')ctr.n++})}
  const items=pg.items.map((it,i)=>{if(it.t==='q')ctr.n++;return itemHTML(it,p,i,ctr)}).join('');
  const total=S.pages.length;
@@ -244,7 +246,9 @@ function renderDe(){const t=S.th,m=S.meta,f=S.ft;const T=(l,o,k)=>`<label class=
  <label class="f"><input type="checkbox" data-o="meta" data-k="cover" ${m.cover?'checked':''}> أضف صفحة غلاف</label><label class="f"><input type="checkbox" data-o="meta" data-k="deco" ${m.deco?'checked':''}> حروف زخرفية في الخلفية</label>
  ${T('سطر صغير فوق العنوان','meta','kicker')}${T('العنوان الأول','meta','title1')}${T('العنوان الثاني','meta','title2')}${T('كلمة قبل الاسم','meta','lab')}${T('الاسم','meta','teacher')}${T('الوصف تحت الاسم','meta','role')}
  <label class="f"><input type="checkbox" data-o="meta" data-k="cdeco" ${m.cdeco?'checked':''}> حروف زخرفية على الغلاف</label>
- <div class="row"><div><label class="f">لون خلفية الغلاف (من)</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb1" value="${m.cb1||t.pri}"></div><div><label class="f">إلى</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb2" value="${m.cb2||t.pri2}"></div></div><div class="row" style="margin-top:6px"><button class="mini" data-act="rstcb">رجوع للون الملزمة</button></div>
+ <label class="f">ألوان جاهزة لخلفية الغلاف</label><div class="cbg">${CBG.map((c,i)=>`<button data-cbp="${i}" title="${c[2]}" style="background:linear-gradient(160deg,${c[0]},${c[1]})"></button>`).join('')}</div>
+ <div class="row"><div><label class="f">نوع الخلفية</label><select data-o="meta" data-k="cbm"><option value="" ${m.cbm!=='solid'?'selected':''}>تدرج لونين</option><option value="solid" ${m.cbm==='solid'?'selected':''}>لون واحد</option></select></div><div><label class="f">اتجاه التدرج</label><select data-o="meta" data-k="cbAng">${[['160','مائل (الافتراضي)'],['180','من أعلى لأسفل'],['0','من أسفل لأعلى'],['90','من اليسار لليمين'],['270','من اليمين لليسار'],['135','قطري'],['225','قطري معكوس'],['radial','دائري من المنتصف']].map(o=>`<option value="${o[0]}" ${(m.cbAng||'160')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div></div>
+ <div class="row"><div><label class="f">اللون الأول</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb1" value="${m.cb1||t.pri}"></div><div><label class="f">اللون الثاني</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb2" value="${m.cb2||t.pri2}"></div></div><div class="row" style="margin-top:6px"><button class="mini" data-act="rstcb">رجوع للون الملزمة</button></div>
  <label class="f">حجم صورة الغلاف</label><input type="range" min="30" max="100" data-o="meta" data-k="imgW" data-n="1" value="${m.imgW||70}" style="width:100%"><label class="f">مكان الصورة (أعلى / أسفل)</label><input type="range" min="-250" max="120" data-o="meta" data-k="imgY" data-n="1" value="${m.imgY||0}" style="width:100%">
  <label class="f">اختر وضعية مستر يوسف على الغلاف</label><div class="poses">${POSES.map(p=>`<button data-pose="${p[0]}" class="${(p[0]?POSEDIR+p[0]:'')===(m.coverImg||'')?'on':''}">${p[0]?`<img src="${POSEDIR}${p[0]}" alt="">`:'<span>✕</span>'}<small>${p[1]}</small></button>`).join('')}</div>
  <div class="row" style="margin-top:8px"><button class="mini" data-act="pickcover">${m.coverImg?'تغيير صورة الغلاف':'إضافة صورة الغلاف'}</button>${m.coverImg?'<button class="mini del" data-act="rmcover">حذف الصورة</button>':''}</div></div>
@@ -270,6 +274,7 @@ let imgTarget=null;
 ed.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const P=S.pages[cur];const i=+b.dataset.i;
  if(b.dataset.pg!==undefined){cur=+b.dataset.pg;renderEd();renderPv();return}
  if(b.dataset.add){P.items.push(mkItem(b.dataset.add));renderEd();schedPv();const c=ed.querySelectorAll('.card');if(c.length)c[c.length-1].scrollIntoView({block:'center'});return}
+ if(b.dataset.cbp!==undefined){const c=CBG[+b.dataset.cbp];S.meta.cb1=c[0];S.meta.cb2=c[1];renderDe();schedPv();return}
  if(b.dataset.pose!==undefined){S.meta.coverImg=b.dataset.pose?POSEDIR+b.dataset.pose:'';renderDe();schedPv();return}
  if(b.dataset.preset!==undefined){const p=PRESETS[+b.dataset.preset];Object.assign(S.th,{pri:p[1],pri2:p[2],acc:p[3],soft:p[4]});renderDe();schedPv();return}
  const a=b.dataset.act;if(!a)return;
@@ -285,7 +290,7 @@ ed.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  else if(a==='pick'){imgTarget={t:'item',i};$('#fileImg').click()}
  else if(a==='rmimg'){P.items[i].img='';renderEd();schedPv()}
  else if(a==='pickcover'){imgTarget={t:'cover'};$('#fileImg').click()}
- else if(a==='rstcb'){S.meta.cb1='';S.meta.cb2='';renderDe();schedPv()}
+ else if(a==='rstcb'){S.meta.cb1='';S.meta.cb2='';S.meta.cbm='';S.meta.cbAng='160';renderDe();schedPv()}
  else if(a==='rmcover'){S.meta.coverImg='';renderDe();schedPv()}
  else if(a==='pickqr'){imgTarget={t:'qr'};$('#fileImg').click()}
  else if(a==='resetqr'){S.ft.qr=QR;schedPv();alert('تمت إعادة الرمز الأصلي')}
