@@ -25,7 +25,7 @@ var S={
 var lastDone=0;window.mmSound=function(n){if(n==='done')lastDone=Date.now();if(S[n])S[n]();};
 /* toggle */
 var btn;
-function paintBtn(){if(btn){btn.setAttribute('aria-pressed',on?'true':'false');btn.setAttribute('aria-label',on?'الصوت شغال، اضغط لإيقافه':'الصوت متوقف، اضغط لتشغيله');btn.title=btn.getAttribute('aria-label');}}
+function paintBtn(){if(btn){btn.setAttribute('aria-pressed',on?'true':'false');btn.setAttribute('aria-label',on?'الصوت مفعّل، اضغط لإيقافه':'الصوت متوقف، اضغط لتشغيله');btn.title=btn.getAttribute('aria-label');}}
 function mkBtn(){
  btn=document.createElement('button');btn.type='button';btn.className='mm-snd';
  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path class="w" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg>';
