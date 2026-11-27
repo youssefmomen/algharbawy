@@ -76,6 +76,16 @@ textarea{width:100%;min-height:84px;border:2px dashed var(--ink);border-radius:1
 .prev:disabled{opacity:.35;cursor:not-allowed}
 .navrow{display:flex;gap:10px;margin:8px 12px 12px}
 .lock{font-size:12px;opacity:.75;text-align:center;padding-bottom:14px;font-weight:700}
+.yt-box{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#10202f;margin:4px 0}
+.yt-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-note{text-align:center;font-weight:800;font-size:13px;color:#8a6d1a;background:#fff7e0;border:2px dashed #e5c76b;border-radius:10px;padding:8px;margin:8px 0 2px;line-height:1.9}
+.yt-note.ok{color:#1a7f4b;background:#e7f6ec;border-color:#9ed8b4}
+.yt-fb{text-align:center;font-size:13px;font-weight:700;background:#fdeaea;border:2px solid #f2b8b8;border-radius:10px;padding:8px;margin:8px 0 2px;line-height:2}
+.yt-fb a{color:var(--blue);font-weight:800}
+.yt-skip{margin-inline-start:6px;padding:4px 12px}
+.card.bk .tx{line-height:2.15;font-size:16.5px}
+.card.bk .mh{background:#f4ecd8;border-radius:8px;padding:6px 10px;margin:12px 0 6px}
+.card.bk table.plain td,.card.bk table.plain th{line-height:1.9;padding:6px 8px}
 .done-screen{text-align:center;padding:40px 20px}
 .rv-bar{display:flex;align-items:center;gap:10px;background:var(--sky);border:2.5px solid var(--ink);border-radius:14px;padding:8px 12px;margin:10px 12px 2px;font-size:13px;font-weight:800;box-shadow:3px 3px 0 rgba(34,48,60,.15)}
 .rv-bar span{flex:1;line-height:1.7}
@@ -232,7 +242,7 @@ main{max-width:720px;margin:0 auto}
 <div class="mbar" id="mbar" hidden><button class="s" id="prevBtn" type="button">السابق ▸</button><button class="p" id="nextBtn" type="button">التالي ◂</button></div>
 <div class="zoom" id="zoom" onclick="this.classList.remove('on')"><img id="zoom-img"></div>
 
-<script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g8ar:{src:"ar-g8",simp:"ar-g8-simplify",glob:"AR_G8",extra:["ar-g8-pre","ar-g8-nahw","ar-g8-u1","ar-g8-u1b","ar-g8-u1c","ar-g8-u1d","ar-g8-u2","ar-g8-u2b","ar-g8-u2c","ar-g8-u3","ar-g8-u3b","ar-g8-u3c","ar-g8-bal","ar-g8-bal2","ar-g8-imla","ar-g8-tabeer","ar-g8-tahaddath","ar-g8-qb1","ar-g8-qb1b","ar-g8-qb1c"],grade:"تانية إعدادي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",extra:["ar-g7az-mot","ar-g7az-fonon","ar-g7az-exams","ar-g7az-nahw-e","ar-g7az-nahw-a","ar-g7az-nahw-b","ar-g7az-nahw-c","ar-g7az-nahw-d","ar-g7az-unit1","ar-g7az-unit2","ar-g7az-rev"],grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
+<script>var TRK=new URLSearchParams(location.search).get("t")||"g1";var TRACKS={g1:{src:"ar-g1",simp:"ar-g1-simplify",glob:"AR_G1",grade:"أولى ابتدائي",subj:"اللغة العربية · الترم الأول"},g8ar:{src:"ar-g8",simp:"ar-g8-simplify",glob:"AR_G8",extra:["ar-g8-pre","ar-g8-nahw","ar-g8-u1","ar-g8-u1b","ar-g8-u1c","ar-g8-u1d","ar-g8-u2","ar-g8-u2b","ar-g8-u2c","ar-g8-u3","ar-g8-u3b","ar-g8-u3c","ar-g8-bal","ar-g8-bal2","ar-g8-imla","ar-g8-tabeer","ar-g8-tahaddath","ar-g8-qb1","ar-g8-qb1b","ar-g8-qb1c","ar-g8-qb1d","ar-g8-qb1e","ar-g8-qb1f","ar-g8-qb1g","ar-g8-qb1h","ar-g8-qb1i"],grade:"تانية إعدادي",subj:"اللغة العربية · الترم الأول"},g7az:{src:"ar-g7az",simp:"ar-g7az-simplify",glob:"AR_G7AZ",extra:["ar-g7az-mot","ar-g7az-fonon","ar-g7az-exams","ar-g7az-nahw-e","ar-g7az-nahw-a","ar-g7az-nahw-b","ar-g7az-nahw-c","ar-g7az-nahw-d","ar-g7az-unit1","ar-g7az-unit2","ar-g7az-rev"],grade:"أولى إعدادي أزهر",subj:"اللغة العربية · الترم الأول"}};var TC=TRACKS[TRK]||TRACKS.g1;document.title='اللغة العربية — '+TC.grade+' | منصة مستر يوسف';</script>
 <script>document.write('<script src="assets/data/'+TC.src+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>document.write('<script src="assets/data/'+TC.simp+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');(TC.extra||[]).forEach(function(x){document.write('<script src="assets/data/'+x+'.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');});</script>
 <script>
@@ -1103,7 +1113,7 @@ if(typeof S.review!=='boolean')S.review=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 /* review mode: re-answer a finished lesson without touching S.done, so points and the done mark stay */
 function adone(){if(S.review){if(!S.rdone||typeof S.rdone!=='object')S.rdone={};return S.rdone;}return S.done;}
-function startReview(){S.review=true;S.rdone={};S.view='lesson';S.seg=0;S.sub=0;S.step=0;save();render();}
+function startReview(){S.review=true;S.rdone={};S.view='lesson';S.seg=0;S.sub=sub0(0);S.step=0;save();render();}
 function exitReview(){if(!LES)return;S.review=false;S.rdone={};S.view='map';S.seg=LES.segments.length-1;S.sub=1;S.step=0;save();render();}
 function rvBarHTML(){return S.review?'<div class="rv-bar"><span>وضع المراجعة: بتذاكر الدرس تاني، والنجوم مش بتتضاف مرة كمان.</span><button type="button" id="rvExit">إنهاء المراجعة ✕</button></div>':'';}
 function wireRvExit(m){var x=m.querySelector('#rvExit');if(x)x.onclick=function(){exitReview();};}
@@ -1111,7 +1121,7 @@ if(LES&&new URLSearchParams(location.search).get('review')==='1'){S.review=true;
 function ar(n){return (''+n).replace(/\d/g,function(c){return '٠١٢٣٤٥٦٧٨٩'[c];});}
 document.getElementById('nTitle').textContent=LES?LES.title:(D.course.title+' — '+D.course.track.split('—').pop().trim());
 function totals(){var b=0,c=0;LES.segments.forEach(function(s){b+=s.questions.length;c+=(s.check||[]).length;});return {b:b,c:c};}
-var XCHUNK=2;
+var XCHUNK=1;
 function xChunks(sg){var n=(sg&&sg.explain?sg.explain.length:0);return n?Math.ceil(n/XCHUNK):0;}
 function qItems(i){
   var sg=LES.segments[i],base=0;
@@ -1121,13 +1131,65 @@ function qItems(i){
   sg.questions.forEach(function(q,k){out.push({g:'q',q:q,id:'q'+(base+k)});});
   return out;
 }
-function totUnits(){var x=0,q=0;LES.segments.forEach(function(s){x+=xChunks(s);q+=s.questions.length+(s.check||[]).length;});return{x:x,q:q};}
+/* ==== أجزاء الفيديو: فيديو اختياري لكل جزء، والتقدم لا يُحسب إلا بعد المشاهدة ==== */
+if(!S.vw||typeof S.vw!=='object')S.vw={};
+var CURVIDS=[],MOUNTS=[],YTPL={};
+function ytId(u){if(!u)return '';u=String(u).trim();var m=u.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);if(m)return m[1];return /^[A-Za-z0-9_-]{11}$/.test(u)?u:'';}
+function vidKey(p,v){return 'v_'+p+'_'+v;}
+function sub0(i){var s=LES&&LES.segments[i];return (s&&ytId(s.video))?2:0;}
+var YTS={loading:false,pend:[],failed:false};
+function ytFlush(ok){YTS.failed=!ok;var p=YTS.pend;YTS.pend=[];for(var i=0;i<p.length;i++){try{p[i](ok);}catch(e){}}}
+function ytEnsure(cb){
+  if(window.YT&&window.YT.Player){cb(true);return;}
+  if(YTS.failed){cb(false);return;}
+  YTS.pend.push(cb);
+  if(YTS.loading)return;YTS.loading=true;
+  var t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';t.onerror=function(){ytFlush(false);};
+  document.head.appendChild(t);
+  var prv=window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady=function(){if(prv){try{prv();}catch(e){}}ytFlush(true);};
+  setTimeout(function(){if(!(window.YT&&window.YT.Player))ytFlush(false);},12000);
+}
+function markVid(key){
+  if(!key||S.vw[key])return;S.vw[key]=1;save();
+  var n=document.getElementById('ytn-'+key);if(n){n.textContent='تمت المشاهدة ✓';n.classList.add('ok');}
+  try{burst(Math.round(innerWidth/2),140);}catch(e){}
+  unlockNext();
+}
+function unlockNext(){
+  var nb=document.getElementById('nextBtn');if(!nb||!nb.dataset.vlock)return;
+  for(var i=0;i<CURVIDS.length;i++)if(!S.vw[CURVIDS[i]])return;
+  nb.disabled=false;nb.removeAttribute('data-vlock');
+  var lk=document.querySelector('.lock');if(lk)lk.textContent='';
+}
+window.MMVID={mark:function(k){markVid(k);},watched:function(k){return !!S.vw[k];}};
+function mountVideo(host,vid,key){
+  var watched=!!S.vw[key];
+  host.innerHTML='<div class="yt-box"><div class="yt-ph" id="ytp-'+key+'"></div></div>'+
+    '<div class="yt-note'+(watched?' ok':'')+'" id="ytn-'+key+'">'+(watched?'تمت المشاهدة ✓ — تقدر تعيد الفيديو في أي وقت':'لازم تتفرج على الفيديو للآخر علشان تكمل ▶')+'</div>'+
+    '<div class="yt-fb" id="ytf-'+key+'" hidden>الفيديو مش راضي يشتغل هنا؟ <a href="https://www.youtube.com/watch?v='+vid+'" target="_blank" rel="noopener">افتحه على يوتيوب</a> وبعدها اضغط <button type="button" class="pbtn yt-skip" id="yts-'+key+'">اتفرجت عليه · كمل ◂</button></div>';
+  var sk=document.getElementById('yts-'+key);if(sk)sk.onclick=function(){markVid(key);};
+  ytEnsure(function(ok){
+    if(!ok){var f=document.getElementById('ytf-'+key);if(f)f.hidden=false;return;}
+    try{
+      new YT.Player('ytp-'+key,{videoId:vid,host:'https://www.youtube-nocookie.com',playerVars:{rel:0,modestbranding:1,playsinline:1},
+        events:{onStateChange:function(e){
+          if(e.data===YT.PlayerState.ENDED){markVid(key);}
+          if(e.data===YT.PlayerState.PLAYING){clearInterval(YTPL[key]);YTPL[key]=setInterval(function(){
+            try{var d=e.target.getDuration?e.target.getDuration():0;if(d>0&&e.target.getCurrentTime()/d>=0.9){markVid(key);}var st=e.target.getPlayerState?e.target.getPlayerState():0;if(st!==1&&st!==3){clearInterval(YTPL[key]);}}catch(x){clearInterval(YTPL[key]);}},1000);}
+        },
+        onError:function(){var f=document.getElementById('ytf-'+key);if(f)f.hidden=false;}}});
+    }catch(x){var f2=document.getElementById('ytf-'+key);if(f2)f2.hidden=false;}
+  });
+}
+function totUnits(){var x=0,q=0,v=0;LES.segments.forEach(function(s){x+=xChunks(s);q+=s.questions.length+(s.check||[]).length;if(ytId(s.video))v++;});return{x:x,q:q,v:v};}
 function paint(){
-  var u=totUnits(),tot=u.x+u.q,passed=0;
+  var u=totUnits(),tot=u.x+u.q+u.v,passed=0;
   LES.segments.forEach(function(sg,i){
     var xc=xChunks(sg);
     if(S.seg>i)passed+=xc;
     else if(S.seg===i)passed+=(S.sub===1?xc:Math.min(S.step||0,xc));
+    var vd=ytId(sg.video);if(vd&&S.vw[vidKey(LES.id+'-s'+i,vd)])passed++;
   });
   var doneQ=Math.min(Object.keys(adone()).length,u.q);
   var pc=tot?Math.min(100,Math.round((passed+doneQ)/tot*100)):100;
@@ -1224,7 +1286,7 @@ function renderMap(){
     var inner=done?'✓':(unlocked?ar(i+1):'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>');
     h+='<div class="node" style="transform:translateX('+offs[i%4]+'px)">';
     h+='<button class="circle '+cls+'" data-node="'+i+'" '+(unlocked?'':'disabled')+'>'+inner+'</button>';
-    h+='<div class="nlabel">'+sg.label.split(':')[0]+'</div>';
+    h+='<div class="nlabel">'+(ytId(sg.video)?'🎬 ':'')+sg.label.split(':')[0]+'</div>';
     h+='</div>';
     if(i<LES.segments.length-1)h+='<div class="linkline"></div>';
   });
@@ -1242,7 +1304,7 @@ function renderMap(){
     dood('scroll','top:790px;left:16px;opacity:.5','var(--ink)',56));
   paint();
   m.querySelectorAll('[data-node]').forEach(function(b){b.onclick=function(){
-    S.view='lesson';S.seg=+b.dataset.node;S.sub=0;save();render();
+    S.view='lesson';S.seg=+b.dataset.node;S.sub=sub0(S.seg);S.step=0;save();render();
   };});
   if(!S.seenIntro){
     var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>الدرس ده شرح مبسط بالقصص والأمثلة.<br>ركّز وجاوب الأسئلة علشان تثبت المعلومة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>',0,null,'map');
@@ -1252,7 +1314,7 @@ function renderMap(){
 }
 function explainHTML(list){
   return list.map(function(e,ix){
-    if(e.v){var vid=String(e.v||'').replace(/[^A-Za-z0-9_-]/g,'');return '<div class="card bk"><div style="position:relative;padding-top:56.25%;border-radius:10px;overflow:hidden">'+'<iframe src="https://www.youtube-nocookie.com/embed/'+vid+'" title="فيديو الشرح" loading="lazy" allow="accelerometer;encrypted-media;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe></div>'+(e.cap?'<div class="cap" style="text-align:center">'+e.cap+'</div>':'')+'</div>';}
+    if(e.v){var vid=String(e.v||'').replace(/[^A-Za-z0-9_-]/g,'');if(!vid)return '';var vk=vidKey(LES.id+'-x'+S.seg+'-'+S.step,vid);CURVIDS.push(vk);MOUNTS.push({hid:'ytm-'+vk,vid:vid,key:vk});return '<div class="card bk"><div id="ytm-'+vk+'"></div></div>'+(e.cap?'<div class="cap" style="text-align:center">'+e.cap+'</div>':'')+'</div>';}
     if(e.b){var sx=(window.AR_SIMPLIFY||{})[e.b];return '<div class="card bk simp-c"'+(sx?' data-simp="'+e.b+'"':'')+'>'+D.B[e.b]+'</div>';}
     if(e.illus){var il=ILLUST[e.illus];return '<div class="illus">'+(il?il.svg:'')+(il&&il.cap?'<div class="il-cap">'+il.cap+'</div>':'')+'</div>';}
     return '<div class="frame'+(ix%2?' alt':'')+'"><img loading="lazy" src="'+IMG+e.img+'.jpg" onclick="zoom(this.src)" alt="من الدرس">'+(e.cap?'<div class="cap">'+e.cap+'</div>':'')+'</div>';
@@ -1349,6 +1411,9 @@ function renderLesson(keep){
     return;
   }
   var sg=LES.segments[S.seg];
+  var segVid=ytId(sg.video),vKey=segVid?vidKey(LES.id+'-s'+S.seg,segVid):'';
+  if(S.sub===2&&!segVid){S.sub=0;S.step=0;}
+  if(segVid&&!S.vw[vKey]&&S.sub===0&&(S.step||0)===0&&Object.keys(adone()).length===0){S.sub=2;save();}
   var chunks=xChunks(sg);
   var items=qItems(S.seg);
   if(S.sub===0&&chunks===0&&items.length){S.sub=1;S.step=0;save();render(keep);return;}
@@ -1357,11 +1422,15 @@ function renderLesson(keep){
   if(S.step>maxStep)S.step=Math.max(0,maxStep);
   var letters=['أ','ب','ج','د'];
   var h=rvBarHTML()+'<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span><span class="sl-t">'+sg.label+'</span></div>';
-  h+='<div class="seg-meta"><span>'+(S.sub===0?'الشرح':'الأسئلة')+'</span>';
+  h+='<div class="seg-meta"><span>'+(S.sub===2?'الفيديو':(S.sub===0?'الشرح':'الأسئلة'))+'</span>';
   if(S.sub===0&&chunks>1)h+='<span>صفحة '+ar(S.step+1)+' من '+ar(chunks)+'</span>';
   if(S.sub===1&&items.length>1)h+='<span>سؤال '+ar(S.step+1)+' من '+ar(items.length)+'</span>';
   h+='<span class="pc" id="pcTxt"></span></div>';
-  if(S.sub===0){
+  CURVIDS=[];MOUNTS=[];
+  if(S.sub===2){
+    h+='<div class="card bk"><div class="mh">فيديو الجزء ده</div><div id="ytm-'+vKey+'"></div></div>';
+    CURVIDS.push(vKey);MOUNTS.push({hid:'ytm-'+vKey,vid:segVid,key:vKey});
+  }else if(S.sub===0){
     h+=explainHTML(sg.explain.slice(S.step*XCHUNK,S.step*XCHUNK+XCHUNK));
     if(S.step<chunks-1)h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-encouraging.png" alt="مستر يوسف"><span>'+mmBubble('pointing','encourage','x'+LES.id+'-'+S.seg+'-'+S.step)+'</span></div>';
     else if(items.length)h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-pointup.png" alt="مستر يوسف"><span>خلصت شرح الجزء ده.. يلا نجاوب على الأسئلة</span></div>';
@@ -1378,16 +1447,19 @@ function renderLesson(keep){
       h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-thumbsup.png" alt="مستر يوسف"><span>الجزء ده شرح بس، مفيهوش أسئلة.</span></div>';
     }
   }
-  var isLast=(S.seg===LES.segments.length-1&&S.sub===1)||(S.seg===LES.segments.length-1&&S.sub===0&&!items.length);
-  var lastStep=S.step>=((S.sub===0?chunks:items.length)-1);
+  var isLast=(S.seg===LES.segments.length-1&&S.sub===1)||(S.seg===LES.segments.length-1&&S.sub===0&&!items.length)||(S.seg===LES.segments.length-1&&S.sub===2&&!items.length&&chunks===0);
+  var lastStep=(S.sub===2)?true:S.step>=((S.sub===0?chunks:items.length)-1);
   var needAnswer=(S.sub===1&&items[S.step]&&!adone()[items[S.step].id]);
-  h+='<div class="lock">'+(needAnswer?'جاوب على السؤال ده الأول علشان تكمل':'')+'</div>';
-  m.innerHTML=h;starify(m);wireRvExit(m);paint();paintScore(false);if(!keep)window.scrollTo(0,0);setupSimp(m);
+  var needVid=CURVIDS.some(function(k){return !S.vw[k];});
+  h+='<div class="lock">'+(needAnswer?'جاوب على السؤال ده الأول علشان تكمل':(needVid?'اتفرج على الفيديو للآخر الأول علشان تكمل':''))+'</div>';
+  m.innerHTML=h;starify(m);wireRvExit(m);paint();paintScore(false);if(!keep)window.scrollTo(0,0);setupSimp(m);MOUNTS.forEach(function(mt){var hh=document.getElementById(mt.hid);if(hh)mountVideo(hh,mt.vid,mt.key);});
   var mb=document.getElementById('mbar');mb.hidden=false;
   var nb=document.getElementById('nextBtn');
-  if(S.sub===0)nb.innerHTML=lastStep?(items.length?'انتقل للأسئلة ◂':(isLast?'إنهاء الدرس':'الجزء التالي ◂')):'التالي ◂';
+  if(S.sub===2)nb.innerHTML=chunks?'ابدأ الشرح ◂':(items.length?'انتقل للأسئلة ◂':(isLast?'إنهاء الدرس':'الجزء التالي ◂'));
+  else if(S.sub===0)nb.innerHTML=lastStep?(items.length?'انتقل للأسئلة ◂':(isLast?'إنهاء الدرس':'الجزء التالي ◂')):'التالي ◂';
   else nb.innerHTML=lastStep?(isLast?'إنهاء الدرس':'الجزء التالي ◂'):'السؤال التالي ◂';
-  nb.disabled=!!needAnswer;
+  nb.disabled=!!(needAnswer||needVid);
+  if(needVid)nb.dataset.vlock='1';else if(nb.dataset)delete nb.dataset.vlock;
   m.querySelectorAll('[data-mq]').forEach(function(b){b.onclick=function(ev){
     var okNow=(+b.dataset.i)===(+b.dataset.a);
     var sy=window.scrollY;adone()[b.dataset.mq]={picked:+b.dataset.i};save();render(true);window.scrollTo(0,sy);paintScore(true);
@@ -1407,17 +1479,25 @@ function renderLesson(keep){
   };});
   document.getElementById('prevBtn').onclick=function(){
     if(S.step>0){S.step--;}
-    else if(S.sub===1){S.sub=0;S.step=Math.max(0,chunks-1);}
+    else if(S.sub===1){S.sub=(chunks>0?0:(segVid?2:0));S.step=Math.max(0,chunks-1);}
+    else if(S.sub===0&&segVid){S.sub=2;S.step=0;}
     else{S.view='map';}
     save();render();
   };
   document.getElementById('nextBtn').onclick=function(){
     var nb=this;if(nb.disabled)return;
+    if(S.sub===2){
+      if(chunks>0){S.sub=0;S.step=0;save();render();return;}
+      if(items.length){S.sub=1;S.step=0;save();render();return;}
+      var f0=S.seg;S.seg++;S.sub=(S.seg<LES.segments.length)?sub0(S.seg):0;S.step=0;save();
+      showPop('<div class="pop-h">'+ROBOT+'<span>'+cheerFor(f0)+'</span></div>',1500,function(){render();});
+      return;
+    }
     if(S.sub===0&&S.step<chunks-1){S.step++;save();render();return;}
     if(S.sub===0&&items.length){S.sub=1;S.step=0;save();render();return;}
     if(S.sub===1&&S.step<items.length-1){S.step++;save();render();return;}
     var finishedSeg=S.seg;
-    S.seg++;S.sub=0;S.step=0;save();
+    S.seg++;S.sub=(S.seg<LES.segments.length)?sub0(S.seg):0;S.step=0;save();
     showPop('<div class="pop-h">'+ROBOT+'<span>'+cheerFor(finishedSeg)+'</span></div>',1500,function(){render();});
   };
 }
