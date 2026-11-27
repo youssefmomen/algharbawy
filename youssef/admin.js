@@ -235,7 +235,9 @@ function renderEditor(){
  L.segments.forEach(function(sg,si){
   h+='<div class="adm-card" data-seg="'+si+'">'
    +'<div class="adm-fld"><label>الجزء '+(si+1)+': اسم الجزء</label>'
-   +'<input type="text" data-seglabel="'+si+'" value="'+esc(segLabel(L,sg,si))+'" '+(canEdit()?'':'disabled')+'></div>';
+   +'<input type="text" data-seglabel="'+si+'" value="'+esc(segLabel(L,sg,si))+'" '+(canEdit()?'':'disabled')+'></div>'
+  +'<div class="adm-fld"><label>فيديو الجزء (رابط يوتيوب أو كود الفيديو — سيبه فاضي لو مفيش)</label>'
+   +'<input type="text" data-segvideo="'+si+'" dir="ltr" placeholder="https://youtu.be/..." value="'+esc(segVideo(L,sg,si))+'" '+(canEdit()?'':'disabled')+'></div>';
   /* عناصر الشرح */
   h+='<div class="adm-kv" style="margin:6px 0">الشرح (نصوص وصور وفيديوهات):</div>';
   var ents=L.cms?segEntriesCms(sg):segEntriesRepo(L.obj.id,sg,si);
@@ -288,8 +290,18 @@ function renderEditor(){
    else{var sp=segPatch(LL.obj.id,si,LL.segments[si].label);sp.label=v;}
    markDirty();};
  });
+ document.querySelectorAll('[data-segvideo]').forEach(function(inp){
+  inp.onchange=function(){var si=+inp.dataset.segvideo,id=normVideo(inp.value);
+   if(id===null){alert('الرابط ده مش رابط يوتيوب صحيح. حط رابط الفيديو كامل أو كوده.');inp.value=segVideo(editorLesson(),editorLesson().segments[si],si);return;}
+   var LL=editorLesson();
+   if(LL.cms){if(id)LL.segments[si].video=id;else delete LL.segments[si].video;}
+   else{var sp=segPatch(LL.obj.id,si,LL.segments[si].label);sp.video=id;}
+   inp.value=id;markDirty();};
+ });
 }
 function segLabel(L,sg,si){if(L.cms)return sg.label||'';var sp=ov.segs[L.obj.id+'/'+si];return (sp&&sp.label)||sg.label||'';}
+function segVideo(L,sg,si){if(L.cms)return sg.video||'';var sp=ov.segs[L.obj.id+'/'+si];if(sp&&Object.prototype.hasOwnProperty.call(sp,'video'))return sp.video;return sg.video||'';}
+function normVideo(v){v=(v||'').trim();if(!v)return '';var id=ytId(v);if(id)return id;if(/^[A-Za-z0-9_-]{6,15}$/.test(v))return v;return null;}
 $('editorBox').addEventListener('click',function(e){
  var b=e.target.closest('[data-act]');if(!b)return;
  var act=b.dataset.act,si=+b.dataset.seg,ix=+b.dataset.ix;
