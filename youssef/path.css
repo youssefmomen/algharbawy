@@ -42,3 +42,15 @@
   .pf-card h2{font-size:16px}
   .pf-card .go{padding:7px 12px;font-size:12px}
 }
+
+/* هيرو مضغوط لصفحات المسار على الموبايل: تميمة وفقاعة بعرض طبيعي بدون فراغ */
+@media (max-width:700px){
+  body.pf-page .hero.th{padding:16px 0 8px}
+  body.pf-page .th .wrap{display:block;padding-top:0;padding-bottom:0}
+  body.pf-page .th h1{font-size:24px;margin-bottom:4px}
+  body.pf-page .th .crumbs{margin-bottom:4px}
+  body.pf-page .th .char{display:flex;align-items:center;gap:10px;margin-top:6px}
+  body.pf-page .th .char .bubble{position:static;max-width:none;flex:1;font-size:12.5px;padding:8px 12px;margin:0}
+  body.pf-page .th .char .bubble::before,body.pf-page .th .char .bubble::after{display:none}
+  body.pf-page .th .char img{height:92px;width:auto;flex:none;margin:0}
+}
