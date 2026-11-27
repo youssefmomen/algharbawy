@@ -114,6 +114,7 @@ function apply(D,ov){
     if(!sg2){missed.push(sk);continue;}
     if(sp2.hidden){L2.segments=L2.segments.filter(function(x){return x!==sg2;});continue;}
     if(sp2.label)sg2.label=sp2.label;
+    if(Object.prototype.hasOwnProperty.call(sp2,'video')){if(sp2.video)sg2.video=sp2.video;else delete sg2.video;}
     if(Array.isArray(sg2.explain)&&Array.isArray(sp2.hideEntries)&&sp2.hideEntries.length)
       sg2.explain=sg2.explain.filter(function(e){return sp2.hideEntries.indexOf(entryKey(e))<0;});
     (sp2.add||[]).forEach(function(ad){
