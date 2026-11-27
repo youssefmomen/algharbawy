@@ -1282,7 +1282,9 @@ function segDone(i){
 function renderMap(){
   document.getElementById('mbar').hidden=true;
   var m=document.getElementById('main');
-  var h=rvBarHTML()+'<div class="map">';
+  var h=rvBarHTML();
+  if(TRK==='g8ar')h+='<a class="duo-cta" href="duo.html?t=g8&lesson='+LES.id+'"><span class="owl">🦉</span><span>جرّب وضع دوولينجو: الدرس كله أسئلة وتصحيح فوري</span><span class="go">ابدأ</span></a>';
+  h+='<div class="map">';
   var offs=[0,-34,0,34];
   LES.segments.forEach(function(sg,i){
     var done=segDone(i),unlocked=(i===0)||segDone(i-1);
