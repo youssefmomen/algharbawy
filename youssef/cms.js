@@ -120,6 +120,7 @@ function apply(D,ov){
     (sp2.add||[]).forEach(function(ad){
       sg2.explain=sg2.explain||[];
       if(ad.type==='video'&&ad.vid)sg2.explain.push({v:ad.vid,cap:ad.cap||''});
+      else if(ad.type==='image'&&ad.src)sg2.explain.push({img:ad.src});
       else if(ad.type==='block'&&ad.html){var bid='cmsb_'+hash(ad.html);D.B[bid]=ad.html;sg2.explain.push({b:bid});}
     });
     if(Array.isArray(sg2.explain)&&Array.isArray(sp2.entryOrder)&&sp2.entryOrder.length){
@@ -175,6 +176,92 @@ function ready(track){
   return _cache[track];
 }
 
-window.MMCMS={ready:ready,apply:apply,hash:hash,entryKey:entryKey};
+/* ---------- نصوص الموقع العامة (وثيقة cmsLive/site) ----------
+   تُطبَّق على أي صفحة تحمّل cms.js (الرئيسية، صفحة الصف، الدرس):
+   texts[{sel,text}] خانات نصية بمحددات CSS، replace[{from,to}] استبدال نص في كل الصفحة
+   (بما فيه النصوص التي تولّدها السكربتات مثل الفقاعات، عبر مراقب تغييرات)،
+   imgs[{sel,src}] تغيير صور، customCss تنسيقات مخصصة. */
+function applySite(ov){
+  if(!ov||typeof ov!=='object'||typeof document==='undefined'||!document.documentElement)return;
+  var texts=Array.isArray(ov.texts)?ov.texts:[];
+  var imgs=Array.isArray(ov.imgs)?ov.imgs:[];
+  var pairs=(Array.isArray(ov.replace)?ov.replace:[]).filter(function(r){return r&&r.from;});
+  var css=typeof ov.customCss==='string'?ov.customCss:'';
+  if(css&&!document.getElementById('cms-css')){
+    var st=document.createElement('style');st.id='cms-css';st.textContent=css;
+    (document.head||document.documentElement).appendChild(st);
+  }
+  function slots(){
+    for(var i=0;i<texts.length;i++){var t=texts[i];if(!t||!t.sel||t.text==null)continue;
+      try{var els=document.querySelectorAll(t.sel);
+        for(var j=0;j<els.length;j++)if(els[j].textContent!==t.text)els[j].textContent=t.text;
+      }catch(e){}}
+    for(var k=0;k<imgs.length;k++){var im=imgs[k];if(!im||!im.sel||!im.src)continue;
+      try{var ims=document.querySelectorAll(im.sel);
+        for(var m=0;m<ims.length;m++)if(ims[m].getAttribute('src')!==im.src)ims[m].setAttribute('src',im.src);
+      }catch(e){}}
+  }
+  var onceGuard=[]; /* حماية من الاستبدال ذاتي التضمين (الجديد يحوي القديم) */
+  function sweep(root){
+    if(!pairs.length||!root)return;
+    var w,arr=[],n;
+    try{w=document.createTreeWalker(root,4,null);}catch(e){return;}
+    while((n=w.nextNode()))arr.push(n);
+    for(var i=0;i<arr.length;i++){
+      var nd=arr[i],v=nd.nodeValue,nv=v;
+      for(var p=0;p<pairs.length;p++){var r=pairs[p];
+        if(nv.indexOf(r.from)<0)continue;
+        if(r.to&&r.to.indexOf(r.from)>-1){
+          onceGuard[p]=onceGuard[p]||[];
+          if(onceGuard[p].indexOf(nd)>-1)continue;
+          onceGuard[p].push(nd);
+        }
+        nv=nv.split(r.from).join(r.to==null?'':r.to);
+      }
+      if(nv!==v)nd.nodeValue=nv;
+    }
+  }
+  function boot(){slots();if(document.body)sweep(document.body);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  if(!pairs.length&&!texts.length&&!imgs.length)return;
+  var pend=false;
+  try{
+    new MutationObserver(function(muts){
+      if(pend)return;pend=true;
+      setTimeout(function(){
+        pend=false;
+        try{slots();}catch(e){}
+        try{
+          for(var i=0;i<muts.length;i++){var m=muts[i];
+            if(m.type==='characterData'&&m.target&&m.target.parentNode)sweep(m.target.parentNode);
+            for(var j=0;j<m.addedNodes.length;j++){var nd=m.addedNodes[j];
+              if(nd.nodeType===1)sweep(nd);
+              else if(nd.nodeType===3&&nd.parentNode)sweep(nd.parentNode);
+            }
+          }
+        }catch(e){}
+      },40);
+    }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+  }catch(e){}
+}
+var _siteP=null;
+function siteReady(){
+  if(_siteP)return _siteP;
+  _siteP=ensureFb().then(function(ok){
+    if(!ok)return null;
+    var coll='cmsLive',prev=false;
+    try{prev=new URLSearchParams(location.search).get('cmspreview')==='1';}catch(e){}
+    if(prev)coll='cmsDraft';
+    var authP=Promise.resolve();
+    if(prev)authP=(firebase.auth?Promise.resolve():one(AUTH_SDK)).then(function(){return new Promise(function(res){var un=firebase.auth().onAuthStateChanged(function(){un();res();});});}).catch(function(){});
+    return authP.then(function(){return firebase.firestore().collection(coll).doc('site').get();})
+      .then(function(doc){var ov=doc.exists?(doc.data()||null):null;if(ov){window.MMCMS_SITE=ov;applySite(ov);}return ov;})
+      .catch(function(){return null;});
+  }).catch(function(){return null;});
+  return _siteP;
+}
+if(typeof window!=='undefined'&&typeof document!=='undefined')siteReady();
+
+window.MMCMS={ready:ready,apply:apply,applySite:applySite,siteReady:siteReady,hash:hash,entryKey:entryKey};
 if(typeof module!=='undefined'&&module.exports)module.exports={apply:apply,hash:hash,entryKey:entryKey};
 })();
