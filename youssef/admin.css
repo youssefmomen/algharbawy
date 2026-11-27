@@ -61,3 +61,11 @@ body.adm{background:var(--bg,#fffdf2)}
 .adm-qopt input[type=radio]{width:20px;height:20px;accent-color:var(--green)}
 .adm-load{text-align:center;padding:40px;font-weight:800;color:#5b6b77}
 @media (min-width:640px){.adm-head h1{font-size:26px}}
+
+/* نصوص الموقع */
+.adm-hint{display:block;color:#8a7f66;font-size:12px;margin-top:3px}
+.adm-rep{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.adm-rep input{flex:1;min-width:0}
+.adm-imgprev{max-width:72px;max-height:72px;border-radius:10px;border:1px solid #e3dccb;background:#fff}
+.adm-rep .adm-btn{flex:none;margin:0}
+#siteCss{width:100%;font-family:monospace;font-size:13px;padding:10px;border:1px solid #d8cfbc;border-radius:10px;background:#fffdf7;box-sizing:border-box}
