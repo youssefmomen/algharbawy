@@ -23,6 +23,8 @@
     </div>
     <div class="adm-tabs" id="tabs">
       <button type="button" data-tab="content" class="on">المحتوى</button>
+      <button type="button" data-tab="texts" id="tabTexts" hidden>نصوص الموقع</button>
+      <button type="button" data-tab="history" id="tabHistory" hidden>سجل النشر</button>
       <button type="button" data-tab="team" id="tabTeam" hidden>الفريق</button>
     </div>
 
@@ -51,6 +53,7 @@
             <label><input type="checkbox" id="pView" checked disabled> عرض</label>
             <label><input type="checkbox" id="pEdit"> تعديل (مسودة)</label>
             <label><input type="checkbox" id="pPublish"> نشر للطلاب</label>
+            <label><input type="checkbox" id="pTexts"> نصوص الموقع (مع التعديل)</label>
           </div>
         </div>
         <div class="adm-msg" id="tMsg" role="alert"></div>
@@ -58,6 +61,30 @@
       </div>
     </div>
   </div>
+
+    <!-- نصوص الموقع -->
+    <div id="panelTexts" hidden>
+      <div class="adm-note">هذه التعديلات تخص الصفحة الرئيسية وصفحات الموقع العامة، ولا تظهر للطلاب إلا بعد «نشر للطلاب». لإرجاع نص إلى أصله اترك خانته فارغة.</div>
+      <div class="adm-sect"><span class="n">١</span>نصوص جاهزة للتعديل</div>
+      <div id="siteSlots"></div>
+      <div class="adm-sect"><span class="n">٢</span>استبدال أي نص في الموقع</div>
+      <div class="adm-note">اكتب النص كما يظهر حاليًا والنص الجديد، وسيُستبدل في كل الصفحات تلقائيًا، حتى النصوص التي تنشئها السكربتات مثل فقاعات المستر.</div>
+      <div id="siteReplace"></div>
+      <button class="adm-btn" id="repAdd" type="button">+ إضافة استبدال</button>
+      <div class="adm-sect"><span class="n">٣</span>تغيير الصور</div>
+      <div class="adm-note">ضع رابط صورة من الإنترنت (يمكن رفعها على موقع مثل postimages.org)، أو ارفع ملفًا صغيرًا (حتى ٧٠٠ كيلوبايت).</div>
+      <div id="siteImgs"></div>
+      <div class="adm-sect"><span class="n">٤</span>تنسيقات مخصصة (CSS)</div>
+      <div class="adm-note">للمتقدمين: أي تنسيق هنا يُطبَّق على كل صفحات الموقع. اتركه فارغًا إن لم تحتاجه.</div>
+      <div class="adm-card"><textarea id="siteCss" dir="ltr" rows="4" placeholder=".hero h1 { color: #c0392b; }"></textarea></div>
+      <div class="adm-msg" id="siteMsg" role="alert"></div>
+    </div>
+
+    <!-- سجل النشر -->
+    <div id="panelHistory" hidden>
+      <div class="adm-note">تُحفظ آخر ١٠ نسخ منشورة من كل قسم تلقائيًا. «استرجاع» يعيد النسخة إلى المسودة، ثم تنشرها من التبويب المناسب.</div>
+      <div id="historyList"></div>
+    </div>
 
   <div class="adm-load" id="loading">جاري التحميل…</div>
 </div>
