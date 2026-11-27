@@ -1,0 +1,43 @@
+/* بطاقات الإنفوجرافيك داخل صفحات الشرح */
+.ig{border:3px solid var(--ink);border-radius:16px;padding:14px;margin:14px 0;box-shadow:4px 4px 0 rgba(0,0,0,.14);background:#fff}
+.ig .ig-cap{display:inline-block;font-weight:800;font-size:13.5px;border:2.5px solid var(--ink);border-radius:999px;padding:2px 12px;margin-bottom:8px;background:var(--yellow);box-shadow:2px 2px 0 rgba(0,0,0,.16)}
+.ig p{margin:6px 0;line-height:2.05;font-size:16.5px}
+/* بطاقة التعريف */
+.ig-def{text-align:center;background:linear-gradient(180deg,#fff,#fffdf6)}
+.ig-def .ig-term{display:inline-block;font-size:23px;font-weight:900;background:var(--blue);color:#fff;border:3px solid var(--ink);border-radius:12px;padding:5px 22px;box-shadow:3px 3px 0 rgba(0,0,0,.2);margin:4px 0 8px}
+.ig-def.ig-mint .ig-term{background:#1a7f4b}
+/* مثال: جملة + حكم */
+.ig-ex{background:#fffdf6}
+.ig-q{background:#fff;border:2.5px solid var(--ink);border-radius:14px;padding:8px 14px;font-size:18.5px;line-height:2}
+.ig-verdict{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-weight:800;font-size:15.5px}
+.ig-verdict .tag{border:2.5px solid var(--ink);border-radius:999px;padding:3px 14px;box-shadow:2px 2px 0 rgba(0,0,0,.18);white-space:nowrap}
+.ig-pos .tag{background:var(--mint)}
+.ig-neg .tag{background:var(--pink)}
+.ig-sun .tag{background:var(--peach)}
+.ig-dark .tag{background:#d9dbe7}
+/* عمودان للمقارنة */
+.ig-vs{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+@media(min-width:640px){.ig-vs{grid-template-columns:1fr 1fr}}
+.ig-col{border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:4px 4px 0 rgba(0,0,0,.14);background:#fff}
+.ig-col .h{background:var(--blue);color:#fff;font-weight:900;padding:9px 10px;text-align:center;font-size:17px}
+.ig-col.b .h{background:#8a5aa8}
+.ig-col .bd{padding:10px 12px}
+.ig-col .bd p{margin:4px 0}
+/* صفوف تعبير ← مباشر/ضمني */
+.ig-pair{display:grid;gap:8px;margin-top:10px}
+.ig-chip{display:block;border:2.5px solid var(--ink);border-radius:12px;padding:7px 12px;font-size:15px;line-height:1.95;background:var(--mint)}
+.ig-chip.imp{background:var(--pink)}
+/* خطوات مرقّمة */
+.ig-steps{display:grid;gap:10px;margin:12px 0}
+.ig-step{display:flex;gap:10px;align-items:flex-start;background:#fff;border:2.5px solid var(--ink);border-radius:14px;padding:10px 12px;box-shadow:3px 3px 0 rgba(0,0,0,.12)}
+.ig-num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--yellow);border:2.5px solid var(--ink);display:grid;place-items:center;font-weight:900;font-size:16px;box-shadow:2px 2px 0 rgba(0,0,0,.2)}
+.ig-step p{margin:0;line-height:2}
+/* سحابة شرائح */
+.ig-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.ig-chips span{border:2.5px solid var(--ink);background:var(--peach);border-radius:999px;padding:4px 14px;font-weight:800;font-size:14.5px;box-shadow:2px 2px 0 rgba(0,0,0,.14)}
+.ig-chips span:nth-child(3n+2){background:var(--mint)}
+.ig-chips span:nth-child(3n){background:var(--pink)}
+/* نموذج تطبيقي */
+.ig-model{background:var(--peach)}
+.ig-model ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.ig-model li{background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 12px;font-size:18px;line-height:2}
