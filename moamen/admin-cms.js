@@ -20,7 +20,7 @@ function ytId(u){u=String(u||'').trim();var m=u.match(/(?:youtu\.be\/|[?&]v=|emb
 var redirErr=null;
 function authReady(fauth){return new Promise(function(res){var done=false;var un=fauth.onAuthStateChanged(function(u){if(done)return;done=true;un();res(u);});setTimeout(function(){if(!done){done=true;try{un();}catch(e){}res(fauth.currentUser);}},8000);});}
 function deny(fauth){
-  app.innerHTML='<div class="deny"><h2>الصفحة دي خاصة بإدارة الموقع</h2><p>حسابك ('+esc(user.email||'')+') مش مسجل كمدير ولا مساعد. لو ده حساب المدرّس، صاحب الموقع يضيفه من لوحة المعلمين الأول.</p><button class="b" id="out">تسجيل خروج</button></div>';
+  app.innerHTML='<div class="deny"><h2>الصفحة دي خاصة بإدارة الموقع</h2><p>حسابك ('+esc(user.email||'')+') مش مسجل كمدير ولا مساعد. لو انت صاحب الموقع: اضغط «تسجيل خروج» ثم ادخل بزر «الدخول بحساب جوجل» بإيميلك الأساسي. ولو ده حساب المدرّس، صاحب الموقع يضيفه من لوحة المعلمين الأول.</p><button class="b" id="out">تسجيل خروج</button></div>';
   $('out').onclick=function(){fauth.signOut().then(function(){location.reload();});};
 }
 function boot(){
