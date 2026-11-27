@@ -9,6 +9,7 @@ var TRACKS={
  g7az:{name:'أولى إعدادي أزهر',glob:'AR_G7AZ',files:['ar-g7az','ar-g7az-simplify','ar-g7az-mot','ar-g7az-fonon','ar-g7az-exams','ar-g7az-nahw-e','ar-g7az-nahw-a','ar-g7az-nahw-b','ar-g7az-nahw-c','ar-g7az-nahw-d','ar-g7az-unit1','ar-g7az-unit2','ar-g7az-rev']}
 };
 var auth,db,user=null,role=null,track=null,PD=null,ov=null,dirty=false,view={kind:'tree',open:{},lesson:null};
+var siteOv=null,siteDirty=false,curTab='content';
 var $=function(id){return document.getElementById(id);};
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function stripTags(h){var d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim();}
@@ -25,16 +26,17 @@ auth=firebase.auth();db=firebase.firestore();
 function showGate(msg){$('loading').hidden=true;$('app').hidden=true;$('saveBar').hidden=true;$('gate').hidden=false;if(msg){$('gMsg').textContent=msg;$('gMsg').className='adm-msg';}}
 function resolveRole(u){
  return db.collection('admins').doc(u.uid).get().then(function(d){
-  if(d.exists)return {owner:true,perms:{view:true,edit:true,publish:true}};
+  if(d.exists)return {owner:true,perms:{view:true,edit:true,publish:true,texts:true}};
   return db.collection('staff').doc(u.uid).get().then(function(s){
-   if(s.exists){var p=(s.data()&&s.data().perms)||{};return {owner:false,name:(s.data()||{}).name||'',perms:{view:true,edit:!!p.edit,publish:!!p.publish}};}
+   if(s.exists){var p=(s.data()&&s.data().perms)||{};return {owner:false,name:(s.data()||{}).name||'',perms:{view:true,edit:!!p.edit,publish:!!p.publish,texts:!!p.texts}};}
    /* مالك عن طريق config/admin: نجرب قراءة قائمة الفريق (مسموحة للمالك فقط) */
-   return db.collection('staff').limit(1).get().then(function(){return {owner:true,perms:{view:true,edit:true,publish:true}};}).catch(function(){return null;});
+   return db.collection('staff').limit(1).get().then(function(){return {owner:true,perms:{view:true,edit:true,publish:true,texts:true}};}).catch(function(){return null;});
   });
  }).catch(function(){return null;});
 }
 function canEdit(){return role&&(role.owner||role.perms.edit);}
 function canPublish(){return role&&(role.owner||role.perms.publish);}
+function canTexts(){return role&&(role.owner||role.perms.texts);}
 auth.onAuthStateChanged(function(u){
  if(!u){user=null;role=null;showGate();return;}
  user=u;$('loading').hidden=false;
@@ -46,6 +48,8 @@ auth.onAuthStateChanged(function(u){
   $('whoRole').textContent=r.owner?'مالك':'مساعد';
   $('whoRole').className='adm-badge'+(r.owner?' owner':'');
   $('tabTeam').hidden=!r.owner;
+  $('tabTexts').hidden=!canTexts();
+  $('tabHistory').hidden=!canPublish();
   $('btnSave').disabled=!canEdit();$('btnPublish').disabled=!canPublish();
   if(!canEdit())$('draftInfo').hidden=false,$('draftInfo').textContent='صلاحيتك «عرض فقط»: تقدر تشوف كل حاجة من غير ما تغيّر.';
   if(!track)pickTrack('g1');
@@ -87,8 +91,8 @@ function pickTrack(t){
  var ch=$('trackChips');ch.innerHTML='';
  Object.keys(TRACKS).forEach(function(k){var b=document.createElement('button');b.textContent=TRACKS[k].name;if(k===t)b.className='on';
   b.onclick=function(){if(dirty&&!confirm('في تعديلات مش محفوظة في المسودة. تكمل وتنساها؟'))return;pickTrack(k);};ch.appendChild(b);});
- $('treeBox').innerHTML='<div class="adm-load">جاري تحميل بيانات الصف…</div>';$('editorBox').innerHTML='';
- loadTrack(t).then(function(){render();}).catch(function(e){$('treeBox').innerHTML='<div class="adm-note">مقدرناش نحمّل البيانات: '+esc(errMsg(e))+'</div>';});
+ $('treeBox').innerHTML='<div class="adm-load">جارٍ تحميل بيانات الصف…</div>';$('editorBox').innerHTML='';
+ loadTrack(t).then(function(){render();}).catch(function(e){$('treeBox').innerHTML='<div class="adm-note">تعذّر تحميل البيانات: '+esc(errMsg(e))+'</div>';});
 }
 
 /* ---------- الحالة الفعالة (ثابت + تعديلات) ---------- */
@@ -115,10 +119,12 @@ function qPatch(lessonId,segIx,segLabel,grp,ix,qText){var k=qKey(lessonId,segIx,
  if(!ov.questions[k])ov.questions[k]={lesson:lessonId,seg:segIx,segFp:hash(segLabel),grp:grp,ix:ix,fp:hash(qText)};
  return ov.questions[k];}
 function markDirty(){dirty=true;paintBar();}
+function markSiteDirty(){siteDirty=true;paintBar();}
 function paintBar(){
  if(!role)return;
  $('saveBar').hidden=false;
- $('btnSave').textContent=dirty?'حفظ مسودة ●':'حفظ مسودة';
+ var d=curTab==='texts'?siteDirty:dirty;
+ $('btnSave').textContent=d?'حفظ مسودة ●':'حفظ مسودة';
  var di=$('draftInfo');
  if(!canEdit())return;
  di.hidden=false;
@@ -155,7 +161,7 @@ function render(){
    h+='</div>';
   }
  });
- $('treeBox').innerHTML=h||'<div class="adm-empty">مفيش محتوى في الصف ده لسه.</div>';
+ $('treeBox').innerHTML=h||'<div class="adm-empty">لا يوجد محتوى في هذا الصف بعد.</div>';
  $('editorBox').innerHTML='';
 }
 $('treeBox').addEventListener('click',function(e){
@@ -242,7 +248,7 @@ function renderEditor(){
   h+='<div class="adm-card" data-seg="'+si+'">'
    +'<div class="adm-fld"><label>الجزء '+(si+1)+': اسم الجزء</label>'
    +'<input type="text" data-seglabel="'+si+'" value="'+esc(segLabel(L,sg,si))+'" '+(canEdit()?'':'disabled')+'></div>'
-  +'<div class="adm-fld"><label>فيديو الجزء (رابط يوتيوب أو كود الفيديو — سيبه فاضي لو مفيش)</label>'
+  +'<div class="adm-fld"><label>فيديو الجزء (رابط يوتيوب أو كود الفيديو — اتركه فارغًا إن لم يوجد)</label>'
    +'<input type="text" data-segvideo="'+si+'" dir="ltr" placeholder="https://youtu.be/..." value="'+esc(segVideo(L,sg,si))+'" '+(canEdit()?'':'disabled')+'></div>';
   /* عناصر الشرح */
   h+='<div class="adm-kv" style="margin:6px 0">الشرح (نصوص وصور وفيديوهات):</div>';
@@ -260,6 +266,7 @@ function renderEditor(){
   });
   if(canEdit())h+='<div class="adm-addrow">'
    +'<button class="adm-btn" data-act="en-add-text" data-seg="'+si+'">+ نص</button>'
+   +'<button class="adm-btn" data-act="en-add-img" data-seg="'+si+'">+ صورة</button>'
    +'<button class="adm-btn" data-act="en-add-vid" data-seg="'+si+'">+ فيديو يوتيوب</button></div>';
   /* الأسئلة */
   h+='<div class="adm-kv" style="margin:10px 0 6px">الأسئلة:</div>';
@@ -278,8 +285,8 @@ function renderEditor(){
   if(canEdit())h+='<div class="adm-addrow">'
    +'<button class="adm-btn" data-act="q-add-mcq" data-seg="'+si+'">+ سؤال اختياري</button>'
    +'<button class="adm-btn" data-act="q-add-open" data-seg="'+si+'">+ سؤال مقالي</button></div>';
-  if(canEdit()&&L.cms)h+='<button class="adm-btn dan block" data-act="seg-del" data-seg="'+si+'">حذف الجزء ده</button>';
-  if(canEdit()&&!L.cms)h+='<button class="adm-btn block" data-act="seg-hide" data-seg="'+si+'">'+((ov.segs[L.obj.id+'/'+si]||{}).hidden?'إظهار الجزء ده':'إخفاء الجزء ده كله')+'</button>';
+  if(canEdit()&&L.cms)h+='<button class="adm-btn dan block" data-act="seg-del" data-seg="'+si+'">حذف هذا الجزء</button>';
+  if(canEdit()&&!L.cms)h+='<button class="adm-btn block" data-act="seg-hide" data-seg="'+si+'">'+((ov.segs[L.obj.id+'/'+si]||{}).hidden?'إظهار هذا الجزء':'إخفاء هذا الجزء كله')+'</button>';
   h+='</div>';
  });
  if(canEdit())h+='<button class="adm-btn yel block" data-act="seg-add">+ إضافة جزء جديد للدرس</button>';
@@ -318,9 +325,19 @@ $('editorBox').addEventListener('click',function(e){
   if(L.cms){L.segments.push({label:lb.trim(),explain:[],questions:[],check:[]});}
   else{ov.addSegments.push({lesson:L.obj.id,label:lb.trim(),explain:[],questions:[],check:[]});}
   markDirty();renderEditor();return;}
- if(act==='seg-del'){if(confirm('تحذف الجزء ده بكل محتواه؟')){L.segments.splice(si,1);markDirty();renderEditor();}return;}
+ if(act==='seg-del'){if(confirm('تحذف هذا الجزء بكل محتواه؟')){L.segments.splice(si,1);markDirty();renderEditor();}return;}
  if(act==='seg-hide'){var sp=segPatch(L.obj.id,si,L.segments[si].label);sp.hidden=!sp.hidden;markDirty();renderEditor();return;}
  if(act==='en-add-text'){openTextEditor({seg:si});return;}
+ if(act==='en-add-img'){
+  var iu=prompt('رابط الصورة (https://…):\nأو اتركه فارغًا واضغط موافق لرفع ملف صغير من جهازك (حتى ٧٠٠ كيلوبايت).');
+  if(iu===null)return;
+  iu=iu.trim();
+  if(iu){addImageEntry(L,si,iu);markDirty();renderEditor();return;}
+  var fi=document.createElement('input');fi.type='file';fi.accept='image/*';
+  fi.onchange=function(){var f=fi.files&&fi.files[0];if(!f)return;
+   if(f.size>700*1024){alert('الملف أكبر من ٧٠٠ كيلوبايت. ارفعه على موقع صور وضع رابطه.');return;}
+   var rd=new FileReader();rd.onload=function(){addImageEntry(L,si,String(rd.result||''));markDirty();renderEditor();};rd.readAsDataURL(f);};
+  fi.click();return;}
  if(act==='en-add-vid'){var url=prompt('رابط فيديو اليوتيوب:');if(!url)return;
   var vid=ytId(url);if(!vid){alert('الرابط ده مش رابط يوتيوب صحيح.');return;}
   var cap=prompt('عنوان الفيديو (اختياري):')||'';
@@ -375,6 +392,10 @@ function moveEntry(L,si,ix,dir){
  var sp=segPatch(L.obj.id,si,L.segments[si].label);
  sp.entryOrder=ents.map(function(en){return realKeyOf(en);});
 }
+function addImageEntry(L,si,src){
+ if(L.cms){var sg0=L.segments[si];sg0.explain=sg0.explain||[];sg0.explain.push({img:src});return;}
+ var sp=segPatch(L.obj.id,si,L.segments[si].label);sp.add=sp.add||[];sp.add.push({type:'image',src:src});
+}
 function addVideoEntry(L,si,vid,cap){
  if(L.cms){var sg=L.segments[si];sg.explain=sg.explain||[];sg.explain.push({v:vid,cap:cap});return;}
  var sp=segPatch(L.obj.id,si,L.segments[si].label);sp.add=sp.add||[];sp.add.push({type:'video',vid:vid,cap:cap});
@@ -415,7 +436,7 @@ function openTextEditor(ctx){
   else cur=(ov.blocks[ctx.entry.e.b]!=null?ov.blocks[ctx.entry.e.b]:PD.B[ctx.entry.e.b])||'';
  }
  var h='<div class="adm-sect">'+title+'</div><div class="adm-card">'
-  +'<div class="adm-fld"><label>النص (اكتب عادي، والتنسيق علينا — سطر فاضي يعمل فقرة جديدة)</label>'
+  +'<div class="adm-fld"><label>النص (اكتب بشكل عادي، والتنسيق علينا، سطر فارغ ينشئ فقرة جديدة)</label>'
   +'<textarea id="teText" style="min-height:160px">'+esc(htmlToText(cur))+'</textarea></div>'
   +'<button class="adm-btn" id="tePrev" type="button">معاينة الشكل</button>'
   +'<div class="adm-preview" id="tePreview" hidden></div>'
@@ -463,7 +484,7 @@ function openQEditor(ctx){
   +'<div class="adm-fld"><label>نص السؤال</label><textarea id="qeQ">'+esc(fq.q)+'</textarea></div>'
   +'<div class="adm-fld"><label>التصنيف (مثل: أسئلة الكتاب المقرر) - اختياري</label><input type="text" id="qeSrc" value="'+esc(fq.src)+'"></div>';
  if(type==='mcq'){
-  h+='<div class="adm-fld"><label>الاختيارات (اختار الإجابة الصحيحة بالدائرة)</label><div class="adm-qopts" id="qeOpts">';
+  h+='<div class="adm-fld"><label>الاختيارات (اختر الإجابة الصحيحة بالدائرة)</label><div class="adm-qopts" id="qeOpts">';
   opts.forEach(function(o,oi){h+='<div class="adm-qopt"><input type="radio" name="qeA" value="'+oi+'"'+(oi===correct?' checked':'')+'><input type="text" data-oi="'+oi+'" value="'+esc(o)+'"><button class="adm-ib warn" data-delopt="'+oi+'" type="button">✕</button></div>';});
   h+='</div><button class="adm-btn" id="qeAddOpt" type="button" style="margin-top:6px">+ اختيار جديد</button></div>'
    +'<div class="adm-fld"><label>شرح الإجابة (يظهر بعد الحل) - اختياري</label><textarea id="qeWhy">'+esc(whyTxt)+'</textarea></div>';
@@ -519,7 +540,22 @@ function addQuestion(L,si,q){
 
 /* ---------- حفظ ونشر ومعاينة ---------- */
 function sanitize(o){return JSON.parse(JSON.stringify(o));}
+/* سجل النشر: نسخة من المنشور الحالي قبل الكتابة فوقه، مع الاحتفاظ بآخر ١٠ نسخ لكل قسم */
+function snapHistory(trackId){
+ return db.collection('cmsLive').doc(trackId).get().then(function(d){
+  if(!d.exists)return;
+  var hid=trackId+'_'+Date.now();
+  return db.collection('cmsHistory').doc(hid).set({track:trackId,snapshot:d.data(),at:firebase.firestore.FieldValue.serverTimestamp(),by:user.email||''})
+   .then(function(){return pruneHistory(trackId);});
+ }).catch(function(){});
+}
+function pruneHistory(trackId){
+ return db.collection('cmsHistory').orderBy(firebase.firestore.FieldPath.documentId()).startAt(trackId+'_').endAt(trackId+'_\uf8ff').get()
+  .then(function(s){var docs=s.docs;if(docs.length<=10)return;
+   return Promise.all(docs.slice(0,docs.length-10).map(function(x){return x.ref.delete();}));}).catch(function(){});
+}
 $('btnSave').onclick=function(){
+ if(curTab==='texts'){saveSite(false);return;}
  if(!canEdit()||!track)return;
  $('btnSave').disabled=true;$('btnSave').textContent='جاري الحفظ…';
  var doc=sanitize(ov);doc.v=1;doc.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||''};
@@ -529,13 +565,14 @@ $('btnSave').onclick=function(){
  }).catch(function(e){$('btnSave').disabled=false;$('btnSave').textContent='حفظ مسودة';alert('الحفظ فشل: '+errMsg(e));});
 };
 $('btnPublish').onclick=function(){
+ if(curTab==='texts'){saveSite(true);return;}
  if(!canPublish()||!track)return;
- if(!confirm('نشر كل تعديلات المسودة للطلاب دلوقتي؟ اللي هيتنشر هيبقى ظاهر لكل الطلاب فورًا.'))return;
+ if(!confirm('نشر كل تعديلات المسودة للطلاب الآن؟ سيصبح المنشور ظاهرًا لكل الطلاب فورًا.'))return;
  $('btnPublish').disabled=true;$('btnPublish').textContent='جاري النشر…';
  var doc=sanitize(ov);doc.v=1;
  doc.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||'',publishedAt:firebase.firestore.FieldValue.serverTimestamp(),publishedBy:user.email||''};
  var draft=sanitize(ov);draft.v=1;draft.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||''};
- db.collection('cmsLive').doc(track).set(doc)
+ snapHistory(track).then(function(){return db.collection('cmsLive').doc(track).set(doc);})
   .then(function(){return db.collection('cmsDraft').doc(track).set(draft);})
   .then(function(){
    dirty=false;$('btnPublish').disabled=false;$('btnPublish').textContent='نشر للطلاب';
@@ -544,26 +581,197 @@ $('btnPublish').onclick=function(){
   .catch(function(e){$('btnPublish').disabled=false;$('btnPublish').textContent='نشر للطلاب';alert('النشر فشل: '+errMsg(e));});
 };
 $('btnPreview').onclick=function(){
+ if(curTab==='texts'){
+  if(siteDirty){alert('احفظ المسودة أولًا حتى تظهر آخر تعديلاتك في المعاينة.');return;}
+  window.open('index.html?cmspreview=1','_blank');return;
+ }
  if(!track)return;
  if(dirty){alert('احفظ المسودة الأول عشان المعاينة تشوف آخر تعديلاتك.');return;}
  window.open('track.html?t='+track+'&cmspreview=1','_blank');
 };
 
+/* ---------- نصوص الموقع ---------- */
+var SITE_SLOTS=[
+ {key:'navCta',sel:'nav .wrap > a.btn',label:'زر «ابدأ المذاكرة» في الشريط العلوي',def:'ابدأ المذاكرة'},
+ {key:'heroTitle',sel:'.hero h1',label:'العنوان الرئيسي للصفحة الرئيسية',def:'اللغة العربية ببساطة، من دون عناء',note:'يُستبدل النص كاملًا في سطر واحد؛ لتعديل جزء منه فقط استخدم أداة الاستبدال بالأسفل.'},
+ {key:'heroSub',sel:'.hero .wrap > div > p',label:'الوصف تحت العنوان الرئيسي',def:'شرح مبسّط لكل درس من أولى ابتدائي إلى تالتة إعدادي.'},
+ {key:'heroCta',sel:'.hero .cta .btn',label:'الزر الرئيسي في الصفحة الرئيسية',def:'ابدأ من أولى ابتدائي'},
+ {key:'heroCtaAlt',sel:'.hero .cta .btn.alt',label:'الزر الثانوي بجانبه',def:'كيف نشرح'},
+ {key:'heroBubble',sel:'#heroBubble',label:'فقاعة الترحيب في الصفحة الرئيسية',def:'أهلًا بك! هيّا نلعب ونتعلّم العربية معًا'},
+ {key:'gradesH',sel:'#grades .sh h2',label:'عنوان قسم الصفوف',def:'اختر صفك'},
+ {key:'gradesP',sel:'#grades .sh p',label:'الوصف تحت عنوان الصفوف',def:'لكل صف دروسه مرتّبة'},
+ {key:'howH',sel:'#how .sh h2',label:'عنوان قسم «كيف نشرح»',def:'كيف نشرح؟'},
+ {key:'demoIdx',sel:'#how .demo .bb',label:'نص المثال التوضيحي في الرئيسية',def:'يعني مثلًا: الفاعل هو اللي عمل الفعل…'},
+ {key:'aboutH',sel:'.teach h2',label:'عنوان قسم «من هو مستر يوسف»',def:'من هو مستر يوسف؟'},
+ {key:'aboutP',sel:'.teach p',label:'نبذة مستر يوسف',def:'مدرس لغة عربية يشرح كل درس بقصة ولعبة ومثال من يومهم، من أولى ابتدائي إلى تالتة إعدادي.'},
+ {key:'parentsH',sel:'#parents .sh h2',label:'عنوان قسم «لولي الأمر»',def:'لولي الأمر'},
+ {key:'parentsP',sel:'#parents .sh p',label:'وصف قسم لولي الأمر',def:'متابعة هادئة دون أن تحتاج إلى الوقوف بجانب ابنك'},
+ {key:'trackBubble',sel:'#trackBubble',label:'فقاعة صفحة الدروس',def:'هيّا نفتح الدرس ونبدأ'},
+ {key:'tab1',sel:'.tabs span:nth-child(1)',label:'اسم تبويب الترم الأول',def:'الترم الأول'},
+ {key:'tab2',sel:'.tabs span:nth-child(2)',label:'اسم تبويب الترم الثاني',def:'الترم الثاني (قريبًا)'},
+ {key:'trackDemo',sel:'#units ~ .demo .bb',label:'نص التلميح أسفل قائمة الدروس',def:'في كل درس ستجد شرحًا مبسطًا بعد الأجزاء الصعبة…'}
+];
+var IMG_SLOTS=[
+ {key:'heroPose',sel:'#heroPose',label:'صورة المستر في الصفحة الرئيسية'},
+ {key:'trackPose',sel:'#trackPose',label:'صورة المستر في صفحة الدروس'},
+ {key:'teachImg',sel:'.teach .pfig',label:'صورة قسم «من هو مستر يوسف»'},
+ {key:'demoImgIdx',sel:'#how .demo img',label:'الصورة التوضيحية في الرئيسية'},
+ {key:'demoImgTrk',sel:'#units ~ .demo img',label:'الصورة التوضيحية في صفحة الدروس'}
+];
+function normSite(d){d=d||{};return {texts:Array.isArray(d.texts)?d.texts:[],replace:Array.isArray(d.replace)?d.replace:[],imgs:Array.isArray(d.imgs)?d.imgs:[],customCss:typeof d.customCss==='string'?d.customCss:''};}
+function loadSite(){
+ $('siteSlots').innerHTML='<div class="adm-load">جارٍ التحميل…</div>';
+ $('siteReplace').innerHTML='';$('siteImgs').innerHTML='';
+ db.collection('cmsDraft').doc('site').get().then(function(d){
+  if(d.exists)return d.data();
+  return db.collection('cmsLive').doc('site').get().then(function(l){return l.exists?l.data():{};}).catch(function(){return {};});
+ }).catch(function(){return {};}).then(function(d){siteOv=normSite(d);siteDirty=false;paintBar();renderTexts();});
+}
+function setSlot(key,val){
+ var sl=SITE_SLOTS.filter(function(x){return x.key===key;})[0];if(!sl)return;
+ siteOv.texts=siteOv.texts.filter(function(t){return t.key!==key;});
+ if(val)siteOv.texts.push({key:key,sel:sl.sel,text:val});
+ markSiteDirty();
+}
+function setImg(key,val){
+ var sl=IMG_SLOTS.filter(function(x){return x.key===key;})[0];if(!sl)return;
+ siteOv.imgs=siteOv.imgs.filter(function(t){return t.key!==key;});
+ if(val)siteOv.imgs.push({key:key,sel:sl.sel,src:val});
+ markSiteDirty();
+}
+function renderTexts(){
+ var ro=!canTexts(),h='';
+ SITE_SLOTS.forEach(function(sl){
+  var cur='';siteOv.texts.forEach(function(t){if(t.key===sl.key)cur=t.text||'';});
+  h+='<div class="adm-fld"><label>'+esc(sl.label)+'</label>'
+   +'<input type="text" data-slot="'+sl.key+'" value="'+esc(cur)+'" placeholder="'+esc(sl.def)+'"'+(ro?' disabled':'')+'>'
+   +(sl.note?'<small class="adm-hint">'+esc(sl.note)+'</small>':'')+'</div>';
+ });
+ $('siteSlots').innerHTML='<div class="adm-card">'+h+'</div>';
+ renderReplace();renderImgs();
+ var css=$('siteCss');css.value=siteOv.customCss;css.disabled=ro;
+}
+function renderReplace(){
+ var ro=!canTexts(),h='';
+ siteOv.replace.forEach(function(r,i){
+  h+='<div class="adm-rep"><input type="text" data-rep-from="'+i+'" placeholder="النص الحالي كما يظهر" value="'+esc(r.from||'')+'"'+(ro?' disabled':'')+'>'
+   +'<input type="text" data-rep-to="'+i+'" placeholder="النص الجديد" value="'+esc(r.to||'')+'"'+(ro?' disabled':'')+'>'
+   +(ro?'':'<button class="adm-ib warn" data-rep-del="'+i+'" title="حذف">🗑</button>')+'</div>';
+ });
+ if(!siteOv.replace.length)h='<div class="adm-empty">لا توجد استبدالات بعد.</div>';
+ $('siteReplace').innerHTML=h;
+}
+function renderImgs(){
+ var ro=!canTexts(),h='';
+ IMG_SLOTS.forEach(function(sl){
+  var cur='';siteOv.imgs.forEach(function(t){if(t.key===sl.key)cur=t.src||'';});
+  var isData=cur.indexOf('data:')===0;
+  h+='<div class="adm-fld"><label>'+esc(sl.label)+'</label>'
+   +(cur?'<div style="margin-bottom:6px"><img class="adm-imgprev" src="'+esc(cur)+'" alt=""></div>':'')
+   +'<div class="adm-rep"><input type="url" dir="ltr" data-img="'+sl.key+'" placeholder="https://…" value="'+esc(isData?'':cur)+'"'+(ro?' disabled':'')+'>'
+   +(ro?'':'<label class="adm-btn">رفع ملف<input type="file" accept="image/*" data-imgfile="'+sl.key+'" hidden></label>')+'</div>'
+   +(isData?'<small class="adm-hint">ملف مرفوع داخل القاعدة ('+Math.round(cur.length/1024)+' كيلوبايت). لمسحه احفظ الخانة فارغة.</small>':'')
+   +(cur&&!isData?'<small class="adm-hint">لمسح الصورة والرجوع للأصلية احفظ الخانة فارغة.</small>':'')+'</div>';
+ });
+ $('siteImgs').innerHTML='<div class="adm-card">'+h+'</div>';
+}
+$('repAdd').onclick=function(){if(!canTexts()||!siteOv)return;siteOv.replace.push({from:'',to:''});markSiteDirty();renderReplace();};
+$('panelTexts').addEventListener('change',function(e){
+ if(!canTexts()||!siteOv)return;
+ var t=e.target;
+ if(t.dataset&&t.dataset.slot!=null){setSlot(t.dataset.slot,t.value.trim());return;}
+ if(t.dataset&&t.dataset.repFrom!=null){var i=+t.dataset.repFrom;if(siteOv.replace[i])siteOv.replace[i].from=t.value;markSiteDirty();return;}
+ if(t.dataset&&t.dataset.repTo!=null){var j=+t.dataset.repTo;if(siteOv.replace[j])siteOv.replace[j].to=t.value;markSiteDirty();return;}
+ if(t.dataset&&t.dataset.img!=null){setImg(t.dataset.img,t.value.trim());renderImgs();return;}
+ if(t.id==='siteCss'){siteOv.customCss=t.value;markSiteDirty();return;}
+});
+$('panelTexts').addEventListener('click',function(e){
+ var del=e.target.closest('[data-rep-del]');
+ if(del&&canTexts()&&siteOv){siteOv.replace.splice(+del.dataset.repDel,1);markSiteDirty();renderReplace();}
+});
+$('panelTexts').addEventListener('change',function(e){
+ var t=e.target;
+ if(!t.dataset||t.dataset.imgfile==null||!canTexts()||!siteOv)return;
+ var f=t.files&&t.files[0];if(!f)return;
+ if(f.size>700*1024){alert('الملف أكبر من ٧٠٠ كيلوبايت. ارفعه على موقع صور وضع رابطه بدلًا منه.');t.value='';return;}
+ var rd=new FileReader();
+ rd.onload=function(){setImg(t.dataset.imgfile,String(rd.result||''));renderImgs();};
+ rd.readAsDataURL(f);
+});
+function saveSite(pub){
+ if(!canTexts())return;
+ if(pub&&!canPublish())return;
+ if(pub&&!confirm('نشر نصوص الموقع للطلاب الآن؟ ستظهر التعديلات لكل الزوار فورًا.'))return;
+ var btn=pub?$('btnPublish'):$('btnSave');
+ btn.disabled=true;btn.textContent='جاري '+(pub?'النشر':'الحفظ')+'…';
+ var doc=sanitize(siteOv);doc.v=1;
+ doc.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||''};
+ if(pub){doc.meta.publishedAt=firebase.firestore.FieldValue.serverTimestamp();doc.meta.publishedBy=user.email||'';}
+ var p;
+ if(pub){p=snapHistory('site').then(function(){return db.collection('cmsLive').doc('site').set(doc);})
+   .then(function(){var dr=sanitize(siteOv);dr.v=1;dr.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||''};return db.collection('cmsDraft').doc('site').set(dr);});}
+ else{p=db.collection('cmsDraft').doc('site').set(doc);}
+ p.then(function(){
+  siteDirty=false;paintBar();btn.disabled=false;btn.textContent=pub?'نشر للطلاب':'حفظ مسودة';
+  $('siteMsg').textContent=pub?'تم النشر ✓ أصبحت التعديلات ظاهرة للطلاب الآن (من يفتح الصفحة من جديد يراها).':'تم حفظ المسودة ✓ لن تظهر للطلاب حتى تضغط «نشر للطلاب».';
+  $('siteMsg').className='adm-msg ok';
+ }).catch(function(e){
+  btn.disabled=false;btn.textContent=pub?'نشر للطلاب':'حفظ مسودة';
+  $('siteMsg').textContent=errMsg(e);$('siteMsg').className='adm-msg';
+ });
+}
+
+/* ---------- سجل النشر ---------- */
+function loadHistory(){
+ $('historyList').innerHTML='<div class="adm-load">جارٍ التحميل…</div>';
+ db.collection('cmsHistory').limit(50).get().then(function(s){
+  var rows=[];s.forEach(function(d){var x=d.data()||{};rows.push({id:d.id,track:x.track||'',at:x.at,by:x.by||''});});
+  rows.sort(function(a,b){return (b.at&&b.at.toMillis?b.at.toMillis():0)-(a.at&&a.at.toMillis?a.at.toMillis():0);});
+  if(!rows.length){$('historyList').innerHTML='<div class="adm-empty">لا يوجد سجل بعد. تُحفظ نسخة تلقائيًا عند كل نشر.</div>';return;}
+  var names={g1:'أولى ابتدائي',g8ar:'تانية إعدادي',g7az:'أولى إعدادي أزهر',site:'نصوص الموقع'},h='';
+  rows.forEach(function(r){
+   var when='';try{when=r.at&&r.at.toDate?r.at.toDate().toLocaleString('ar-EG'):'';}catch(e){}
+   h+='<div class="adm-row"><div class="t">'+esc(names[r.track]||r.track)+'<small>'+esc(when)+(r.by?' · '+esc(r.by):'')+'</small></div>'
+    +(canPublish()?'<button class="adm-btn" data-restore="'+r.id+'" data-hrack="'+esc(r.track)+'">استرجاع</button>':'')+'</div>';
+  });
+  $('historyList').innerHTML=h;
+ }).catch(function(e){$('historyList').innerHTML='<div class="adm-note">'+esc(errMsg(e))+'</div>';});
+}
+$('historyList').addEventListener('click',function(e){
+ var b=e.target.closest('[data-restore]');if(!b||!canPublish())return;
+ if(!confirm('استرجاع هذه النسخة إلى المسودة؟ لن تظهر للطلاب حتى تنشرها بنفسك.'))return;
+ b.disabled=true;b.textContent='جاري الاسترجاع…';
+ db.collection('cmsHistory').doc(b.dataset.restore).get().then(function(d){
+  if(!d.exists)throw {code:'not-found'};
+  var snap=d.data().snapshot||{};var doc=sanitize(snap);
+  doc.meta={updatedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedBy:user.email||'',restoredFrom:b.dataset.restore};
+  return db.collection('cmsDraft').doc(b.dataset.hrack).set(doc);
+ }).then(function(){
+  b.textContent='تم ✓';
+  alert('أُعيدت النسخة إلى المسودة ✓ انتقل إلى تبويب «المحتوى» أو «نصوص الموقع» وراجعها ثم اضغط «نشر للطلاب».');
+  loadHistory();
+ }).catch(function(e2){b.disabled=false;b.textContent='استرجاع';alert('تعذّر الاسترجاع: '+errMsg(e2));});
+});
+
 /* ---------- الفريق ---------- */
 document.querySelectorAll('#tabs button').forEach(function(b){
  b.onclick=function(){
   document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',x===b);});
-  var t=b.dataset.tab;
+  var t=b.dataset.tab;curTab=t;
   $('panelContent').hidden=t!=='content';$('panelTeam').hidden=t!=='team';
-  $('saveBar').hidden=t!=='content';
+  $('panelTexts').hidden=t!=='texts';$('panelHistory').hidden=t!=='history';
+  $('saveBar').hidden=(t!=='content'&&t!=='texts');
+  paintBar();
   if(t==='team')loadTeam();
+  if(t==='texts')loadSite();
+  if(t==='history')loadHistory();
  };
 });
-function permBadges(p){return ['عرض',p.edit?'تعديل':null,p.publish?'نشر':null].filter(Boolean).join(' · ');}
+function permBadges(p){return ['عرض',p.edit?'تعديل':null,p.publish?'نشر':null,p.texts?'نصوص':null].filter(Boolean).join(' · ');}
 function loadTeam(){
- $('teamList').innerHTML='<div class="adm-load">جاري التحميل…</div>';
+ $('teamList').innerHTML='<div class="adm-load">جارٍ التحميل…</div>';
  db.collection('staff').get().then(function(snap){
-  if(snap.empty){$('teamList').innerHTML='<div class="adm-empty">مفيش مساعدين لسه. ضيف أول مساعد تحت.</div>';return;}
+  if(snap.empty){$('teamList').innerHTML='<div class="adm-empty">لا يوجد مساعدون بعد. أضف أول مساعد بالأسفل.</div>';return;}
   var h='';
   snap.forEach(function(d){var s=d.data()||{};var p=s.perms||{};
    h+='<div class="adm-row"><div class="t">'+esc(s.name||s.email||d.id)+'<small>'+esc(s.email||'')+' · '+permBadges(p)+'</small></div>'
@@ -580,9 +788,9 @@ $('teamList').addEventListener('click',function(e){
  if(ed){var id=ed.dataset.teamEdit;
   db.collection('staff').doc(id).get().then(function(d){
    var s=d.data()||{},p=s.perms||{};
-   var ans=prompt('صلاحيات «'+(s.name||s.email||'')+'» — اكتب الأرقام مفصولة بمسافة:\n١ عرض · ٢ تعديل · ٣ نشر\nمثال: ١ ٢',( '1'+(p.edit?' 2':'')+(p.publish?' 3':'')));
+   var ans=prompt('صلاحيات «'+(s.name||s.email||'')+'» — اكتب الأرقام مفصولة بمسافة:\n١ عرض · ٢ تعديل · ٣ نشر · ٤ نصوص الموقع\nمثال: ١ ٢',( '1'+(p.edit?' 2':'')+(p.publish?' 3':'')+(p.texts?' 4':'')));
    if(ans==null)return;
-   var np={edit:/2/.test(ans),publish:/3/.test(ans)};
+   var np={edit:/2/.test(ans),publish:/3/.test(ans),texts:/4/.test(ans)};
    db.collection('staff').doc(id).set({perms:np},{merge:true}).then(loadTeam).catch(function(e2){alert(errMsg(e2));});
   });return;}
 });
@@ -592,7 +800,7 @@ $('tAdd').onclick=function(){
  if(!name||!em||!pw){$('tMsg').textContent='كمّل الاسم والإيميل وكلمة السر.';$('tMsg').className='adm-msg';return;}
  if(pw.length<6){$('tMsg').textContent='كلمة السر لازم ٦ حروف أو أرقام على الأقل.';$('tMsg').className='adm-msg';return;}
  $('tAdd').disabled=true;$('tMsg').textContent='جاري إنشاء الحساب…';$('tMsg').className='adm-msg ok';
- var perms={view:true,edit:$('pEdit').checked,publish:$('pPublish').checked};
+ var perms={view:true,edit:$('pEdit').checked,publish:$('pPublish').checked,texts:$('pTexts').checked};
  var app2;
  try{app2=firebase.initializeApp(window.FIREBASE_CONFIG,'cmsSecondary');}catch(e){app2=firebase.app('cmsSecondary');}
  app2.auth().createUserWithEmailAndPassword(em,pw)
@@ -603,7 +811,7 @@ $('tAdd').onclick=function(){
   })
   .then(function(){
    $('tMsg').textContent='اتعمل حساب المساعد ✓ ابعتله الإيميل وكلمة السر المؤقتة وخليه يدخل على نفس الصفحة دي.';$('tMsg').className='adm-msg ok';
-   $('tName').value='';$('tEmail').value='';$('tPass').value='';$('pEdit').checked=false;$('pPublish').checked=false;
+   $('tName').value='';$('tEmail').value='';$('tPass').value='';$('pEdit').checked=false;$('pPublish').checked=false;$('pTexts').checked=false;
    $('tAdd').disabled=false;loadTeam();
   })
   .catch(function(e){$('tMsg').textContent=errMsg(e);$('tMsg').className='adm-msg';$('tAdd').disabled=false;});
