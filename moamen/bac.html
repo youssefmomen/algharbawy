@@ -207,7 +207,9 @@ img{-webkit-user-drag:none}
 
 <script>document.write('<script src="assets/data/25-bac-tarikh-g2p1.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
 <script>document.write('<script src="assets/data/25-bac-simplify.js?t='+Math.floor(Date.now()/300000)+'"><\/script>');</script>
+<script src="cms.js?v=20261127a"></script>
 <script>
+function BOOT(){
 var DOOD={
 pyramid:'<path d="M8 84 L48 16 L90 84 Z"/><path d="M48 16 L62 84"/><path d="M30 62 h18 M37 46 h12 M22 74 h44"/>',
 sun:'<circle cx="50" cy="44" r="15"/><path d="M50 18 v-9 M50 70 v9 M24 44 h-11 M76 44 h11 M31 25 l-7 -7 M69 25 l7 -7 M31 63 l-7 7 M69 63 l7 7"/>',
@@ -2033,4 +2035,7 @@ function render(){
 if(window.MM&&MM.onChange)MM.onChange(function(){render();});
 render();
 
+
+window.zoom=zoom;}
+if(window.MMCMS){MMCMS.ready('bac2').then(BOOT,function(){BOOT();});}else{BOOT();}
 </script></body></html>
