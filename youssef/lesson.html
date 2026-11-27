@@ -1115,7 +1115,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function adone(){if(S.review){if(!S.rdone||typeof S.rdone!=='object')S.rdone={};return S.rdone;}return S.done;}
 function startReview(){S.review=true;S.rdone={};S.view='lesson';S.seg=0;S.sub=sub0(0);S.step=0;save();render();}
 function exitReview(){if(!LES)return;S.review=false;S.rdone={};S.view='map';S.seg=LES.segments.length-1;S.sub=1;S.step=0;save();render();}
-function rvBarHTML(){return S.review?'<div class="rv-bar"><span>وضع المراجعة: بتذاكر الدرس تاني، والنجوم مش بتتضاف مرة كمان.</span><button type="button" id="rvExit">إنهاء المراجعة ✕</button></div>':'';}
+function rvBarHTML(){return S.review?'<div class="rv-bar"><span>وضع المراجعة: تذاكر الدرس مجددًا، والنجوم لا تُضاف مرة أخرى.</span><button type="button" id="rvExit">إنهاء المراجعة ✕</button></div>':'';}
 function wireRvExit(m){var x=m.querySelector('#rvExit');if(x)x.onclick=function(){exitReview();};}
 if(LES&&new URLSearchParams(location.search).get('review')==='1'){S.review=true;S.rdone={};S.view='lesson';S.seg=0;S.sub=0;S.step=0;save();try{history.replaceState(null,'',location.pathname+'?t='+TRK+'&lesson='+qL);}catch(e){}}
 function ar(n){return (''+n).replace(/\d/g,function(c){return '٠١٢٣٤٥٦٧٨٩'[c];});}
@@ -1166,8 +1166,8 @@ window.MMVID={mark:function(k){markVid(k);},watched:function(k){return !!S.vw[k]
 function mountVideo(host,vid,key){
   var watched=!!S.vw[key];
   host.innerHTML='<div class="yt-box"><div class="yt-ph" id="ytp-'+key+'"></div></div>'+
-    '<div class="yt-note'+(watched?' ok':'')+'" id="ytn-'+key+'">'+(watched?'تمت المشاهدة ✓ — تقدر تعيد الفيديو في أي وقت':'لازم تتفرج على الفيديو للآخر علشان تكمل ▶')+'</div>'+
-    '<div class="yt-fb" id="ytf-'+key+'" hidden>الفيديو مش راضي يشتغل هنا؟ <a href="https://www.youtube.com/watch?v='+vid+'" target="_blank" rel="noopener">افتحه على يوتيوب</a> وبعدها اضغط <button type="button" class="pbtn yt-skip" id="yts-'+key+'">اتفرجت عليه · كمل ◂</button></div>';
+    '<div class="yt-note'+(watched?' ok':'')+'" id="ytn-'+key+'">'+(watched?'تمت المشاهدة ✓ — يمكنك إعادة الفيديو في أي وقت':'شاهد الفيديو حتى النهاية لتتمكن من المتابعة ▶')+'</div>'+
+    '<div class="yt-fb" id="ytf-'+key+'" hidden>الفيديو لا يعمل هنا؟ <a href="https://www.youtube.com/watch?v='+vid+'" target="_blank" rel="noopener">افتحه على يوتيوب</a> وبعدها اضغط <button type="button" class="pbtn yt-skip" id="yts-'+key+'">شاهدته · تابع ◂</button></div>';
   var sk=document.getElementById('yts-'+key);if(sk)sk.onclick=function(){markVid(key);};
   ytEnsure(function(ok){
     if(!ok){var f=document.getElementById('ytf-'+key);if(f)f.hidden=false;return;}
@@ -1307,7 +1307,7 @@ function renderMap(){
     S.view='lesson';S.seg=+b.dataset.node;S.sub=sub0(S.seg);S.step=0;save();render();
   };});
   if(!S.seenIntro){
-    var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>الدرس ده شرح مبسط بالقصص والأمثلة.<br>ركّز وجاوب الأسئلة علشان تثبت المعلومة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>',0,null,'map');
+    var o=showPop('<div class="pop-h">'+ROBOT+'<span>تنبيه مهم</span></div><p>هذا الدرس شرح مبسّط بالقصص والأمثلة.<br>ركّز وأجب عن الأسئلة لتثبّت المعلومة يا بطل.</p><button class="pop-btn" id="introOk">ابدأ الدرس</button>',0,null,'map');
     S.seenIntro=true;save();
     o.querySelector('#introOk').onclick=function(){o.remove();};
   }
@@ -1381,10 +1381,10 @@ function setupSimp(m){
   });
 }
 function cheerFor(seg){
-  if(seg>=LES.segments.length-2)return 'هانت! فاضل خطوة وتخلص الدرس';
-  if(seg>=5)return 'كمل يا بطل! عديت النص';
-  if(seg>=2)return 'كمل، شغلك حلو';
-  return 'عاش يا بطل! بداية جامدة';
+  if(seg>=LES.segments.length-2)return 'اقتربت من النهاية! بقيت خطوة واحدة وتُنهي الدرس';
+  if(seg>=5)return 'واصل يا بطل! تجاوزت المنتصف';
+  if(seg>=2)return 'واصل، عملك رائع';
+  return 'أحسنت يا بطل! بداية قوية';
 }
 function starify(m){
   m.querySelectorAll('.bk .rh').forEach(function(r){
@@ -1397,17 +1397,17 @@ function renderLesson(keep){
   if(S.seg>=LES.segments.length){
     var dnImg='<img class="done-ch" src="assets/img/mr-youssef-celebrating.png" alt="مستر يوسف"><div class="big"><svg viewBox="0 0 64 64" width="72" height="72"><circle cx="32" cy="32" r="29" fill="none" stroke="var(--green)" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
     if(S.review){
-      m.innerHTML='<div class="done-screen">'+dnImg+'<h2>خلصت المراجعة يا بطل!</h2><p>راجعت «'+LES.title.split(':')[0]+'» كله وجاوبت على أسئلته من تاني.<br>نجومك زي ما هي: <b style="color:#e07b00">⭐ '+ar(scoreNow())+'</b> — المراجعة بتثبّت المعلومة من غير ما تضيف نجوم كمان.</p></div><div class="navrow"><button class="next" id="rvAgain">🔁 مراجعة من الأول</button><button class="next" id="rvEnd">العودة للخريطة ◂</button></div>';
+      m.innerHTML='<div class="done-screen">'+dnImg+'<h2>أتممت المراجعة يا بطل!</h2><p>راجعت «'+LES.title.split(':')[0]+'» كاملًا وأجبت عن أسئلته مجددًا.<br>نجومك كما هي: <b style="color:#e07b00">⭐ '+ar(scoreNow())+'</b> — المراجعة بتثبّت المعلومة من غير ما تضيف نجوم كمان.</p></div><div class="navrow"><button class="next" id="rvAgain">🔁 مراجعة من الأول</button><button class="next" id="rvEnd">العودة للخريطة ◂</button></div>';
       paint();paintScore(false);chime();window.scrollTo(0,0);
       document.getElementById('rvAgain').onclick=function(){startReview();};
       document.getElementById('rvEnd').onclick=function(){exitReview();};
       return;
     }
-    m.innerHTML='<div class="done-screen">'+dnImg+'<h2>'+mmBubble("trophy","done","d")+'</h2><p>أنهيت «'+LES.title.split(':')[0]+'»: قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا و'+ar(totals().c)+' سؤال فهم سريع.<br>نجومك لحد دلوقتي: <b style="color:#e07b00">⭐ '+ar(scoreNow())+'</b><br>عايز تثبّت المعلومة؟ اضغط «مراجعة الدرس» وجاوب تاني من غير ما النجوم تتكرر.</p></div><div class="navrow"><button class="next" id="reviewBtn">🔁 مراجعة الدرس</button><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
+    m.innerHTML='<div class="done-screen">'+dnImg+'<h2>'+mmBubble("trophy","done","d")+'</h2><p>أنهيت «'+LES.title.split(':')[0]+'»: قرأت الشرح كاملًا وأجبت على '+ar(totals().b)+' سؤالًا و'+ar(totals().c)+' سؤال فهم سريع.<br>نجومك حتى الآن: <b style="color:#e07b00">⭐ '+ar(scoreNow())+'</b><br>تريد تثبيت المعلومة؟ اضغط «مراجعة الدرس» وأجب مجددًا دون أن تتكرر النجوم.</p></div><div class="navrow"><button class="next" id="reviewBtn">🔁 مراجعة الدرس</button><button class="next" id="toMap">العودة للخريطة ◂</button></div>';
     paint();paintScore(false);chime();window.scrollTo(0,0);
     document.getElementById('reviewBtn').onclick=function(){startReview();};
     document.getElementById('toMap').onclick=function(){if(TRK==='g8ar'){location.href='track.html?t='+TRK;return;}S.view='map';S.seg=LES.segments.length-1;S.sub=1;save();render();};
-    if(TRK==='g8ar'){var tb=document.getElementById('toMap');tb.textContent='اختر الدرس التالي ◂';var pp=m.querySelector('.done-screen p');if(pp)pp.innerHTML=pp.innerHTML.replace('عايز تثبّت المعلومة؟ اضغط «مراجعة الدرس» وجاوب تاني من غير ما النجوم تتكرر.','اضغط الزر للرجوع إلى صفحة الدروس واختيار الدرس التالي، أو راجع الدرس ده تاني.');}
+    if(TRK==='g8ar'){var tb=document.getElementById('toMap');tb.textContent='اختر الدرس التالي ◂';var pp=m.querySelector('.done-screen p');if(pp)pp.innerHTML=pp.innerHTML.replace('تريد تثبيت المعلومة؟ اضغط «مراجعة الدرس» وأجب مجددًا دون أن تتكرر النجوم.','اضغط الزر للرجوع إلى صفحة الدروس واختيار الدرس التالي، أو راجع هذا الدرس مجددًا.');}
     return;
   }
   var sg=LES.segments[S.seg];
@@ -1428,12 +1428,12 @@ function renderLesson(keep){
   h+='<span class="pc" id="pcTxt"></span></div>';
   CURVIDS=[];MOUNTS=[];
   if(S.sub===2){
-    h+='<div class="card bk"><div class="mh">فيديو الجزء ده</div><div id="ytm-'+vKey+'"></div></div>';
+    h+='<div class="card bk"><div class="mh">فيديو هذا الجزء</div><div id="ytm-'+vKey+'"></div></div>';
     CURVIDS.push(vKey);MOUNTS.push({hid:'ytm-'+vKey,vid:segVid,key:vKey});
   }else if(S.sub===0){
     h+=explainHTML(sg.explain.slice(S.step*XCHUNK,S.step*XCHUNK+XCHUNK));
     if(S.step<chunks-1)h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-encouraging.png" alt="مستر يوسف"><span>'+mmBubble('pointing','encourage','x'+LES.id+'-'+S.seg+'-'+S.step)+'</span></div>';
-    else if(items.length)h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-pointup.png" alt="مستر يوسف"><span>خلصت شرح الجزء ده.. يلا نجاوب على الأسئلة</span></div>';
+    else if(items.length)h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-pointup.png" alt="مستر يوسف"><span>انتهى شرح هذا الجزء.. هيّا نجيب عن الأسئلة</span></div>';
   }else{
     var it=items[S.step];
     if(it){
@@ -1444,14 +1444,14 @@ function renderLesson(keep){
       }
       h+=it.q.t==='mcq'?mcqHTML(it.q,it.id,it.q.options.length===2?['صح','خطأ']:letters):openHTML(it.q,it.id);
     }else{
-      h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-thumbsup.png" alt="مستر يوسف"><span>الجزء ده شرح بس، مفيهوش أسئلة.</span></div>';
+      h+='<div class="step-cheer"><img class="feed-ch" src="assets/img/mr-youssef-thumbsup.png" alt="مستر يوسف"><span>هذا الجزء شرح فقط، لا أسئلة فيه.</span></div>';
     }
   }
   var isLast=(S.seg===LES.segments.length-1&&S.sub===1)||(S.seg===LES.segments.length-1&&S.sub===0&&!items.length)||(S.seg===LES.segments.length-1&&S.sub===2&&!items.length&&chunks===0);
   var lastStep=(S.sub===2)?true:S.step>=((S.sub===0?chunks:items.length)-1);
   var needAnswer=(S.sub===1&&items[S.step]&&!adone()[items[S.step].id]);
   var needVid=CURVIDS.some(function(k){return !S.vw[k];});
-  h+='<div class="lock">'+(needAnswer?'جاوب على السؤال ده الأول علشان تكمل':(needVid?'اتفرج على الفيديو للآخر الأول علشان تكمل':''))+'</div>';
+  h+='<div class="lock">'+(needAnswer?'أجب عن هذا السؤال أولًا لتتمكن من المتابعة':(needVid?'شاهد الفيديو حتى النهاية أولًا لتتمكن من المتابعة':''))+'</div>';
   m.innerHTML=h;starify(m);wireRvExit(m);paint();paintScore(false);if(!keep)window.scrollTo(0,0);setupSimp(m);MOUNTS.forEach(function(mt){var hh=document.getElementById(mt.hid);if(hh)mountVideo(hh,mt.vid,mt.key);});
   var mb=document.getElementById('mbar');mb.hidden=false;
   var nb=document.getElementById('nextBtn');
@@ -1513,7 +1513,7 @@ function renderList(){
     var ls=D.lessons.map(function(l,i){return {l:l,i:i};}).filter(function(x){return x.l.stage===st.id;});
     if(!ls.length)return;
     if(!openUnits){
-      h+='<div class="ubanner locked"><h2>'+LOCK+' الوحدة '+ar(st.n)+': '+st.title+'</h2><p>هتظهر دروسها هنا أول ما تخلّص اللي قبلها</p></div>';
+      h+='<div class="ubanner locked"><h2>'+LOCK+' الوحدة '+ar(st.n)+': '+st.title+'</h2><p>ستظهر دروسها هنا فور إنهائك ما قبلها</p></div>';
       return;
     }
     h+='<div class="ubanner"><h2>الوحدة '+ar(st.n)+': '+st.title+'</h2></div>';
