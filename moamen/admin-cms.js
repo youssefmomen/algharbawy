@@ -17,26 +17,41 @@ function msg(t,ok){var m=$('cmsmsg');if(!m)return;m.textContent=t;m.style.color=
 function ytId(u){u=String(u||'').trim();var m=u.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{6,20})/);if(m)return m[1];return /^[\w-]{6,20}$/.test(u)?u:null;}
 
 /* ---------- دخول وصلاحيات ---------- */
+var redirErr=null;
+function authReady(fauth){return new Promise(function(res){var done=false;var un=fauth.onAuthStateChanged(function(u){if(done)return;done=true;un();res(u);});setTimeout(function(){if(!done){done=true;try{un();}catch(e){}res(fauth.currentUser);}},8000);});}
+function deny(fauth){
+  app.innerHTML='<div class="deny"><h2>الصفحة دي خاصة بإدارة الموقع</h2><p>حسابك ('+esc(user.email||'')+') مش مسجل كمدير ولا مساعد. لو ده حساب المدرّس، صاحب الموقع يضيفه من لوحة المعلمين الأول.</p><button class="b" id="out">تسجيل خروج</button></div>';
+  $('out').onclick=function(){fauth.signOut().then(function(){location.reload();});};
+}
 function boot(){
   app=$('cmsapp');
   app.innerHTML='<p class="ld">جاري تجهيز اللوحة...</p>';
   MM.load().then(function(ok){
     if(!ok){app.innerHTML='<p class="ld">تعذر الاتصال. اتأكد من الإنترنت وأعد تحميل الصفحة.</p>';return;}
-    user=MM.user();
-    if(!user){renderLogin();return;}
-    db=firebase.firestore();
-    db.collection('admins').doc(user.uid).get().then(function(a){
-      if(a.exists){role='admin';renderShell();return;}
-      db.collection('teachers').doc(user.uid).get().then(function(t){
-        if(t.exists&&t.data().status==='approved'){role='teacher';renderShell();}
-        else app.innerHTML='<div class="deny"><h2>الصفحة دي خاصة بإدارة الموقع</h2><p>حسابك ('+esc(user.email||'')+') مش مسجل كمدير ولا مساعد. لو ده حساب المدرّس، صاحب الموقع يضيفه من لوحة المعلمين الأول.</p><button class="b" id="out">تسجيل خروج</button></div>',$('out').onclick=function(){MM.signOut().then(function(){location.reload();});};
-      });
-    }).catch(function(){app.innerHTML='<p class="ld">تعذر التحقق من الصلاحيات. أعد تحميل الصفحة.</p>';});
+    var fauth=firebase.auth();
+    fauth.getRedirectResult().catch(function(e){if(e&&e.code&&e.code!=='auth/no-auth-event')redirErr=MM.err(e);});
+    authReady(fauth).then(function(u){
+      user=u;
+      if(!user){renderLogin(fauth);return;}
+      if(!user.emailVerified){app.innerHTML='<div class="deny"><h2>فعّل بريدك الأول</h2><p>حسابك محتاج تأكيد البريد قبل دخول اللوحة. افحص بريدك واضغط رابط التفعيل ثم أعد تحميل الصفحة.</p><button class="b" id="out">تسجيل خروج</button></div>';$('out').onclick=function(){fauth.signOut().then(function(){location.reload();});};return;}
+      db=firebase.firestore();
+      db.collection('admins').doc(user.uid).get().then(function(a){
+        if(a.exists){role='admin';renderShell();return;}
+        db.collection('teachers').doc(user.uid).get().then(function(t){
+          if(t.exists&&t.data().status==='approved'){role='teacher';renderShell();return;}
+          /* المالك قد يكون معرّفًا عبر وثيقة config/admin (مطابقة بريد) لا عبر admins/{uid}:
+             نجرب قراءة قائمة المعلمين، وهي متاحة للمدير فقط في القواعد. */
+          db.collection('teachers').limit(1).get().then(function(){role='admin';renderShell();}).catch(function(){deny(fauth);});
+        });
+      }).catch(function(){app.innerHTML='<p class="ld">تعذر التحقق من الصلاحيات. أعد تحميل الصفحة.</p>';});
+    });
   });
 }
-function renderLogin(){
-  app.innerHTML='<div class="deny"><h2>لوحة التحكم بالمحتوى</h2><p>سجّل دخولك بحساب الإدارة الأول.</p><button class="b" id="gg">الدخول بحساب جوجل</button></div>';
-  $('gg').onclick=function(){$('gg').disabled=true;MM.google().then(function(){location.reload();}).catch(function(e){$('gg').disabled=false;msg(MM.err(e));});};
+function renderLogin(fauth){
+  app.innerHTML='<div class="deny"><h2>لوحة التحكم بالمحتوى</h2><p>سجّل دخولك بحساب الإدارة الأول.</p><button class="b" id="gg">الدخول بحساب جوجل</button></div><p id="ggerr" style="color:#c0392b;margin-top:10px"></p>';
+  if(redirErr)$('ggerr').textContent=redirErr;
+  /* تحويل كامل للصفحة بدل النافذة المنبثقة: الموبايل ومتصفح واتساب يحجبان النوافذ فتعلَق العملية. */
+  $('gg').onclick=function(){$('gg').disabled=true;$('ggerr').textContent='ثواني… بنحوّلك لجوجل…';fauth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()).catch(function(e){$('gg').disabled=false;$('ggerr').textContent=MM.err(e);});};
 }
 
 /* ---------- تحميل بيانات التراك ---------- */
