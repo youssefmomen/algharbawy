@@ -227,7 +227,11 @@ main{max-width:720px;margin:0 auto}
 .scorepill .star{color:#e07b00;font-size:15px}
 .scorepill.pulse{animation:scp .45s ease}
 @keyframes scp{50%{transform:scale(1.14)}}
-</style><link rel="stylesheet" href="acct.css?v=20261126k"><script src="acct.js?v=20261126n"></script><script src="cms.js?v=1"></script><script src="bubbles.js?v=20261126l"></script><link rel="stylesheet" href="fx.css?v=20261126k"><script src="fx.js?v=20261126p" defer></script><script>window.MM_INTER={prefix:'my',selectors:{mascot:'img[src*="mr-youssef"]',node:'.circle[data-node]',tile:'.strip .wrap>div'}};window.MM_HEADS=[];</script><script src="intro.js?v=20261126k" defer></script><script src="heads.js?v=20261126k" defer></script><script src="inter.js?v=2" defer></script><style>.w-ism{color:#1668b4;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.w-feil{color:#1a7f4b;font-weight:700;text-decoration:underline dashed;text-decoration-thickness:2px;text-underline-offset:3px}.w-harf{color:#c2410c;font-weight:700;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px}</style></head><body>
+</style><link rel="stylesheet" href="acct.css?v=20261126k"><script src="acct.js?v=20261126n"></script><script src="cms.js?v=1"></script><script src="bubbles.js?v=20261126l"></script><link rel="stylesheet" href="fx.css?v=20261126k"><script src="fx.js?v=20261126p" defer></script><script>window.MM_INTER={prefix:'my',selectors:{mascot:'img[src*="mr-youssef"]',node:'.circle[data-node]',tile:'.strip .wrap>div'}};window.MM_HEADS=[];</script><script src="intro.js?v=20261126k" defer></script><script src="heads.js?v=20261126k" defer></script><script src="inter.js?v=2" defer></script><style>.w-ism{color:#1668b4;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.w-feil{color:#1a7f4b;font-weight:700;text-decoration:underline dashed;text-decoration-thickness:2px;text-underline-offset:3px}.w-harf{color:#c2410c;font-weight:700;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px}
+.duo-cta{display:flex;align-items:center;gap:10px;margin:10px 12px 0;padding:10px 14px;background:#fff;border:2px solid var(--ink);border-radius:14px;box-shadow:0 3px 0 rgba(34,48,60,.25);text-decoration:none;color:var(--ink);font-family:'Cairo',sans-serif;font-weight:800;font-size:14px}
+.duo-cta .owl{font-size:22px;flex:none}
+.duo-cta .go{margin-inline-start:auto;background:var(--green);color:#fffdf2;border:2px solid var(--ink);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:800;white-space:nowrap;flex:none}
+.duo-cta:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(34,48,60,.25)}</style></head><body>
 <div class="halftone"></div>
 <script>if("scrollRestoration" in history){history.scrollRestoration="manual"}window.scrollTo(0,0);addEventListener("load",function(){window.scrollTo(0,0)});</script>
 <header class="nhd">
@@ -1422,6 +1426,7 @@ function renderLesson(keep){
   if(S.step>maxStep)S.step=Math.max(0,maxStep);
   var letters=['أ','ب','ج','د'];
   var h=rvBarHTML()+'<div class="seg-label"><span class="n">'+ar(S.seg+1)+'/'+ar(LES.segments.length)+'</span><span class="sl-t">'+sg.label+'</span></div>';
+  if(TRK==='g8ar'&&LES)h+='<a class="duo-cta" href="duo.html?t=g8&lesson='+LES.id+'"><span class="owl">🦉</span><span>جرّب وضع دوولينجو: الدرس كله أسئلة وتصحيح فوري</span><span class="go">ابدأ</span></a>';
   h+='<div class="seg-meta"><span>'+(S.sub===2?'الفيديو':(S.sub===0?'الشرح':'الأسئلة'))+'</span>';
   if(S.sub===0&&chunks>1)h+='<span>صفحة '+ar(S.step+1)+' من '+ar(chunks)+'</span>';
   if(S.sub===1&&items.length>1)h+='<span>سؤال '+ar(S.step+1)+' من '+ar(items.length)+'</span>';
