@@ -57,12 +57,9 @@ $('gGo').onclick=function(){var em=$('gEmail').value.trim(),pw=$('gPass').value;
  auth.signInWithEmailAndPassword(em,pw).catch(function(e){$('gMsg').textContent=errMsg(e);$('gMsg').className='adm-msg';$('gGo').disabled=false;});};
 $('gPass').addEventListener('keydown',function(e){if(e.key==='Enter')$('gGo').click();});
 $('gGoogle').onclick=function(){
- $('gGoogle').disabled=true;$('gMsg').textContent='ثواني… بنفتح جوجل';$('gMsg').className='adm-msg ok';
+ $('gGoogle').disabled=true;$('gMsg').textContent='ثواني… بنحوّلك لجوجل';$('gMsg').className='adm-msg ok';
  var pr=new firebase.auth.GoogleAuthProvider();
- auth.signInWithPopup(pr).catch(function(e){
-  if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request')){
-   $('gMsg').textContent='بنحوّلك لجوجل…';auth.signInWithRedirect(pr);return;}
-  $('gMsg').textContent=errMsg(e);$('gMsg').className='adm-msg';$('gGoogle').disabled=false;});
+ auth.signInWithRedirect(pr).catch(function(e){$('gMsg').textContent=errMsg(e);$('gMsg').className='adm-msg';$('gGoogle').disabled=false;});
 };
 auth.getRedirectResult().catch(function(e){if(e&&e.code&&e.code!=='auth/no-auth-event'){$('gMsg').textContent=errMsg(e);$('gMsg').className='adm-msg';$('gGoogle').disabled=false;}});
 $('gForgot').onclick=function(){var em=$('gEmail').value.trim();if(!em){$('gMsg').textContent='اكتب إيميلك فوق الأول.';return;}
