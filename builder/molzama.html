@@ -149,7 +149,7 @@ const ad=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const hl=s=>esc(s).replace(/\*(.+?)\*/g,'<span class="hl">$1</span>');
 let S,cur=0,sel=-1,view='ed';
 function sample(){return{v:1,
- meta:{header:'المراجعة النهائية: *النحو* | الصف الثاني الإعدادي • 2027',cover:true,kicker:'اللغة العربية • الصف الثاني الإعدادي • 2027',title1:'المراجعة النهائية',title2:'النحو',teacher:'مستر يوسف',role:'مدرس اللغة العربية',lab:'ملزمة',coverImg:'',deco:true},
+ meta:{header:'المراجعة النهائية: *النحو* | الصف الثاني الإعدادي • 2027',cover:true,kicker:'اللغة العربية • الصف الثاني الإعدادي • 2027',title1:'المراجعة النهائية',title2:'النحو',teacher:'مستر يوسف',role:'مدرس اللغة العربية',lab:'ملزمة',coverImg:'',deco:true,cdeco:true,cb1:'',cb2:'',imgW:70,imgY:0},
  th:{pri:'#1e63b8',pri2:'#0f3f8a',acc:'#17803a',bg:'#ffffff',ink:'#1b2430',soft:'#e8f1fb',f:'Cairo',fh:'Cairo',fs:14},
  ft:{phone:'01145083012',showPhone:true,showQr:true,qr:QR,label:'الدروس والتدريبات على موقع مستر يوسف',pageNo:true},
  numMode:'page',
@@ -173,7 +173,7 @@ function save(){try{localStorage.setItem('molzama1',JSON.stringify(S))}catch(e){
 function norm(){const d=sample();S.meta=Object.assign({},d.meta,S.meta);S.th=Object.assign({},d.th,S.th);S.ft=Object.assign({},d.ft,S.ft);S.numMode=S.numMode||'page';if(!S.pages||!S.pages.length)S.pages=[{cols:1,items:[]}];if(cur>=S.pages.length)cur=0}
 /* ===== الرسم ===== */
 function cssVars(){const t=S.th;return `--pri:${t.pri};--pri2:${t.pri2};--acc:${t.acc};--bg:${t.bg};--ink:${t.ink};--soft:${t.soft};--soft2:${t.pri}55;--f:'${t.f}',Cairo,sans-serif;--fh:'${t.fh}',Cairo,sans-serif;--fs:${t.fs}px`}
-function decoHTML(){if(!S.meta.deco)return '';const L='أبجدهوزحطيكلمنسعفصقرشتثخذضظغ';const pos=[[10,4,150],[88,6,120],[78,40,90],[6,52,110],[48,70,100],[16,86,130],[84,82,140]];return '<div class="deco">'+pos.map((p,i)=>`<span style="left:${p[0]}%;top:${p[1]}%;font-size:${p[2]}px">${L[(i*3)%L.length]}</span>`).join('')+'</div>'}
+function decoHTML(c){if(c?!S.meta.cdeco:!S.meta.deco)return '';const L='أبجدهوزحطيكلمنسعفصقرشتثخذضظغ';const pos=[[10,4,150],[88,6,120],[78,40,90],[6,52,110],[48,70,100],[16,86,130],[84,82,140]];return '<div class="deco">'+pos.map((p,i)=>`<span style="left:${p[0]}%;top:${p[1]}%;font-size:${p[2]}px">${L[(i*3)%L.length]}</span>`).join('')+'</div>'}
 function itemHTML(it,p,i,ctr){const w=it.w&&it.w!=='auto'?it.w:(S.pages[p].cols===2&&it.t==='q'?'half':'full');const cls=`it ${it.t} ${w==='half'?'half':''}`;const at=`data-p="${p}" data-i="${i}"`;
  const img=it.img?`<img class="im" src="${it.img}" style="width:${it.imgW||60}%">`:'';
  if(it.t==='h')return `<div class="${cls} ${it.col==='acc'?'acc':'pri'}" ${at}>${it.num?`<span class="hn">${esc(it.num)}</span>`:''}<span>${hl(it.text)}</span></div>`;
@@ -192,7 +192,7 @@ function itemHTML(it,p,i,ctr){const w=it.w&&it.w!=='auto'?it.w:(S.pages[p].cols=
   return `<div class="${cls}" ${at}>${inner}</div>`}
  return ''}
 function sheetHTML(p){
- if(p==='cover'){const m=S.meta,f=S.ft;return `<div class="sheet cover" style="${cssVars()}">${decoHTML()}<div class="ct"><small>${esc(m.kicker)}</small><div><h1>${esc(m.title1)}</h1></div><div><h1>${esc(m.title2)}</h1></div></div><div class="pic">${m.coverImg?`<img src="${m.coverImg}">`:''}</div><div class="tag"><small>${esc(m.lab)}</small><b>${esc(m.teacher)}</b><span>${esc(m.role)}</span></div><div class="cf">${f.showQr&&f.qr?`<img src="${f.qr}">`:''}${f.showPhone?`<div class="lb">${esc(f.label)}</div><div class="ph">${esc(f.phone)}</div>`:''}</div></div>`}
+ if(p==='cover'){const m=S.meta,f=S.ft;const bg=(m.cb1||m.cb2)?`background:linear-gradient(160deg,${m.cb1||S.th.pri},${m.cb2||m.cb1||S.th.pri2});`:'';return `<div class="sheet cover" style="${cssVars()};${bg}">${decoHTML(1)}<div class="ct"><small>${esc(m.kicker)}</small><div><h1>${esc(m.title1)}</h1></div><div><h1>${esc(m.title2)}</h1></div></div><div class="pic">${m.coverImg?`<img src="${m.coverImg}" style="max-width:${m.imgW||70}%;transform:translateY(${m.imgY||0}px)">`:''}</div><div class="tag"><small>${esc(m.lab)}</small><b>${esc(m.teacher)}</b><span>${esc(m.role)}</span></div><div class="cf">${f.showQr&&f.qr?`<img src="${f.qr}">`:''}${f.showPhone?`<div class="lb">${esc(f.label)}</div><div class="ph">${esc(f.phone)}</div>`:''}</div></div>`}
  const pg=S.pages[p],f=S.ft;let ctr={n:0};if(S.numMode==='cont'){for(let k=0;k<p;k++)S.pages[k].items.forEach(x=>{if(x.t==='q')ctr.n++})}
  const items=pg.items.map((it,i)=>{if(it.t==='q')ctr.n++;return itemHTML(it,p,i,ctr)}).join('');
  const total=S.pages.length;
@@ -240,6 +240,9 @@ function renderDe(){const t=S.th,m=S.meta,f=S.ft;const T=(l,o,k)=>`<label class=
  <div class="pan"><h3>العنوان العام والغلاف</h3>${T('الشريط العلوي لكل الصفحات','meta','header')}<p class="hint">ضع نجمتين حول الكلمة لتظهر بالأصفر مثل *النحو*.</p>
  <label class="f"><input type="checkbox" data-o="meta" data-k="cover" ${m.cover?'checked':''}> أضف صفحة غلاف</label><label class="f"><input type="checkbox" data-o="meta" data-k="deco" ${m.deco?'checked':''}> حروف زخرفية في الخلفية</label>
  ${T('سطر صغير فوق العنوان','meta','kicker')}${T('العنوان الأول','meta','title1')}${T('العنوان الثاني','meta','title2')}${T('كلمة قبل الاسم','meta','lab')}${T('الاسم','meta','teacher')}${T('الوصف تحت الاسم','meta','role')}
+ <label class="f"><input type="checkbox" data-o="meta" data-k="cdeco" ${m.cdeco?'checked':''}> حروف زخرفية على الغلاف</label>
+ <div class="row"><div><label class="f">لون خلفية الغلاف (من)</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb1" value="${m.cb1||t.pri}"></div><div><label class="f">إلى</label><input type="color" style="width:100%;height:38px" data-o="meta" data-k="cb2" value="${m.cb2||t.pri2}"></div></div><div class="row" style="margin-top:6px"><button class="mini" data-act="rstcb">رجوع للون الملزمة</button></div>
+ <label class="f">حجم صورة الغلاف</label><input type="range" min="30" max="100" data-o="meta" data-k="imgW" data-n="1" value="${m.imgW||70}" style="width:100%"><label class="f">مكان الصورة (أعلى / أسفل)</label><input type="range" min="-250" max="120" data-o="meta" data-k="imgY" data-n="1" value="${m.imgY||0}" style="width:100%">
  <div class="row" style="margin-top:8px"><button class="mini" data-act="pickcover">${m.coverImg?'تغيير صورة الغلاف':'إضافة صورة الغلاف'}</button>${m.coverImg?'<button class="mini del" data-act="rmcover">حذف الصورة</button>':''}</div></div>
  <div class="pan"><h3>الرقم و QR في كل صفحة</h3><label class="f"><input type="checkbox" data-o="ft" data-k="showPhone" ${f.showPhone?'checked':''}> أظهر رقم التليفون</label>${T('الرقم','ft','phone')}${T('النص بجانب الرقم','ft','label')}
  <label class="f"><input type="checkbox" data-o="ft" data-k="showQr" ${f.showQr?'checked':''}> أظهر رمز QR</label><div class="row" style="margin-top:6px"><button class="mini" data-act="pickqr">تغيير صورة QR</button><button class="mini" data-act="resetqr">رجوع لرمز مستر يوسف</button></div>
@@ -277,6 +280,7 @@ ed.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  else if(a==='pick'){imgTarget={t:'item',i};$('#fileImg').click()}
  else if(a==='rmimg'){P.items[i].img='';renderEd();schedPv()}
  else if(a==='pickcover'){imgTarget={t:'cover'};$('#fileImg').click()}
+ else if(a==='rstcb'){S.meta.cb1='';S.meta.cb2='';renderDe();schedPv()}
  else if(a==='rmcover'){S.meta.coverImg='';renderDe();schedPv()}
  else if(a==='pickqr'){imgTarget={t:'qr'};$('#fileImg').click()}
  else if(a==='resetqr'){S.ft.qr=QR;schedPv();alert('تمت إعادة الرمز الأصلي')}
