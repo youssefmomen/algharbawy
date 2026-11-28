@@ -26,6 +26,7 @@
       <button type="button" data-tab="texts" id="tabTexts" hidden>نصوص الموقع</button>
       <button type="button" data-tab="history" id="tabHistory" hidden>سجل النشر</button>
       <button type="button" data-tab="team" id="tabTeam" hidden>الفريق</button>
+      <button type="button" data-tab="notif" id="tabNotif">الإشعارات</button>
     </div>
 
     <!-- المحتوى -->
@@ -40,6 +41,18 @@
     </div>
 
     <!-- الفريق -->
+    <div id="panelNotif" hidden>
+      <div class="adm-sect"><span class="n">١</span>إشعار جديد للطلاب</div>
+      <div class="adm-note">يظهر في جرس الإشعارات لدى الطلاب حسب الجمهور المختار.</div>
+      <input id="nTitle" maxlength="80" placeholder="العنوان" style="width:100%;margin:6px 0;padding:10px">
+      <textarea id="nBody" maxlength="400" placeholder="النص" rows="3" style="width:100%;margin:6px 0;padding:10px"></textarea>
+      <input id="nLink" placeholder="رابط اختياري (مثال: track.html?t=g8ar)" style="width:100%;margin:6px 0;padding:10px">
+      <select id="nTo" style="width:100%;margin:6px 0;padding:10px"><option value="all">كل الطلاب</option><option value="stage:primary">المرحلة الابتدائية</option><option value="stage:prep">المرحلة الإعدادية</option><option value="stage:azhar">قسم الأزهر</option><option value="grade:g1">أولى ابتدائي</option><option value="grade:g8ar">تانية إعدادي</option><option value="grade:g7az">أولى إعدادي أزهر</option></select>
+      <button class="adm-btn" id="nSend" type="button">إرسال</button> <span id="nMsg" class="adm-msg"></span>
+      <div class="adm-sect"><span class="n">٢</span>آخر الإشعارات</div><div id="nList"></div>
+      <div class="adm-sect"><span class="n">٣</span>نشاط الطلاب الجدد</div><div id="nAct"></div>
+    </div>
+
     <div id="panelTeam" hidden>
       <div class="adm-sect"><span class="n">١</span>المساعدون الحاليون</div>
       <div id="teamList"></div>
