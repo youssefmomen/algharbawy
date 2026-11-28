@@ -1,4 +1,4 @@
-<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=color-scheme content='only light'><meta name=supported-color-schemes content='light'><meta name=darkreader-lock><meta name="robots" content="noindex"><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=20261126y9"><link rel="stylesheet" href="admin.css?v=1"><title>لوحة تحكم المحتوى | منصة مستر يوسف</title></head><body class="adm">
+<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=color-scheme content='only light'><meta name=supported-color-schemes content='light'><meta name=darkreader-lock><meta name="robots" content="noindex"><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=20261126y9"><link rel="stylesheet" href="admin.css?v=2"><title>لوحة تحكم المحتوى | منصة مستر يوسف</title></head><body class="adm">
 <nav><div class="wrap"><a class="brand" href="index.html"><span class="dm"><b>ي</b></span>منصة مستر يوسف</a><ul><li><a href="index.html">الموقع</a></li><li><a href="track.html?t=g1">الدروس</a></li></ul><a class="btn" href="index.html">الرئيسية</a></div></nav>
 <div class="adm-wrap">
 
@@ -22,15 +22,18 @@
       <div class="adm-who"><span id="whoEmail"></span><span class="adm-badge" id="whoRole"></span><button class="adm-signout" id="btnOut" type="button">خروج</button></div>
     </div>
     <div class="adm-tabs" id="tabs">
-      <button type="button" data-tab="content" class="on">المحتوى</button>
+      <button type="button" data-tab="home" class="on">الرئيسية</button>
+      <button type="button" data-tab="content">المحتوى</button>
       <button type="button" data-tab="texts" id="tabTexts" hidden>نصوص الموقع</button>
       <button type="button" data-tab="history" id="tabHistory" hidden>سجل النشر</button>
       <button type="button" data-tab="team" id="tabTeam" hidden>الفريق</button>
       <button type="button" data-tab="notif" id="tabNotif">الإشعارات</button>
+      <button type="button" data-tab="bar" id="tabBar">شريط الإعلان</button>
+      <button type="button" data-tab="sched" id="tabSched">المواعيد</button>
     </div>
 
     <!-- المحتوى -->
-    <div id="panelContent">
+    <div id="panelContent" hidden>
       <div id="trackPick">
         <div class="adm-sect"><span class="n">١</span>اختر الصف</div>
         <div class="adm-chips" id="trackChips"></div>
@@ -40,7 +43,52 @@
       <div id="editorBox"></div>
     </div>
 
-    <!-- الفريق -->
+    <!-- الرئيسية -->
+    <div id="panelHome">
+      <div class="adm-note">اختر القسم الذي تريد إدارته. كل تغيير في الإشعارات أو الشريط أو المواعيد يظهر للطلاب فور الحفظ.</div>
+      <div class="adm-tiles">
+        <button type="button" class="adm-tile" data-go="content"><b>المحتوى</b><span>الدروس والأسئلة (مسودة ونشر)</span></button>
+        <button type="button" class="adm-tile" data-go="texts"><b>نصوص الموقع</b><span>عناوين وعبارات الصفحة الرئيسية</span></button>
+        <button type="button" class="adm-tile" data-go="notif"><b>الإشعارات</b><span>رسالة تصل إلى جرس الطلاب</span></button>
+        <button type="button" class="adm-tile" data-go="bar"><b>شريط الإعلان</b><span>سطر ظاهر أعلى الموقع</span></button>
+        <button type="button" class="adm-tile" data-go="sched"><b>المواعيد</b><span>الامتحانات وحصص المراجعة</span></button>
+        <button type="button" class="adm-tile" data-go="history"><b>سجل النشر</b><span>استرجاع نسخة سابقة</span></button>
+        <button type="button" class="adm-tile" data-go="team"><b>الفريق</b><span>المساعدون وصلاحياتهم</span></button>
+      </div>
+      <div class="adm-sect"><span class="n">١</span>الحالة الآن</div>
+      <div id="hSum" class="adm-note">جارٍ التحميل...</div>
+    </div>
+
+    <!-- شريط الإعلان -->
+    <div id="panelBar" hidden>
+      <div class="adm-sect"><span class="n">١</span>شريط جديد</div>
+      <div class="adm-note">يظهر سطر واحد أعلى الصفحة الرئيسية وصفحة الدروس. يظهر أحدث شريط فعّال للمرحلة، ويستطيع الطالب إغلاقه.</div>
+      <div class="adm-card">
+        <div class="adm-fld"><label for="bText">نص الشريط</label><input id="bText" type="text" maxlength="140" placeholder="مثال: امتحان الشهر يوم الأحد، راجعوا الدرس الثالث"></div>
+        <div class="adm-fld"><label for="bTo">المرحلة</label><select id="bTo"><option value="all">كل المراحل</option><option value="stage:primary">المرحلة الابتدائية</option><option value="stage:prep">المرحلة الإعدادية</option><option value="stage:azhar">قسم الأزهر</option></select></div>
+        <div class="adm-msg" id="bMsg" role="alert"></div>
+        <button class="adm-btn pri block" id="bAdd" type="button">نشر الشريط</button>
+      </div>
+      <div class="adm-sect"><span class="n">٢</span>الأشرطة الحالية</div><div id="bList"></div>
+    </div>
+
+    <!-- المواعيد -->
+    <div id="panelSched" hidden>
+      <div class="adm-sect"><span class="n">١</span>موعد جديد</div>
+      <div class="adm-note">تظهر المواعيد القادمة فقط في الصفحة الرئيسية، وتختفي تلقائيًا بعد مرور تاريخها.</div>
+      <div class="adm-card">
+        <div class="adm-fld"><label for="sTitle">العنوان</label><input id="sTitle" type="text" maxlength="80" placeholder="مثال: امتحان الوحدة الأولى"></div>
+        <div class="adm-fld"><label for="sType">النوع</label><select id="sType"><option value="exam">امتحان</option><option value="revision">حصة مراجعة</option></select></div>
+        <div class="adm-fld"><label for="sDate">التاريخ</label><input id="sDate" type="date" dir="ltr"></div>
+        <div class="adm-fld"><label for="sTo">المرحلة</label><select id="sTo"><option value="all">كل المراحل</option><option value="stage:primary">المرحلة الابتدائية</option><option value="stage:prep">المرحلة الإعدادية</option><option value="stage:azhar">قسم الأزهر</option></select></div>
+        <div class="adm-fld"><label for="sNote">ملاحظة (اختياري)</label><input id="sNote" type="text" maxlength="120" placeholder="مثال: المقرر من الدرس ١ إلى ٤"></div>
+        <div class="adm-msg" id="sMsg" role="alert"></div>
+        <button class="adm-btn pri block" id="sAdd" type="button">إضافة الموعد</button>
+      </div>
+      <div class="adm-sect"><span class="n">٢</span>المواعيد المسجلة</div><div id="sList"></div>
+    </div>
+
+    <!-- الإشعارات -->
     <div id="panelNotif" hidden>
       <div class="adm-sect"><span class="n">١</span>إشعار جديد للطلاب</div>
       <div class="adm-note">يظهر في جرس الإشعارات لدى الطلاب حسب الجمهور المختار.</div>
@@ -114,5 +162,5 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="cms.js?v=1"></script>
-<script src="admin.js?v=1"></script>
+<script src="admin.js?v=2"></script>
 </body></html>
