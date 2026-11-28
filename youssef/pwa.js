@@ -37,12 +37,16 @@
   }
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault(); deferred = e;
-    bar('ثبّت منصة مستر يوسف على موبايلك وافتحها كتطبيق', function () {
-      deferred.prompt(); deferred.userChoice.then(function (r) { deferred = null; close(r && r.outcome === 'accepted' ? 365 : 3); });
-    });
+    /* نتأخر بالشريط شوية عشان ما يغطّيش أول شاشة */
+    setTimeout(function () {
+      if (!deferred) return;
+      bar('ثبّت منصة مستر يوسف على موبايلك وافتحها كتطبيق', function () {
+        deferred.prompt(); deferred.userChoice.then(function (r) { deferred = null; close(r && r.outcome === 'accepted' ? 365 : 3); });
+      });
+    }, 9000);
   });
   window.addEventListener('appinstalled', function () { close(365); });
   if (ios) setTimeout(function () {
     bar('للتثبيت: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»', null);
-  }, 2500);
+  }, 9000);
 })();
