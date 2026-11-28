@@ -1,0 +1,27 @@
+/* الوضع الليلي (يُحمَّل بعد بقية الأنماط) */
+html[data-theme="dark"]{color-scheme:dark;--bg:#0f1720;--paper:#16212b;--ink:#e9eef3;--line:#34434f;--sh:#05090e;--primary:#8fb9f2;--green:#8fb9f2;--mint:#1d3a33;--sky:#182c40;--red:#ff8f8f;--accent:#ffc93c;--yellow:#ffc93c;--on-accent:#17252e}
+html[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+html[data-theme="dark"] .bubble,html[data-theme="dark"] .demo .bb{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .row .n,html[data-theme="dark"] .ls .n,html[data-theme="dark"] .feat .f i,html[data-theme="dark"] .brand .dm b,html[data-theme="dark"] .gcard .gi,html[data-theme="dark"] .gcard .gc{color:var(--on-accent)}
+html[data-theme="dark"] footer{background:#0a121a;color:#dbe4ec}
+html[data-theme="dark"] .grp{background:#111c26}
+html[data-theme="dark"] .grp a.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+html[data-theme="dark"] .ph-note{background:#22303c;color:var(--accent)}
+html[data-theme="dark"] .teach{background:#16304f}
+html[data-theme="dark"] .tabs span.on,html[data-theme="dark"] .stage b{color:#0f1720}
+html[data-theme="dark"] .btn.alt{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .gcard .gi{background:#22303c;color:#e9eef3;border-color:#3d4d5a}
+html[data-theme="dark"] .gcard.s-primary .gi{background:var(--accent);color:#17252e;border-color:#3d4d5a}
+html[data-theme="dark"] .gcard .gc{background:#1d3a33;color:#cdeee2}
+html[data-theme="dark"] .row .chip{background:#1d3a33;color:#cdeee2}
+html[data-theme="dark"] .row.soon .chip{background:#182c40;color:#cfe2f7}
+html[data-theme="dark"] .mm-chip{background:var(--paper);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .mm-chip.guest{background:#3a2530;color:#ffd9e0}
+html[data-theme="dark"] .mm-nag{background:var(--paper);border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .mm-nag b{color:var(--primary)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#0d1721;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .hint{background:var(--sky);color:var(--ink)}
+html[data-theme="dark"] .pbtn{color:var(--on-accent)}
+html[data-theme="dark"] .pbtn.g{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .pwa-bar{background:#16212b;color:#e9eef3;border-color:#34434f;box-shadow:4px 4px 0 #05090e}
+html[data-theme="dark"] .pwa-bar .x{background:#0f1720;color:#e9eef3;border-color:#34434f}
