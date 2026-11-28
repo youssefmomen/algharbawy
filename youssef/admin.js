@@ -759,7 +759,7 @@ document.querySelectorAll('#tabs button').forEach(function(b){
   document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',x===b);});
   var t=b.dataset.tab;curTab=t;
   $('panelContent').hidden=t!=='content';$('panelTeam').hidden=t!=='team';
-  $('panelTexts').hidden=t!=='texts';$('panelHistory').hidden=t!=='history';
+  $('panelTexts').hidden=t!=='texts';$('panelHistory').hidden=t!=='history';$('panelNotif').hidden=t!=='notif';if(t==='notif')loadNotif();
   $('saveBar').hidden=(t!=='content'&&t!=='texts');
   paintBar();
   if(t==='team')loadTeam();
@@ -817,3 +817,24 @@ $('tAdd').onclick=function(){
   .catch(function(e){$('tMsg').textContent=errMsg(e);$('tMsg').className='adm-msg';$('tAdd').disabled=false;});
 };
 })();
+
+/* ---------- الإشعارات ---------- */
+function loadNotif(){
+ db.collection('announcements').orderBy('createdAt','desc').limit(20).get().then(function(s){
+  $('nList').innerHTML=s.docs.map(function(d){var x=d.data();return '<div class="adm-note"><b></b> '+'</div>';}).length?'':'';
+  var h='';s.docs.forEach(function(d){var x=d.data();h+='<div class="adm-note" data-id="'+d.id+'"><b>'+String(x.title||'').replace(/</g,'&lt;')+'</b> ('+(x.to||'all')+') <button type="button" data-del="'+d.id+'">حذف</button></div>';});
+  $('nList').innerHTML=h||'لا توجد إشعارات.';
+ }).catch(function(){$('nList').textContent='تعذر التحميل (قد تحتاج صلاحية المدير في القواعد).';});
+ db.collection('users').orderBy('lastActive','desc').limit(15).get().then(function(s){
+  var h='';s.docs.forEach(function(d){var x=d.data();var t=x.lastActive&&x.lastActive.toDate?x.lastActive.toDate().toLocaleString('ar-EG'):'';h+='<div class="adm-note">'+String(x.name||x.email||'طالب').replace(/</g,'&lt;')+' - آخر نشاط: '+t+'</div>';});
+  $('nAct').innerHTML=h||'لا نشاط بعد.';
+ }).catch(function(){$('nAct').textContent='تعذر تحميل النشاط.';});
+}
+$('nSend').onclick=function(){
+ var t=$('nTitle').value.trim(),b=$('nBody').value.trim();if(!t||!b){$('nMsg').textContent='اكتب العنوان والنص.';return;}
+ $('nSend').disabled=true;
+ db.collection('announcements').add({title:t,body:b,link:$('nLink').value.trim(),to:$('nTo').value,active:true,by:(user&&user.email)||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()})
+ .then(function(){$('nMsg').textContent='تم الإرسال.';$('nTitle').value=$('nBody').value=$('nLink').value='';loadNotif();})
+ .catch(function(e){$('nMsg').textContent='رفضت القواعد الكتابة: '+(e&&e.code||'');}).then(function(){$('nSend').disabled=false;});
+};
+$('nList').onclick=function(e){var id=e.target.getAttribute&&e.target.getAttribute('data-del');if(!id)return;db.collection('announcements').doc(id).delete().then(loadNotif).catch(function(){});};
