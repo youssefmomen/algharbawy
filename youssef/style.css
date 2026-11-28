@@ -233,3 +233,6 @@ html[data-theme="dark"] .themebtn .ic-moon{display:none}
  .grades .sh h2{font-size:23px}
  .grades .sh p{font-size:13px}
 }
+#how .feat{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){#how .feat{grid-template-columns:1fr}}
+#how[hidden]{display:none!important}
