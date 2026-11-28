@@ -73,7 +73,7 @@ function check(n){
 }
 function init(){
  document.documentElement.classList.add('fx');
- mkBtn();
+ /* sound toggle button removed by request */
  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(check);});}).observe(document.body,{childList:true,subtree:true});
  var cw=document.getElementById('charWrap');
  if(cw){
