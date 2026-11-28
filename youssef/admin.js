@@ -9,7 +9,7 @@ var TRACKS={
  g7az:{name:'أولى إعدادي أزهر',glob:'AR_G7AZ',files:['ar-g7az','ar-g7az-simplify','ar-g7az-mot','ar-g7az-fonon','ar-g7az-exams','ar-g7az-nahw-e','ar-g7az-nahw-a','ar-g7az-nahw-b','ar-g7az-nahw-c','ar-g7az-nahw-d','ar-g7az-unit1','ar-g7az-unit2','ar-g7az-rev']}
 };
 var auth,db,user=null,role=null,track=null,PD=null,ov=null,dirty=false,view={kind:'tree',open:{},lesson:null};
-var siteOv=null,siteDirty=false,curTab='content';
+var siteOv=null,siteDirty=false,curTab='home';
 var $=function(id){return document.getElementById(id);};
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function stripTags(h){var d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim();}
@@ -50,6 +50,7 @@ auth.onAuthStateChanged(function(u){
   $('tabTeam').hidden=!r.owner;
   $('tabTexts').hidden=!canTexts();
   $('tabHistory').hidden=!canPublish();
+  setTimeout(function(){if(typeof loadHome==='function'&&!$('panelHome').hidden)loadHome();},300);
   $('btnSave').disabled=!canEdit();$('btnPublish').disabled=!canPublish();
   if(!canEdit())$('draftInfo').hidden=false,$('draftInfo').textContent='صلاحيتك «عرض فقط»: تقدر تشوف كل حاجة من غير ما تغيّر.';
   if(!track)pickTrack('g1');
@@ -122,6 +123,7 @@ function markDirty(){dirty=true;paintBar();}
 function markSiteDirty(){siteDirty=true;paintBar();}
 function paintBar(){
  if(!role)return;
+ if(curTab!=='content'&&curTab!=='texts'){$('saveBar').hidden=true;return;}
  $('saveBar').hidden=false;
  var d=curTab==='texts'?siteDirty:dirty;
  $('btnSave').textContent=d?'حفظ مسودة ●':'حفظ مسودة';
@@ -758,6 +760,8 @@ document.querySelectorAll('#tabs button').forEach(function(b){
  b.onclick=function(){
   document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',x===b);});
   var t=b.dataset.tab;curTab=t;
+  $('panelHome').hidden=t!=='home';$('panelBar').hidden=t!=='bar';$('panelSched').hidden=t!=='sched';
+  if(t==='home')loadHome();if(t==='bar')loadBar();if(t==='sched')loadSched();
   $('panelContent').hidden=t!=='content';$('panelTeam').hidden=t!=='team';
   $('panelTexts').hidden=t!=='texts';$('panelHistory').hidden=t!=='history';$('panelNotif').hidden=t!=='notif';if(t==='notif')loadNotif();
   $('saveBar').hidden=(t!=='content'&&t!=='texts');
@@ -822,7 +826,7 @@ $('tAdd').onclick=function(){
 function loadNotif(){
  db.collection('announcements').orderBy('createdAt','desc').limit(20).get().then(function(s){
   $('nList').innerHTML=s.docs.map(function(d){var x=d.data();return '<div class="adm-note"><b></b> '+'</div>';}).length?'':'';
-  var h='';s.docs.forEach(function(d){var x=d.data();h+='<div class="adm-note" data-id="'+d.id+'"><b>'+String(x.title||'').replace(/</g,'&lt;')+'</b> ('+(x.to||'all')+') <button type="button" data-del="'+d.id+'">حذف</button></div>';});
+  var h='';s.docs.forEach(function(d){var x=d.data();if(x.kind&&x.kind!=='bell')return;h+='<div class="adm-note" data-id="'+d.id+'"><b>'+String(x.title||'').replace(/</g,'&lt;')+'</b> ('+(x.to||'all')+') <button type="button" data-del="'+d.id+'">حذف</button></div>';});
   $('nList').innerHTML=h||'لا توجد إشعارات.';
  }).catch(function(){$('nList').textContent='تعذر التحميل (قد تحتاج صلاحية المدير في القواعد).';});
  db.collection('users').orderBy('lastActive','desc').limit(15).get().then(function(s){
@@ -838,3 +842,52 @@ $('nSend').onclick=function(){
  .catch(function(e){$('nMsg').textContent='رفضت القواعد الكتابة: '+(e&&e.code||'');}).then(function(){$('nSend').disabled=false;});
 };
 $('nList').onclick=function(e){var id=e.target.getAttribute&&e.target.getAttribute('data-del');if(!id)return;db.collection('announcements').doc(id).delete().then(loadNotif).catch(function(){});};
+
+
+/* ---------- لوحة الرئيسية، شريط الإعلان، المواعيد ---------- */
+var STG={all:'كل المراحل','stage:primary':'الابتدائية','stage:prep':'الإعدادية','stage:azhar':'الأزهر'};
+function ex(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function allAnn(){return db.collection('announcements').orderBy('createdAt','desc').limit(100).get().then(function(s){return s.docs.map(function(d){var x=d.data();x.id=d.id;return x;});});}
+document.querySelectorAll('.adm-tile').forEach(function(t){t.onclick=function(){var b=document.querySelector('#tabs button[data-tab="'+t.dataset.go+'"]');if(b&&!b.hidden)b.click();else alert('هذا القسم غير متاح لصلاحياتك.');};});
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function loadHome(){
+ allAnn().then(function(L){
+  var b=L.filter(function(a){return a.kind==='bar'&&a.active!==false;}).length;
+  var s=L.filter(function(a){return a.kind==='sched'&&a.active!==false&&a.date>=todayStr();}).length;
+  var n=L.filter(function(a){return(!a.kind||a.kind==='bell')&&a.active!==false;}).length;
+  $('hSum').textContent='أشرطة فعّالة: '+b+'، مواعيد قادمة: '+s+'، إشعارات مرسلة: '+n+'.';
+ }).catch(function(){$('hSum').textContent='تعذر تحميل الحالة.';});
+}
+function loadBar(){
+ allAnn().then(function(L){
+  var h='';L.filter(function(a){return a.kind==='bar';}).forEach(function(a){h+='<div class="adm-row'+(a.active===false?' hidden-item':'')+'"><div class="t">'+ex(a.text)+'<small>'+ex(STG[a.to||'all']||'')+(a.active===false?' - متوقف':'')+'</small></div><button type="button" class="adm-ib" data-btog="'+a.id+'" data-on="'+(a.active===false?'0':'1')+'">'+(a.active===false?'تشغيل':'إيقاف')+'</button><button type="button" class="adm-ib warn" data-bdel="'+a.id+'">حذف</button></div>';});
+  $('bList').innerHTML=h||'<div class="adm-note">لا توجد أشرطة.</div>';
+ }).catch(function(){$('bList').textContent='تعذر التحميل.';});
+}
+$('bAdd').onclick=function(){
+ var t=$('bText').value.trim();if(!t){$('bMsg').textContent='اكتب نص الشريط.';return;}
+ $('bAdd').disabled=true;$('bMsg').textContent='';
+ db.collection('announcements').add({kind:'bar',text:t,to:$('bTo').value,active:true,by:(user&&user.email)||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()})
+ .then(function(){$('bText').value='';$('bMsg').textContent='تم النشر.';$('bMsg').className='adm-msg ok';loadBar();})
+ .catch(function(e){$('bMsg').className='adm-msg';$('bMsg').textContent='لا تملك صلاحية الكتابة (للمالك فقط): '+(e&&e.code||'');}).then(function(){$('bAdd').disabled=false;});
+};
+$('bList').onclick=function(e){
+ var d=e.target.getAttribute&&e.target.getAttribute('data-bdel'),t=e.target.getAttribute&&e.target.getAttribute('data-btog');
+ if(d){if(!confirm('حذف هذا الشريط؟'))return;db.collection('announcements').doc(d).delete().then(loadBar).catch(function(){alert('تعذر الحذف.');});}
+ if(t){db.collection('announcements').doc(t).update({active:e.target.getAttribute('data-on')==='0'}).then(loadBar).catch(function(){alert('تعذر التعديل.');});}
+};
+function loadSched(){
+ allAnn().then(function(L){
+  var td=todayStr(),h='';
+  L.filter(function(a){return a.kind==='sched';}).sort(function(a,b){return a.date<b.date?-1:1;}).forEach(function(a){var past=a.date<td;h+='<div class="adm-row'+((past||a.active===false)?' hidden-item':'')+'"><div class="t">'+ex(a.title)+'<small>'+(a.type==='exam'?'امتحان':'مراجعة')+' - '+ex(a.date)+' - '+ex(STG[a.to||'all']||'')+(past?' - انتهى':'')+(a.note?' - '+ex(a.note):'')+'</small></div><button type="button" class="adm-ib warn" data-sdel="'+a.id+'">حذف</button></div>';});
+  $('sList').innerHTML=h||'<div class="adm-note">لا توجد مواعيد.</div>';
+ }).catch(function(){$('sList').textContent='تعذر التحميل.';});
+}
+$('sAdd').onclick=function(){
+ var t=$('sTitle').value.trim(),d=$('sDate').value;if(!t||!d){$('sMsg').className='adm-msg';$('sMsg').textContent='اكتب العنوان واختر التاريخ.';return;}
+ $('sAdd').disabled=true;$('sMsg').textContent='';
+ db.collection('announcements').add({kind:'sched',title:t,type:$('sType').value,date:d,to:$('sTo').value,note:$('sNote').value.trim(),active:true,by:(user&&user.email)||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()})
+ .then(function(){$('sTitle').value=$('sNote').value='';$('sMsg').textContent='تمت الإضافة.';$('sMsg').className='adm-msg ok';loadSched();})
+ .catch(function(e){$('sMsg').className='adm-msg';$('sMsg').textContent='لا تملك صلاحية الكتابة (للمالك فقط): '+(e&&e.code||'');}).then(function(){$('sAdd').disabled=false;});
+};
+$('sList').onclick=function(e){var d=e.target.getAttribute&&e.target.getAttribute('data-sdel');if(!d)return;if(!confirm('حذف هذا الموعد؟'))return;db.collection('announcements').doc(d).delete().then(loadSched).catch(function(){alert('تعذر الحذف.');});};
