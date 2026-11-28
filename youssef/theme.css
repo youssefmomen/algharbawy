@@ -25,3 +25,7 @@ html[data-theme="dark"] .pbtn{color:var(--on-accent)}
 html[data-theme="dark"] .pbtn.g{background:var(--paper);color:var(--ink)}
 html[data-theme="dark"] .pwa-bar{background:#16212b;color:#e9eef3;border-color:#34434f;box-shadow:4px 4px 0 #05090e}
 html[data-theme="dark"] .pwa-bar .x{background:#0f1720;color:#e9eef3;border-color:#34434f}
+html[data-theme="dark"] .pf-card{background:var(--paper);border-color:var(--line);box-shadow:5px 5px 0 var(--sh)}
+html[data-theme="dark"] .pf-card p{color:#b9c6d1}
+html[data-theme="dark"] .pf-card .go{color:var(--on-accent);border-color:var(--line);box-shadow:3px 3px 0 var(--sh)}
+html[data-theme="dark"] .pf-lead,html[data-theme="dark"] .hint{color:var(--ink)}
