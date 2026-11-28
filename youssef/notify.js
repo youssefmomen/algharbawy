@@ -33,7 +33,7 @@ function add(){
 }
 function init(){add();
  seq(FS).then(function(){if(!firebase.apps.length)firebase.initializeApp(window.FIREBASE_CONFIG);
-  firebase.firestore().collection('announcements').orderBy('createdAt','desc').limit(30).onSnapshot(function(s){items=s.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).filter(function(a){return a.active!==false&&mine(a);});paint();},function(){});
+  firebase.firestore().collection('announcements').orderBy('createdAt','desc').limit(30).onSnapshot(function(s){items=s.docs.map(function(d){var x=d.data();x.id=d.id;return x;}).filter(function(a){return a.active!==false&&(!a.kind||a.kind==='bell')&&mine(a);});paint();},function(){});
  }).catch(function(){});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
