@@ -32,7 +32,7 @@ html[data-theme="dark"] .pf-lead,html[data-theme="dark"] .hint{color:var(--ink)}
 .ntwrap{position:relative;flex:none}
 .ntbtn{position:relative;width:40px;height:40px;display:grid;place-items:center;background:var(--paper);color:var(--ink);border:2.5px solid var(--line);border-radius:50%;box-shadow:2px 2px 0 var(--sh);cursor:pointer;padding:0}
 .ntb{position:absolute;top:-6px;inset-inline-start:-6px;min-width:18px;height:18px;border-radius:9px;background:#d64545;color:#fff;font:800 11px/18px Cairo,sans-serif;text-align:center;font-style:normal;padding:0 4px}
-.ntpanel{position:absolute;top:48px;inset-inline-start:0;width:min(86vw,320px);max-height:60vh;overflow:auto;background:var(--paper);color:var(--ink);border:3px solid var(--line);border-radius:14px;box-shadow:4px 4px 0 var(--sh);z-index:200;text-align:start}
+.ntpanel{position:absolute;top:48px;inset-inline-end:0;width:min(86vw,320px);max-height:60vh;overflow:auto;background:var(--paper);color:var(--ink);border:3px solid var(--line);border-radius:14px;box-shadow:4px 4px 0 var(--sh);z-index:200;text-align:start}
 .nt-i{padding:10px 14px;border-bottom:1px solid var(--line)}.nt-i.new{background:var(--sky)}
 .nt-i b{display:block;font-size:14.5px}.nt-i p{font-size:13px;line-height:1.7;margin:2px 0}.nt-i span{font-size:11px;opacity:.65;margin-inline-end:10px}.nt-i a{font-size:12.5px;font-weight:800;color:var(--primary)}
 .nt-e{padding:16px;text-align:center;font-size:13px}
