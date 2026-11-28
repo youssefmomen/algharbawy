@@ -41,9 +41,9 @@
 </div></section>
 
 <section id="how" class="how"><div class="wrap"><div class="sh"><h2 data-go="track.html?t=g1" role="link" tabindex="0" title="جرّب الدرس الأول">كيف نشرح؟</h2></div><div class="feat">
-<div class="f"><i><svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 10h32v22H24l-8 7v-7H8z"/></svg></i><div><b>كل قاعدة بقصة</b><span>يُشرح النحو بمواقف وقصص من حياة الطفل</span></div></div>
+<div class="f"><i><svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 10h32v22H24l-8 7v-7H8z"/></svg></i><div><b>كل قاعدة بقصة</b><span>يُشرح النحو بمواقف وقصص بسيطة</span></div></div>
 <div class="f"><i><svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="6" y="16" width="36" height="18" rx="9"/><path d="M16 21v8M12 25h8"/><circle cx="32" cy="23" r="1.6"/><circle cx="36" cy="27" r="1.6"/></svg></i><div><b>لعبة بعد كل درس</b><span>أسئلة على شكل لعبة، والتصحيح فوري</span></div></div>
-<div class="f"><i><svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M10 18v12h6l10 8V10l-10 8z"/><path d="M32 18a8 8 0 0 1 0 12"/></svg></i><div><b>نطق صحيح</b><span>تدريب على قراءة النصوص بالتشكيل</span></div></div>
+
 <div class="f"><i><svg viewBox="0 0 48 48" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="14" r="6"/><circle cx="33" cy="16" r="5"/><path d="M6 40c0-8 5-12 10-12s10 4 10 12"/><path d="M28 32c6 0 12 3 12 8"/></svg></i><div><b>تقرير لولي الأمر</b><span>متابعة لكل صف ودرس أنهاه ابنك</span></div></div></div>
 <div class="demo"><img src="assets/img/mr-youssef-explaining.png" alt="" style="height:110px;flex:none"><div class="bb">يعني مثلًا: الفاعل هو اللي عمل الفعل. في جملة «كتبَ أحمدُ الدرسَ»، مين اللي كتب؟ أحمد! يبقى «أحمد» فاعل، وبيكون مرفوع دايمًا.</div></div>
 </div></section>
@@ -68,9 +68,10 @@ var MAP={g1:'primary',g2:'primary',g3:'primary',g4:'primary',g5:'primary',g6:'pr
 var gate=document.getElementById('gate'),view=document.getElementById('sview'),nameEl=document.getElementById('sname'),back=document.getElementById('sback');
 var panels=[].slice.call(document.querySelectorAll('.rows[data-panel]'));
 var sh=document.querySelector('#grades .sh');
+var how=document.getElementById('how');
 function show(st,focus){
  if(!NAMES[st])return false;
- gate.hidden=true;view.hidden=false;if(sh)sh.hidden=true;
+ gate.hidden=true;view.hidden=false;if(sh)sh.hidden=true;if(how)how.hidden=true;
  panels.forEach(function(p){p.hidden=(p.getAttribute('data-panel')!==st);});
  if(nameEl)nameEl.textContent=NAMES[st];
  try{localStorage.setItem('my-stage',st);}catch(e){}
@@ -78,7 +79,7 @@ function show(st,focus){
  return true;
 }
 function reset(){
- gate.hidden=false;view.hidden=true;if(sh)sh.hidden=false;
+ gate.hidden=false;view.hidden=true;if(sh)sh.hidden=false;if(how)how.hidden=false;
  panels.forEach(function(p){p.hidden=true;});
  try{localStorage.removeItem('my-stage');}catch(e){}
 }
@@ -95,7 +96,7 @@ gate.addEventListener('click',function(e){
 });
 if(back)back.addEventListener('click',function(){reset();try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}var t=document.getElementById('grades');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
 window.addEventListener('hashchange',fromHash);
-if(!fromHash()){gate.hidden=false;view.hidden=true;if(sh)sh.hidden=false;panels.forEach(function(p){p.hidden=true;});}
+if(!fromHash()){gate.hidden=false;view.hidden=true;if(sh)sh.hidden=false;if(how)how.hidden=false;panels.forEach(function(p){p.hidden=true;});}
 })();
 </script>
 </body></html>
